@@ -30,8 +30,6 @@ class ManageBlock extends \Icybee\Modules\Nodes\ManageBlock
 
 	public function __construct(Module $module, array $attributes=array())
 	{
-		global $core;
-
 		parent::__construct
 		(
 			$module, $attributes + array
@@ -101,8 +99,6 @@ class ManageBlock extends \Icybee\Modules\Nodes\ManageBlock
 
 	protected function update_options(array $options, array $modifiers)
 	{
-		global $core;
-
 		$options = parent::update_options($options, $modifiers);
 
 		if (isset($modifiers['expand']) || isset($modifiers['collapse']))
@@ -138,8 +134,6 @@ class ManageBlock extends \Icybee\Modules\Nodes\ManageBlock
 
 	protected function load_range(Query $query)
 	{
-		global $core;
-
 		if ($this->mode != 'tree')
 		{
 			return parent::load_range($query);
@@ -241,8 +235,6 @@ class ManageBlock extends \Icybee\Modules\Nodes\ManageBlock
 		->pairs;
 
 		$user = $core->user;
-		$count = count($this->entries);
-
 		$rc = '';
 
 		foreach ($this->entries as $entry)
@@ -316,7 +308,7 @@ class ManageBlock extends \Icybee\Modules\Nodes\ManageBlock
 		+ parent::extend_column($column, $id, $fields);
 	}
 
-	protected function render_cell_is_navigation_excluded($record, $property)
+	protected function render_cell_is_navigation_excluded($record)
 	{
 		$checkbox = new Element
 		(
@@ -428,31 +420,6 @@ EOT;
 
 		return $rc;
 	}
-
-	/*
-	protected function render_cell_infos($entry)
-	{
-		$rc = '<label class="checkbox-wrapper navigation" title="Inclure ou exclure la page du menu de navigation principal">';
-
-		$rc .= new Element
-		(
-			Element::TYPE_CHECKBOX, array
-			(
-				'class' => 'navigation',
-				'checked' => !empty($entry->is_navigation_excluded),
-				'value' => $entry->nid
-			)
-		);
-
-		$rc .= '</label>';
-
-		#
-		#
-		#
-
-		return $rc;
-	}
-	*/
 
 	protected function render_cell_url($record)
 	{

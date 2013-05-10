@@ -79,8 +79,6 @@ class PageController
 	{
 		global $core;
 
-		$time_start = microtime(true);
-
 		// FIXME: because set() doesn't handle global vars ('$') correctly,
 		// we have to set '$page', otherwise a new variable '$page' is created
 
@@ -101,7 +99,10 @@ class PageController
 		# The page body is rendered before the template is parsed.
 		#
 
-		$body = $page->body ? $page->body->render() : '';
+		if ($page->body)
+		{
+			$page->body->render();
+		}
 
 		# template
 
@@ -137,20 +138,6 @@ class PageController
 		# late replace
 		#
 
-		/*
-		$markup = '<!-- $document.css -->';
-		$pos = strpos($html, $markup);
-
-		if ($pos !== false)
-		{
-			$html = substr($html, 0, $pos) . $document->css . substr($html, $pos + strlen($markup));
-		}
-		else
-		{
-			$html = str_replace('</head>', PHP_EOL . PHP_EOL . $document->css . PHP_EOL . '</head>', $html);
-		}
-		*/
-
 		$markup = '<!-- $document.js -->';
 		$pos = strpos($html, $markup);
 
@@ -170,20 +157,6 @@ class PageController
 				'Content-Type' => 'text/html; charset=utf-8'
 			)
 		);
-
-		/*
-		$response->cache_control = 'public';
-
-		foreach ($core->modules as $module_id => $module)
-		{
-			if ($module_id == 'forms')
-			{
-				$cacheable = 'no-cache';
-
-				$response->cache_control = 'no-store, no-cache, must-revalidate, post-check=0, pre-check=0';
-			}
-		}
-		*/
 
 		return $response;
 	}

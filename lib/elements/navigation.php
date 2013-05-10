@@ -143,6 +143,11 @@ class NavigationElement extends Element // TODO-20120922: rewrite this element
 		(
 			$parentid, $depth === null ? null : $depth - 1, function($branch) use($min_child)
 			{
+				if ($min_child && count($branch->children) < $min_child)
+				{
+					return true;
+				}
+
 				return (!$branch->is_online || $branch->is_navigation_excluded || $branch->pattern);
 			}
 		);

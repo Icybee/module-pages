@@ -237,9 +237,7 @@ class Model extends \Icybee\Modules\Nodes\Model
 
 				if ($pattern)
 				{
-					$parsed = Route::parse($pattern);
 					$stripped = preg_replace('#<[^>]+>#', '', $pattern);
-
 					$nparts = substr_count($stripped, '/') + 1;
 					$path_part = implode('/', array_slice($parts, $i, $nparts));
 

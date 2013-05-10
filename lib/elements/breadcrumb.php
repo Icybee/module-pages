@@ -87,7 +87,7 @@ class BreadcrumbElement extends Element
 	 *
 	 * @return string
 	 */
-	static public function markup(array $args, \Patron\Engine $patron, $template)
+	static public function markup()
 	{
 		global $core;
 

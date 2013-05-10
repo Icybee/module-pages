@@ -25,11 +25,19 @@ use Icybee\Modules\Sites\Site;
 
 class Hooks
 {
+	/**
+	 * Adds the `pages` dispatcher, which serves pages managed by the module.
+	 *
+	 * @param Dispatcher\CollectEvent $event
+	 * @param Dispatcher $target
+	 *
+	 * @return \ICanBoogie\HTTP\Response
+	 */
 	static public function on_http_dispatcher_collect(Dispatcher\CollectEvent $event, Dispatcher $target)
 	{
 		$event->dispatchers['pages'] = function(Request $request)
 		{
-			global $core;
+			global $core; // used in user-startup.php
 
 			require_once \ICanBoogie\DOCUMENT_ROOT . 'user-startup.php';
 
@@ -46,14 +54,6 @@ class Hooks
 			{
 				$response->body = $rc;
 			}
-
-			/*
-			if ($core->user->is_guest && $request->is_get)
-			{
-				$response->cache_control = 'public';
-				$response->expires = '+7 days';
-			}
-			*/
 
 			$response->cache_control = 'private, no-cache, no-store, must-revalidate';
 
@@ -278,7 +278,6 @@ class Hooks
 		}
 
 		$page = $core->request->context->page;
-		$pageid = $page->nid;
 		$contentid = $args['id'];
 		$contents = array_key_exists($contentid, $page->contents) ? $page->contents[$contentid] : null;
 
@@ -394,7 +393,7 @@ class Hooks
 
 				if (isset($attributes['href']))
 				{
-					if (preg_match('#^http(s)?://#', $attributes['href'], $m))
+					if (preg_match('#^http(s)?://#', $attributes['href']))
 					{
 						$attributes['target'] = '_blank';
 					}

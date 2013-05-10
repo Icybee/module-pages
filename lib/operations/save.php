@@ -11,12 +11,19 @@
 
 namespace Icybee\Modules\Pages;
 
+use ICanBoogie\I18n\FormattedString;
+
 use Icybee\Modules\Pages\Page;
 use ICanBoogie\Event;
 use ICanBoogie\Route;
 
 class SaveOperation extends \Icybee\Modules\Nodes\SaveOperation
 {
+	/**
+	 * For new records, the values for the {@link Page::SITEID} and {@link Page::LANGUAGE}
+	 * properties are obtained from the current site. If the weight of the page is not defined
+	 * it is computed according to the page having the same parent.
+	 */
 	protected function get_properties()
 	{
 		global $core;
@@ -28,8 +35,12 @@ class SaveOperation extends \Icybee\Modules\Nodes\SaveOperation
 
 		if (!$this->key)
 		{
-			$siteid = $core->site_id;
+			/* @var $site \Icybee\Modules\Sites\Site */
+
+			$site = $core->site;
+			$siteid = $site->site_id;
 			$properties[Page::SITEID] = $siteid;
+			$properties[Page::LANGUAGE] = $site->language;
 
 			if (empty($properties[Page::WEIGHT]))
 			{
@@ -53,6 +64,9 @@ class SaveOperation extends \Icybee\Modules\Nodes\SaveOperation
 		return $properties;
 	}
 
+	/**
+	 * For each defined content we check that the corresponding editor is also defined.
+	 */
 	protected function validate(\ICanBoogie\Errors $errors)
 	{
 		$contents = $this->request['contents'];
@@ -60,11 +74,11 @@ class SaveOperation extends \Icybee\Modules\Nodes\SaveOperation
 
 		if ($contents)
 		{
-			foreach ($contents as $name => $dummy)
+			foreach (array_keys($contents) as $name)
 			{
 				if (!array_key_exists($name, $editors))
 				{
-					$errors['content'][] = \ICanBoogie\format('The editor is missing for the content %name', array('name' => $name));
+					$errors['content'][] = new FormattedString('The editor is missing for the content %name.', array('name' => $name));
 				}
 			}
 		}
@@ -96,6 +110,8 @@ class SaveOperation extends \Icybee\Modules\Nodes\SaveOperation
 		#
 		# update contents
 		#
+
+		/* var $contents_model ContentModel */
 
 		$preserve = array();
 		$contents_model = $this->module->model('contents');
@@ -205,6 +221,9 @@ class MoveEvent extends \ICanBoogie\Event
 	 */
 	public function __construct(\Icybee\Modules\Pages\Page $target, $from, $to)
 	{
-		parent::__construct($target, 'move', array('from' => $from, 'to' => $to));
+		$this->from = $from;
+		$this->to = $to;
+
+		parent::__construct($target, 'move');
 	}
 }

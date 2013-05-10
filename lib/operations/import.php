@@ -85,7 +85,7 @@ class ImportOperation extends \Icybee\Modules\Nodes\ImportOperation
 		$original_nodes_with_parentid = $this->parentid;
 		$original_nodes_with_locationid = $this->locationid;
 
-		foreach ($data as $nid => $node)
+		foreach (array_keys($data) as $nid)
 		{
 			$parentid = 0;
 

@@ -280,8 +280,6 @@ class Page extends \Icybee\Modules\Nodes\Node
 	 */
 	protected function get_url_pattern()
 	{
-		global $core;
-
 		$site = $this->site;
 
 		if ($this->is_home)

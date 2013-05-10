@@ -25,8 +25,8 @@ class EditBlock extends \Icybee\Modules\Nodes\EditBlock
 	{
 		parent::add_assets($document);
 
-		$document->css->add('../../public/edit.css');
-		$document->js->add('../../public/edit.js');
+		$document->css->add(DIR . 'public/edit.css');
+		$document->js->add(DIR . 'public/edit.js');
 	}
 
 	protected function get_attributes()
@@ -63,7 +63,7 @@ class EditBlock extends \Icybee\Modules\Nodes\EditBlock
 		$nid = $values[Node::NID];
 		$is_alone = !$this->module->model->select('nid')->where(array('siteid' => $core->site_id))->rc;
 
-		list($contents_tags, $template_info) = $this->module->get_contents_section($values[Node::NID], $values[Page::TEMPLATE]);
+		list($contents_tags) = $this->module->get_contents_section($values[Node::NID], $values[Page::TEMPLATE]);
 
 		#
 		# parentid
