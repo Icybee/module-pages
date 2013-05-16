@@ -28,14 +28,14 @@ class Hooks
 	/**
 	 * Adds the `pages` dispatcher, which serves pages managed by the module.
 	 *
-	 * @param Dispatcher\CollectEvent $event
+	 * @param Dispatcher\AlterEvent $event
 	 * @param Dispatcher $target
 	 *
 	 * @return \ICanBoogie\HTTP\Response
 	 */
-	static public function on_http_dispatcher_collect(Dispatcher\CollectEvent $event, Dispatcher $target)
+	static public function on_http_dispatcher_alter(Dispatcher\AlterEvent $event, Dispatcher $target)
 	{
-		$event->dispatchers['pages'] = function(Request $request)
+		$target['pages'] = function(Request $request)
 		{
 			global $core; // used in user-startup.php
 

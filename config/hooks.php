@@ -9,7 +9,7 @@ return array
 	'events' => array
 	(
 		'Brickrouge\Document::render_title:before' => $hooks . 'before_document_render_title',
-		'ICanBoogie\HTTP\Dispatcher::collect' => $hooks . 'on_http_dispatcher_collect',
+		'ICanBoogie\HTTP\Dispatcher::alter' => $hooks . 'on_http_dispatcher_alter',
 		'BlueTihi\Context::loaded_nodes' => __NAMESPACE__ . '\PageController::on_loaded_nodes',
 		'ICanBoogie\SaveOperation::process' => $hooks . 'invalidate_cache',
 		'ICanBoogie\DeleteOperation::process' => $hooks . 'invalidate_cache',
