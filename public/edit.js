@@ -89,7 +89,7 @@ window.addEvent('brickrouge.update', function() {
 	(
 		'change', function(ev)
 		{
-			var pageid = form.elements['#key'] ? form.elements['#key'].value : null
+			var pageid = form.elements[ICanBoogie.Operation.KEY] ? form.elements[ICanBoogie.Operation.KEY].value : null
 
 			req.get({ pageid: pageid, template: selector.get('value') })
 		}
