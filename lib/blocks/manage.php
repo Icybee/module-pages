@@ -56,8 +56,7 @@ class ManageBlock extends \Icybee\Modules\Nodes\ManageBlock
 
 			'is_navigation_excluded' => array
 			(
-				'label' => null,
-				'class' => 'infos'
+				'label' => null
 			)
 		);
 	}
@@ -310,6 +309,22 @@ class ManageBlock extends \Icybee\Modules\Nodes\ManageBlock
 
 	protected function render_cell_is_navigation_excluded($record)
 	{
+		return new Element
+		(
+			'i', array
+			(
+				'class' => 'icon-sitemap trigger ' . ($record->is_navigation_excluded ? 'on' : ''),
+				'data-nid' => $record->nid,
+				'title' => "Inclure ou exclure la page du menu de navigation principal"
+			)
+		);
+
+
+
+
+
+
+
 		$checkbox = new Element
 		(
 			Element::TYPE_CHECKBOX, array
@@ -332,7 +347,7 @@ EOT;
 		if ($this->mode == 'tree')
 		{
 			$rc .= str_repeat('<div class="indentation">&nbsp;</div>', $record->depth);
-			$rc .= '<div class="handle">&nbsp;</div>';
+			$rc .= '<div class="handle"><i class="icon-move"></i></div>';
 
 			if (0)
 			{
@@ -427,8 +442,6 @@ EOT;
 
 		$t = $this->t;
 		$options = $this->options;
-
-		$rc = '';
 		$pattern = $record->url_pattern;
 
 		if ($options['search'] || $options['filters'])
@@ -445,23 +458,27 @@ EOT;
 			if ($record->location)
 			{
 				$location = $record->location;
+				$title = $t('This page is redirected to: !title (!url)', array('!title' => $location->title, '!url' => $location->url));
 
-				$rc .= '<a class="location" title="' . $t('This page is redirected to: !title (!url)', array('!title' => $location->title, '!url' => $location->url)) . '">&nbsp;</a>';
-				$rc .= '<span class="small"><a href="' . $url . '" class="left">' . $url . '</a></span>';
-
-				return $rc;
+				return <<<EOT
+<span class="small">
+<i class="icon-mail-forward" title="$title"></i>
+<a href="$url">$url</a>
+</span>
+EOT;
 			}
 
-			$rc .= '<span class="small"><a href="' . $url . '" class="out left">' . $url . '</a></span>';
-
-			return $rc;
+			return <<<EOT
+<span class="small"><a href="$url">$url</a></span>
+EOT;
 		}
 
+		$rc = '';
 		$location = $record->location;
 
 		if ($location)
 		{
-			$rc .= '<a class="location" title="' . $t('This page is redirected to: !title (!url)', array('!title' => $location->title, '!url' => $location->url)) . '">&nbsp;</a>';
+			$rc .= '<span class="icon-mail-forward" title="' . $t('This page is redirected to: !title (!url)', array('!title' => $location->title, '!url' => $location->url)) . '"></span>';
 		}
 		else if (!Route::is_pattern($pattern))
 		{
@@ -469,7 +486,7 @@ EOT;
 
 			$title = $t('Go to the page: !url', array('!url' => $url));
 
-			$rc .= '<a href="' . $url . '" class="view" title="' . $title . '">' . '&nbsp;' . '</a>';
+			$rc .= '<a href="' . $url . '" title="' . $title . '" target="_blank"><i class="icon-external-link"></i></a>';
 		}
 
 		return $rc;

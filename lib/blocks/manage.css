@@ -1,97 +1,72 @@
-table.manage div.indentation,
-table.manage div.handle 
-{
+#manager div.indentation,
+#manager div.handle {
 	width: 13px;
 	height: 100%;
 	min-height: 13px;
 	float: left;
 }
 
-table.manage div.handle
-{
-	background: url(manage/draggable.png) no-repeat center;
+#manager div.handle {
 	cursor: move;
 	display: block;
 	margin-right: 2ex;
 	opacity: .2;
 }
 
-table.manage tr:hover div.handle
-{
+#manager tr:hover div.handle {
 	opacity: 1;
 }
 
-table.manage sup.modified
-{
+#manager sup.modified {
 	vertical-align: text-top;
 	margin-left: 1px;
 }
 
-table.manage tr.dragged,
-table.manage tr.dragged.modified,
-table.manage tr.dragged:hover,
-table.manage tr.dragged.even:hover
-{
-	background-color: #EEF;
-	background-color: #B5D5FF;
+#manager tr.dragged,
+#manager tr.dragged.modified,
+#manager tr.dragged:hover,
+#manager tr.dragged.even:hover {
 	background-color: #e5f1ff;
 }
 
-table.manage tr.dragged td,
-table.manage tr.dragged.modified td,
-table.manage tr.dragged:hover td,
-table.manage tr.dragged.even:hover td
-{
+#manager tr.dragged td,
+#manager tr.dragged.modified td,
+#manager tr.dragged:hover td,
+#manager tr.dragged.even:hover td {
 	border-bottom-color: #dae5f2;
 }
 
-/*
-table.manage tr.dragged div.indentation,
-table.manage tr.dragged div.handle
-{
-	background-color: red;
-}
-*/
-
-table.manage tr.modified
-{
+#manager tr.modified {
 	background-color: #FFE;
 }
 
-table.manage button[name=update]
-{
+#manager button[name="update"] {
 	display: none;
 }
 
-table.manage tr.view:not(:hover) a.edit
-{
+#manager tr.view:not(:hover) a.edit {
 	color: #903030;
 }
 
-table.manage tr.pattern:not(:hover) a.edit
-{
+#manager tr.pattern:not(:hover) a.edit {
 	color: #C04040;
 }
 
-table.manage tr.location:not(:hover) a.edit
-{
+#manager tr.location:not(:hover) a.edit {
 	color: #366380;
 }
 
-table.manage a.edit span.language
-{
+#manager a.edit span.language {
 	font-size: .8em;
 	color: #808080;
 }
 
-table.manage tr:hover a.edit span
-{
+#manager tr:hover a.edit span {
 	color: inherit;
 }
 
-table.manage .place-holder,
-table.manage a.location
-{
+#manager .place-holder,
+#manager a.location {
 	height: 1em;
 	width: 0;
 	overflow: hidden;
@@ -101,51 +76,37 @@ table.manage a.location
 	background-repeat: no-repeat;
 }
 
-table.manage .place-holder,
-table.manage a.location,
-table.manage a.view
-{
+#manager .place-holder,
+#manager a.location,
+#manager a.view {
 	padding-left: 14px;
 }
 
-table.manage td.url
-{
+#manager td.cell--url .small {
+	display: block;
+	text-align: left;
+	white-space: nowrap;	
+}
+
+#manager td.cell--is-navigation-excluded {
 	white-space: nowrap;
 	width: 16px;
 }
 
-table.manage td.infos
-{
-	width: 16px;
+#manager td.cell--is-navigation-excluded {
+	text-align: center;
 }
 
-label.checkbox-wrapper
-{
-	cursor: pointer;
+#manager td.cell--is-navigation-excluded i {
+	cursor: default;
+	transition: opacity .5s;
 }
 
-label.checkbox-wrapper input
-{
-	visibility: hidden;
+#manager td.cell--is-navigation-excluded i.on {
+	opacity: .3;
 }
 
-label.checkbox-wrapper.navigation
-{
-	background-image: url(manage/is_navigation-true.png);
-}
-
-label.checkbox-wrapper.navigation.checked
-{
-	background-image: url(manage/is_navigation-false.png);
-}
-
-table.manage a.location
-{
-	background-image: url(manage/location.png);
-}
-
-#manager a.treetoggle
-{
+#manager a.treetoggle {
 	font-size: .8em;
 	text-decoration: none;
 	color: #808080;
@@ -153,13 +114,14 @@ table.manage a.location
 	background-color: #F6F6F6;
 	padding: 0 .4em;
 	border-radius: .4em;
-	-moz-border-radius: .4em;
-	-webkit-border-radius: .4em;
 }
 
-#manager a.treetoggle:hover
-{
+#manager a.treetoggle:hover {
 	color: #4B8BB3;
 	border-color: #A3C0E5;
 	background-color: #B5D5FF;
+}
+
+#manager td.cell--url a {
+	text-decoration: none;
 }

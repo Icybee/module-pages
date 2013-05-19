@@ -11,6 +11,7 @@
 
 namespace Icybee\Modules\Pages;
 
+use ICanBoogie\HTTP\Request;
 use ICanBoogie\Operation;
 
 class NavigationIncludeOperation extends Operation
@@ -25,6 +26,15 @@ class NavigationIncludeOperation extends Operation
 		)
 
 		+ parent::get_controls();
+	}
+
+	public function __invoke(Request $request)
+	{
+		global $core;
+
+		$this->module = $core->modules['pages'];
+
+		return parent::__invoke($request);
 	}
 
 	protected function validate(\ICanboogie\Errors $errors)

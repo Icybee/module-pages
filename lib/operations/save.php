@@ -38,7 +38,7 @@ class SaveOperation extends \Icybee\Modules\Nodes\SaveOperation
 			/* @var $site \Icybee\Modules\Sites\Site */
 
 			$site = $core->site;
-			$siteid = $site->site_id;
+			$siteid = $site->siteid;
 			$properties[Page::SITEID] = $siteid;
 			$properties[Page::LANGUAGE] = $site->language;
 
