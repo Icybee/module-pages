@@ -2,18 +2,20 @@
 
 namespace Icybee\Modules\Pages;
 
+use ICanBoogie\Operation;
+
 return array
 (
 	'api:pages:is-navigation-excluded:set' => array
 	(
-		'pattern' => '/api/pages/<_operation_key:\d+>/is-navigation-excluded',
+		'pattern' => '/api/pages/<' . Operation::KEY . ':\d+>/is-navigation-excluded',
 		'controller' => __NAMESPACE__ . '\NavigationExcludeOperation',
 		'via' => 'PUT'
 	),
 
 	'api:pages:is-navigation-excluded:unset' => array
 	(
-		'pattern' => '/api/pages/<_operation_key:\d+>/is-navigation-excluded',
+		'pattern' => '/api/pages/<' . Operation::KEY . ':\d+>/is-navigation-excluded',
 		'controller' => __NAMESPACE__ . '\NavigationIncludeOperation',
 		'via' => 'DELETE'
 	),
