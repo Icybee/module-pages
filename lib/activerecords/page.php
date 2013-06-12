@@ -204,7 +204,7 @@ class Page extends \Icybee\Modules\Nodes\Node
 		{
 			if ($this->url_variables)
 			{
-				$url = Route::format($url_pattern, $this->url_variables);
+				$url = Route::format_pattern($url_pattern, $this->url_variables);
 
 //				\ICanBoogie\log('URL %pattern rescued using URL variables', array('%pattern' => $pattern));
 			}
@@ -214,7 +214,7 @@ class Page extends \Icybee\Modules\Nodes\Node
 
 				if ($page && $page->url_variables)
 				{
-					$url = Route::format($url_pattern, $page->url_variables);
+					$url = Route::format_pattern($url_pattern, $page->url_variables);
 
 // 					\ICanBoogie\log("URL pattern %pattern was resolved using current page's variables", array('%pattern' => $pattern));
 				}
