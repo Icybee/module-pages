@@ -12,9 +12,13 @@
 namespace Icybee\Modules\Pages;
 
 use ICanBoogie\ActiveRecord\Query;
+use ICanBoogie\PropertyNotDefined;
 
 /**
  * A blueprint of a record tree.
+ *
+ * @property-read array[]Page $ordered_records Records ordered according to their position and
+ * relation. See: {@link get_ordered_records()}.
  *
  * @see BlueprintNode
  */
@@ -68,6 +72,12 @@ class Blueprint
 		return new static($query->model, $relation, $children, $index, $tree);
 	}
 
+	/**
+	 * Set the depth of the nodes of the specified branch.
+	 *
+	 * @param array $branch
+	 * @param number $depth Starting depth.
+	 */
 	static private function set_depth(array $branch, $depth=0)
 	{
 		foreach ($branch as $node)
@@ -138,7 +148,7 @@ class Blueprint
 	 * @param array $index Pages index.
 	 * @param array $tree Pages nested as a tree.
 	 */
-	public function __construct(Model $model, array $relation, array $children, array $index, array $tree)
+	protected function __construct(Model $model, array $relation, array $children, array $index, array $tree)
 	{
 		$this->relation = $relation;
 		$this->children = $children;
@@ -148,9 +158,64 @@ class Blueprint
 	}
 
 	/**
+	 * Support for the {@link $ordered_records} property.
+	 *
+	 * @param string $property
+	 *
+	 * @throws PropertyNotDefined in attempt to get a property that is not defined or supported.
+	 *
+	 * @return mixed
+	 */
+	public function __get($property)
+	{
+		if ($property == 'ordered_records')
+		{
+			return $this->get_ordered_records();
+		}
+
+		throw new PropertyNotDefined(array($property, $this));
+	}
+
+	/**
+	 * Returns the records of the blueprint ordered according to their position and relation.
+	 *
+	 * Note: The blueprint is populated with records if needed.
+	 *
+	 * @return array[int]ActiveRecord
+	 */
+	protected function get_ordered_records()
+	{
+		$records = array();
+
+		$ordering = function(array $branch) use(&$ordering, &$records) {
+
+			foreach ($branch as $node)
+			{
+				$records[$node->nid] = $node->record;
+
+				if ($node->children)
+				{
+					$ordering($node->children);
+				}
+			}
+		};
+
+		$node = current($this->index);
+
+		if (empty($node->record))
+		{
+			$this->populate();
+		}
+
+		$ordering($this->tree);
+
+		return $records;
+	}
+
+	/**
 	 * Checks if a branch has children.
 	 *
-	 * @param int $nid Identifier of the branch.
+	 * @param int $nid Identifier of the parent record.
 	 *
 	 * @return boolean
 	 */
@@ -162,22 +227,26 @@ class Blueprint
 	/**
 	 * Returns the number of children of a branch.
 	 *
-	 * @param int $nid
+	 * @param int $nid The identifier of the parent record.
 	 *
 	 * @return int
 	 */
 	public function children_count($nid)
 	{
-		return count($this->children[$nid]);
+		return $this->has_children($nid) ? count($this->children[$nid]) : 0;
 	}
 
 	/**
 	 * Create a subset of the blueprint.
 	 *
+	 * A filter can be specified to filter out the nodes of the subset. The function returns `true`
+	 * to discart a node. The callback function have the following signature:
+	 *
+	 *     function(BlueprintNode $node)
+	 *
 	 * @param int $nid Identifier of the starting branch.
 	 * @param int $depth Maximum depth of the subset.
-	 * @param callable $filter The filter callback. Nodes are discarted when the filter returns
-	 * true.
+	 * @param callable $filter The filter callback.
 	 *
 	 * @return Blueprint
 	 */
@@ -246,6 +315,11 @@ class Blueprint
 /**
  * A node of the blueprint.
  *
+ * @property-read int $children_count The number of children.
+ * @property-read array[int]ActiveRecord $descendents The descendents ordered according to their
+ * position and relation.
+ * @property-read int $descendents_count The number of descendents.
+ *
  * @see Blueprint
  */
 class BlueprintNode
@@ -292,11 +366,53 @@ class BlueprintNode
 	 */
 	public function __get($property)
 	{
+		switch ($property)
+		{
+			case 'children_count': return count($this->children);
+			case 'descendents': return $this->get_descendents();
+			case 'descendents_count': return $this->get_descendents_count();
+		}
+
 		return $this->record->$property;
 	}
 
 	/**
-	 * Unknown method calls are forwarded to the record.
+	 * Return the descendent nodes of the node.
+	 *
+	 * @return int
+	 */
+	protected function get_descendents()
+	{
+		$descendents = array();
+
+		foreach ($this->children as $nid => $child)
+		{
+			$descendents[$nid] = $child;
+			$descendents += $child->descendents;
+		}
+
+		return $descendents;
+	}
+
+	/**
+	 * Return the number of descendents.
+	 *
+	 * @return int
+	 */
+	protected function get_descendents_count()
+	{
+		$n = 0;
+
+		foreach ($this->children as $child)
+		{
+			$n += 1 + $child->descendents_count;
+		}
+
+		return $n;
+	}
+
+	/**
+	 * Forwards calls to the record.
 	 *
 	 * @param string $method
 	 * @param array $arguments

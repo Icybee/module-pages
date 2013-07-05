@@ -25,6 +25,7 @@ use Icybee\Modules\Sites\Site;
  * @property-read bool $is_home Whether the page is the home page of the site or not.
  * @property-read bool $is_trail Whether the page is in the navigation trail or not.
  * @property-read array[]Page $navigation_children Navigation children of the page.
+ * @property-read int $descendents_count The number of descendents.
  */
 class Page extends \Icybee\Modules\Nodes\Node
 {
@@ -487,13 +488,23 @@ class Page extends \Icybee\Modules\Nodes\Node
 	}
 
 	/**
-	 * Returns the number of child of the page.
+	 * Returns the number of children.
 	 *
 	 * @return int
 	 */
-	protected function get_children_count()
+	protected function volatile_get_children_count()
 	{
 		return $this->model->blueprint($this->siteid)->children_count($this->nid);
+	}
+
+	/**
+	 * Returns the number of descendent.
+	 *
+	 * @return int
+	 */
+	protected function volatile_get_descendents_count()
+	{
+		return $this->model->blueprint($this->siteid)->index[$this->nid]->descendents_count;
 	}
 
 	/**
