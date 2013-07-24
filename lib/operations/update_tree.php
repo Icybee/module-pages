@@ -11,6 +11,11 @@
 
 namespace Icybee\Modules\Pages;
 
+use ICanBoogie\I18n\FormattedString;
+
+/**
+ * Updates the order and relation of the specified records.
+ */
 class UpdateTreeOperation extends \ICanBoogie\Operation
 {
 	protected function get_controls()
@@ -25,20 +30,50 @@ class UpdateTreeOperation extends \ICanBoogie\Operation
 
 	protected function validate(\ICanboogie\Errors $errors)
 	{
-		return !empty($this->request['parents']);
+		$order = $this->request['order'];
+		$relation = $this->request['relation'];
+
+		if ($order && $relation)
+		{
+			foreach ($order as $nid)
+			{
+				if (!isset($relation[$nid]))
+				{
+					$errors['relation'] = new FormattedString("Missing relation for nid %nid.", array('nid' => $nid));
+				}
+			}
+		}
+		else
+		{
+			if (!$order)
+			{
+				$errors['order'] = new FormattedString("The %param param is required", array('param' => 'order'));
+			}
+
+			if (!$relation)
+			{
+				$errors['relation'] = new FormattedString("The %param param is required", array('param' => 'relation'));
+			}
+		}
+
+		return !$errors->count();
 	}
 
 	protected function process()
 	{
 		$w = 0;
 		$update = $this->module->model->prepare('UPDATE {self} SET `parentid` = ?, `weight` = ? WHERE `{primary}` = ? LIMIT 1');
-		$parents = $this->request['parents'];
 
-		foreach ($parents as $nid => $parentid)
+		$order = $this->request['order'];
+		$relation = $this->request['relation'];
+
+		foreach ($order as $nid)
 		{
+			$parent_id = $relation[$nid];
+
 			// FIXME-20100429: cached entries are not updated here, we should flush the cache.
 
-			$update($parentid, $w++, $nid);
+			$update($parent_id, $w++, $nid);
 		}
 
 		return true;

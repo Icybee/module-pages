@@ -12,11 +12,8 @@
 namespace Icybee\Modules\Pages;
 
 use ICanBoogie\ActiveRecord\Query;
-use ICanBoogie\Exception;
-use ICanBoogie\Route;
 
-use Brickrouge\Element;
-use Brickrouge\Text;
+use Icybee\ManageBlock\Options;
 
 class ManageBlock extends \Icybee\Modules\Nodes\ManageBlock
 {
@@ -44,32 +41,58 @@ class ManageBlock extends \Icybee\Modules\Nodes\ManageBlock
 		);
 	}
 
-	protected function columns()
+	/**
+	 * Adds the following columns:
+	 *
+	 * - `title`: An instance of {@link ManageBlock\TitleColumn}.
+	 * - `url`: An instance of {@link ManageBlock\URLColumn}.
+	 * - `is_navigation_excluded`: An instance of {@link ManageBlock\IsNavigationExcluded}.
+	 */
+	protected function get_available_columns()
 	{
-		return parent::columns() + array
-		(
-			'url' => array
-			(
-				'label' => null,
-				'class' => 'url'
-			),
+		return array_merge(parent::get_available_columns(), array(
 
-			'is_navigation_excluded' => array
-			(
-				'label' => null
-			)
-		);
+			'title' => __CLASS__ . '\TitleColumn',
+			'url' => __CLASS__ . '\URLColumn',
+			'is_navigation_excluded' => __CLASS__ . '\IsNavigationExcluded'
+		));
 	}
 
-	protected function jobs()
+	/**
+	 * Adds the following jobs:
+	 *
+	 * - `copy`: Copy the selected nodes.
+	 */
+	protected function get_available_jobs()
 	{
-		return parent::jobs() + array
+		return array_merge(parent::get_available_jobs(), array
 		(
 			'copy' => 'Copier'
-		);
+		));
+	}
+
+	protected function render_jobs(array $jobs)
+	{
+		$html = parent::render_jobs($jobs);
+
+		return <<<EOT
+$html
+
+<div data-actionbar-context="update-tree">
+	<i class="icon-sitemap context-icon"></i><button class="btn" data-action="cancel">Annuler</button>
+	<button class="btn btn-primary" data-action="save">Enregistrer les modifications</button>
+</div>
+
+EOT;
 	}
 
 	protected $mode = 'tree';
+
+	protected function volatile_get_mode()
+	{
+		return $this->mode;
+	}
+
 	protected $expand_highlight;
 
 	/**
@@ -77,32 +100,19 @@ class ManageBlock extends \Icybee\Modules\Nodes\ManageBlock
 	 *
 	 * The methods adds the `expanded` option which is used to store expanded tree nodes. The
 	 * option is initialized with first level pages.
-	 *
-	 * @see Icybee\Manager::retrieve_options()
 	 */
-	protected function retrieve_options($name)
-	{
-		global $core;
-
-		$options = parent::retrieve_options($name) + array
-		(
-			'expanded' => array()
-		);
-
-		$expanded = $this->model->select('nid')->where('parentid = 0 AND siteid = ?', $core->site_id)->all(\PDO::FETCH_COLUMN);
-
-		$options['expanded'] = array_unique(array_merge($options['expanded'], (array) $expanded), SORT_NUMERIC);
-
-		return $options;
-	}
-
-	protected function update_options(array $options, array $modifiers)
+	protected function update_options(Options $options, array $modifiers)
 	{
 		$options = parent::update_options($options, $modifiers);
 
+		if (!isset($options->expanded))
+		{
+			$options->expanded = array();
+		}
+
 		if (isset($modifiers['expand']) || isset($modifiers['collapse']))
 		{
-			$expanded = array_flip($options['expanded']);
+			$expanded = array_flip($options->expanded);
 
 			if (isset($modifiers['expand']))
 			{
@@ -115,15 +125,15 @@ class ManageBlock extends \Icybee\Modules\Nodes\ManageBlock
 				unset($expanded[filter_var($modifiers['collapse'], FILTER_VALIDATE_INT)]);
 			}
 
-			$options['expanded'] = array_keys($expanded);
+			$options->expanded = array_keys($expanded);
 		}
 
-		if (isset($options['order']['title']))
+		if ($options->order_by == 'title')
 		{
-			$options['order'] = array();
+			$options->order_by = null;
 		}
 
-		if ($options['filters'] || $options['order'] || $options['search'])
+		if ($options->filters || $options->order_by || $options->search)
 		{
 			$this->mode = 'flat';
 		}
@@ -131,220 +141,113 @@ class ManageBlock extends \Icybee\Modules\Nodes\ManageBlock
 		return $options;
 	}
 
-	protected function load_range(Query $query)
-	{
-		if ($this->mode != 'tree')
-		{
-			return parent::load_range($query);
-		}
-
-		if ($this->options['expanded'])
-		{
-			$query->where('parentid = 0 OR parentid IN (' . implode(',', $this->options['expanded']) . ')');
-		}
-
-		$keys = $query->select('nid')->order('weight, created')->limit(null, null)->all(\PDO::FETCH_COLUMN);
-
-		if (!$keys)
-		{
-			return array();
-		}
-
-		$records = $this->model->find($keys);
-
-		$tree = $this->model->nestNodes($records);
-
-		$entries_by_ids = array();
-
-		foreach ($tree as $entry)
-		{
-			$entries_by_ids[$entry->nid] = $entry;
-		}
-
-		$filtered = array();
-
-		foreach ($tree as $entry)
-		{
-			if ($entry->parentid && empty($entries_by_ids[$entry->parentid]))
-			{
-				continue;
-			}
-
-			$filtered[] = $entry;
-		}
-
-		$records = self::flattenTree2($filtered);
-
-		return $records;
-	}
-
-	static protected function flattenTree2($pages, $level=0)
-	{
-		$flatten = array();
-
-		if (!is_array($pages))
-		{
-			throw new Exception('should be an array: \1', array($pages));
-		}
-
-		foreach ($pages as $page)
-		{
-			$page->level = $level;
-
-			$flatten[] = $page;
-
-			if (isset($page->children) && $page->children)
-			{
-				$flatten = array_merge($flatten, self::flattenTree2($page->children, $level + 1));
-			}
-		}
-
-		return $flatten;
-	}
-
-	protected function getJobs()
-	{
-		$rc = '<div class="update" style="float: left"><button name="update" class="btn btn-primary">Enregistrer les modifications</button>&nbsp;</div>' . parent::getJobs();
-
-		return $rc;
-	}
-
-	protected function render_limiter()
-	{
-		if ($this->mode == 'tree')
-		{
-			$rc  = '<div class="limiter"><span class="wdranger">';
-			$rc .= '<select style="visibility: hidden"><option>&nbsp;</option></select>'; // to have the same height as the jobs div
-			$rc .= $this->t->__invoke(':count pages', array(':count' => $this->count));
-			$rc .= '</span></div>';
-
-			return $rc;
-		}
-
-		return parent::render_limiter();
-	}
-
-	protected function render_body()
+	/**
+	 * Fetches the records according to the query and the display mode.
+	 *
+	 * The method is overrode if the dispay mode is `tree` in which case the records are fetched
+	 * accroding to their relashion and the _expand_ state of their parent.
+	 */
+	protected function fetch_records(Query $query)
 	{
 		global $core;
 
+		if ($this->mode !== 'tree')
+		{
+			return parent::fetch_records($query);
+		}
+
+		$expanded = array_flip($this->options->expanded);
+
+		return $query->model->blueprint($core->site_id)->subset(null, null, function(BlueprintNode $node) use($expanded) {
+
+			return !(!$node->parentid || isset($expanded[$node->parentid]));
+
+		})->ordered_records;
+	}
+
+	/**
+	 * Replaces the limiter by a simple count if the records are displayed as a tree.
+	 */
+	protected function render_controls()
+	{
+		if ($this->mode !== 'tree')
+		{
+			return parent::render_controls();
+		}
+
+		$count = $this->t(':count pages', array(':count' => $this->count));
+
+		# A `SELECT` element is added to have the same height as the jobs element.
+
+		return <<<EOT
+<div class="listview-controls">
+	$count
+</div>
+EOT;
+	}
+
+	protected function render_rows(array $rows)
+	{
 		$view_ids = $this->module->model('contents')
 		->select('pageid, content')
 		->where('contentid = "body" AND editor = "view"')
 		->pairs;
 
-		$user = $core->user;
-		$rc = '';
+		$rendered_rows = parent::render_rows($rows);
+		$records = array_values($this->records);
 
-		foreach ($this->entries as $entry)
+		foreach ($rendered_rows as $i => $row)
 		{
-			$class = 'entry draggable';
+			$row->add_class('entry');
+			$row->add_class('draggable');
 
-			$ownership = $user->has_ownership($this->module, $entry);
+			$record = $records[$i];
+			$nid = $record->nid;
 
-			if ($ownership === false)
+			if ($this->expand_highlight && $record->parentid == $this->expand_highlight)
 			{
-				$class .= ' no-ownership';
+				$row->add_class('volatile-highlight');
 			}
 
-			if ($this->expand_highlight && $entry->parentid == $this->expand_highlight)
+			if (isset($view_ids[$nid]))
 			{
-				$class .= ' volatile-highlight';
+				$row->add_class('view');
 			}
 
-			if (isset($view_ids[$entry->nid]))
+			if ($record->pattern)
 			{
-				$class .= ' view';
+				$row->add_class('pattern');
 			}
 
-			if ($entry->pattern)
+			if ($record->locationid)
 			{
-				$class .= ' pattern';
+				$row->add_class('location');
 			}
 
-			if ($entry->locationid)
-			{
-				$class .= ' location';
-			}
-
-			#
-			# create rows, with a special 'even' class for even rows
-			#
-
-			$rc .= '<tr class="' . $class . '" id="nid:' . $entry->nid . '">';
-
-			#
-			# create user defined columns
-			#
-
-			foreach ($this->columns as $tag => $column)
-			{
-				$rc .= $this->render_cell($entry, $tag, $column);
-			}
-
-			$rc .= '</tr>';
+			$row['id'] = "nid:{$nid}"; // TODO-20130627: deprecate this, or use 'data-nid' or maybe move this to manager with a data-key on the TR.
 		}
 
-		return $rc;
+		return $rendered_rows;
 	}
+}
 
-	protected function extend_column_is_navigation_excluded(array $column, $id, array $fields)
-	{
-		return array
-		(
-			'filters' => array
-			(
-				'options' => array
-				(
-					'=1' => 'Excluded from navigation',
-					'=0' => 'Included in navigation'
-				)
-			),
+namespace Icybee\Modules\Pages\ManageBlock;
 
-			'sortable' => false
-		)
+use ICanBoogie\Route;
 
-		+ parent::extend_column($column, $id, $fields);
-	}
+use Brickrouge\Element;
+use Brickrouge\Text;
 
-	protected function render_cell_is_navigation_excluded($record)
-	{
-		return new Element
-		(
-			'i', array
-			(
-				'class' => 'icon-sitemap trigger ' . ($record->is_navigation_excluded ? 'on' : ''),
-				'data-nid' => $record->nid,
-				'title' => "Inclure ou exclure la page du menu de navigation principal"
-			)
-		);
+use Icybee\ManageBlock\Column;
+use Icybee\ManageBlock\BooleanColumn;
 
-
-
-
-
-
-
-		$checkbox = new Element
-		(
-			Element::TYPE_CHECKBOX, array
-			(
-				'class' => 'navigation',
-				'checked' => !empty($record->is_navigation_excluded),
-				'value' => $record->nid
-			)
-		);
-
-		return <<<EOT
-<label class="checkbox-wrapper navigation" title="Inclure ou exclure la page du menu de navigation principal">$checkbox</label>
-EOT;
-	}
-
-	protected function render_cell_title($record, $property)
+class TitleColumn extends \Icybee\Modules\Nodes\ManageBlock\TitleColumn
+{
+	public function render_cell($record)
 	{
 		$rc = '';
 
-		if ($this->mode == 'tree')
+		if ($this->manager->mode == 'tree')
 		{
 			$rc .= str_repeat('<div class="indentation">&nbsp;</div>', $record->depth);
 			$rc .= '<div class="handle"><i class="icon-move"></i></div>';
@@ -407,18 +310,18 @@ EOT;
 			}
 		}
 
-		$rc .= self::modify_code(\ICanBoogie\escape($record->title), $record->nid, $this);
+		$rc .= parent::render_cell($record);
 
 		if (0)
 		{
 			$rc .= ' <small style="color: green">:' . $record->nid . '</small>';
 		}
 
-		if ($this->mode == 'tree' && $record->depth > 0 && $record->has_child)
+		if ($this->manager->mode == 'tree' && $record->has_child)
 		{
-			$expanded = in_array($record->nid, $this->options['expanded']);
+			$expanded = in_array($record->nid, $this->manager->options->expanded);
 
-			$rc .= ' <a class="ajaj treetoggle" href="?' . ($expanded ? 'collapse' : 'expand') . '=' . $record->nid . '">' . ($expanded ? '-' : '+' . $record->children_count) . '</a>';
+			$rc .= ' <a class="treetoggle" href="?' . ($expanded ? 'collapse' : 'expand') . '=' . $record->nid . '">' . ($expanded ? '-' : "+{$record->descendents_count}") . '</a>';
 		}
 
 		#
@@ -428,23 +331,29 @@ EOT;
 		$now = time();
 		$modified = strtotime($record->modified);
 
-		if ($now - $modified < 60 * 60 * 2)
+		if ($now - $modified < 7200)
 		{
 			$rc .= ' <sup style="vertical-align: text-top; color: red;">Récemment modifié</sup>';
 		}
 
 		return $rc;
 	}
+}
 
-	protected function render_cell_url($record)
+/**
+ * Representation of the `url` column.
+ */
+class URLColumn extends \Icybee\Modules\Nodes\ManageBlock\URLColumn
+{
+	public function render_cell($record)
 	{
 		global $core;
 
-		$t = $this->t;
-		$options = $this->options;
+		$t = $this->manager->t;
+		$options = $this->manager->options;
 		$pattern = $record->url_pattern;
 
-		if ($options['search'] || $options['filters'])
+		if ($options->search || $options->filters)
 		{
 			if (Route::is_pattern($pattern))
 			{
@@ -490,5 +399,45 @@ EOT;
 		}
 
 		return $rc;
+	}
+}
+
+/**
+ * Representation of the `is_navigation_excluded` column.
+ */
+class IsNavigationExcluded extends BooleanColumn
+{
+	public function __construct(\Icybee\ManageBlock $manager, $id, array $options=array())
+	{
+		parent::__construct
+		(
+			$manager, $id, $options + array
+			(
+				'title' => null,
+				'filters' => array
+				(
+					'options' => array
+					(
+						'=1' => 'Excluded from navigation',
+						'=0' => 'Included in navigation'
+					)
+				),
+
+				'sortable' => false
+			)
+		);
+	}
+
+	public function render_cell($record)
+	{
+		return new Element
+		(
+			'i', array
+			(
+				'class' => 'icon-sitemap trigger ' . ($record->is_navigation_excluded ? 'on' : ''),
+				'data-nid' => $record->nid,
+				'title' => "Inclure ou exclure la page du menu de navigation principal"
+			)
+		);
 	}
 }

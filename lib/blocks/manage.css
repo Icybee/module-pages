@@ -1,71 +1,61 @@
-#manager div.indentation,
-#manager div.handle {
+.cell--title .indentation,
+.cell--title .handle {
 	width: 13px;
 	height: 100%;
 	min-height: 13px;
 	float: left;
 }
 
-#manager div.handle {
+.cell--title .handle {
 	cursor: move;
 	display: block;
 	margin-right: 2ex;
 	opacity: .2;
 }
 
-#manager tr:hover div.handle {
+tr:hover .cell--title .handle {
 	opacity: 1;
 }
 
-#manager sup.modified {
+.cell--title .modified {
 	vertical-align: text-top;
 	margin-left: 1px;
 }
 
-#manager tr.dragged,
-#manager tr.dragged.modified,
-#manager tr.dragged:hover,
-#manager tr.dragged.even:hover {
+.listview tr.dragged,
+.listview tr.dragged.modified,
+.listview tr.dragged:hover,
+.listview tr.dragged.even:hover {
 	background-color: #e5f1ff;
 }
 
-#manager tr.dragged td,
-#manager tr.dragged.modified td,
-#manager tr.dragged:hover td,
-#manager tr.dragged.even:hover td {
+.listview tr.dragged td,
+.listview tr.dragged.modified td,
+.listview tr.dragged:hover td,
+.listview tr.dragged.even:hover td {
 	border-bottom-color: #dae5f2;
 }
 
-#manager tr.modified {
-	background-color: #FFE;
+.listview tr.modified {
+	background-color: #FFE !important;
 }
 
 #manager button[name="update"] {
 	display: none;
 }
 
-#manager tr.view:not(:hover) a.edit {
+.listview tr.view:not(:hover) a.edit {
 	color: #903030;
 }
 
-#manager tr.pattern:not(:hover) a.edit {
+.listview tr.pattern:not(:hover) a.edit {
 	color: #C04040;
 }
 
-#manager tr.location:not(:hover) a.edit {
+.listview tr.location:not(:hover) a.edit {
 	color: #366380;
 }
 
-#manager a.edit span.language {
-	font-size: .8em;
-	color: #808080;
-}
-
-#manager tr:hover a.edit span {
-	color: inherit;
-}
-
-#manager .place-holder,
 #manager a.location {
 	height: 1em;
 	width: 0;
@@ -76,33 +66,36 @@
 	background-repeat: no-repeat;
 }
 
-#manager .place-holder,
 #manager a.location,
 #manager a.view {
 	padding-left: 14px;
 }
 
-#manager td.cell--url .small {
+.cell--url a {
+	text-decoration: none;
+}
+
+.cell--url .small {
 	display: block;
 	text-align: left;
 	white-space: nowrap;	
 }
 
-#manager td.cell--is-navigation-excluded {
+.cell--is-navigation-excluded {
 	white-space: nowrap;
 	width: 16px;
 }
 
-#manager td.cell--is-navigation-excluded {
+.cell--is-navigation-excluded {
 	text-align: center;
 }
 
-#manager td.cell--is-navigation-excluded i {
+.cell--is-navigation-excluded i {
 	cursor: default;
 	transition: opacity .5s;
 }
 
-#manager td.cell--is-navigation-excluded i.on {
+.cell--is-navigation-excluded i.on {
 	opacity: .3;
 }
 
@@ -122,6 +115,6 @@
 	background-color: #B5D5FF;
 }
 
-#manager td.cell--url a {
-	text-decoration: none;
+.actionbar:not([data-display="update-tree"]) [data-actionbar-context="update-tree"] {
+	display: none;
 }
