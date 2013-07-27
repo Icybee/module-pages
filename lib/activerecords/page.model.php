@@ -13,7 +13,7 @@ namespace Icybee\Modules\Pages;
 
 use ICanBoogie\ActiveRecord\Query;
 use ICanBoogie\Exception;
-use ICanBoogie\Route;
+use ICanBoogie\Routing\Pattern;
 
 class Model extends \Icybee\Modules\Nodes\Model
 {
@@ -241,7 +241,9 @@ class Model extends \Icybee\Modules\Nodes\Model
 					$nparts = substr_count($stripped, '/') + 1;
 					$path_part = implode('/', array_slice($parts, $i, $nparts));
 
-					if (!Route::match($path_part, $pattern, $match))
+					$pattern = Pattern::from($pattern);
+
+					if (!$pattern->match($path_part, $path_captured))
 					{
 						$try = null;
 
@@ -260,9 +262,9 @@ class Model extends \Icybee\Modules\Nodes\Model
 					# 'feed.xml' is a valid pattern. // FIXME-20110327: is it still ?
 					#
 
-					if (is_array($match))
+					if (is_array($path_captured))
 					{
-						$vars = $match + $vars;
+						$vars = $path_captured + $vars;
 					}
 
 					break;

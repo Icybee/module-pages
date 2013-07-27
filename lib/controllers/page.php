@@ -20,7 +20,7 @@ use ICanBoogie\HTTP\Request;
 use ICanBoogie\HTTP\Response;
 use ICanBoogie\HTTP\ServiceUnavailable;
 use ICanBoogie\I18n;
-use ICanBoogie\Route;
+use ICanBoogie\Routing\Pattern;
 
 use Brickrouge\Alert;
 
@@ -218,9 +218,9 @@ class PageController
 			# "/fr/".
 			#
 
-			$parsed_url_pattern = Route::parse($page->url_pattern);
+			$parsed_url_pattern = Pattern::from($page->url_pattern);
 
-			if (!$parsed_url_pattern[1] && $page->url != $path)
+			if (!$parsed_url_pattern->params && $page->url != $path)
 			{
 				return new RedirectResponse
 				(

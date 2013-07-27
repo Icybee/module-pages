@@ -11,11 +11,9 @@
 
 namespace Icybee\Modules\Pages;
 
-use ICanBoogie\I18n\FormattedString;
-
-use Icybee\Modules\Pages\Page;
 use ICanBoogie\Event;
-use ICanBoogie\Route;
+use ICanBoogie\I18n\FormattedString;
+use ICanBoogie\Routing\Pattern;
 
 class SaveOperation extends \Icybee\Modules\Nodes\SaveOperation
 {
@@ -98,7 +96,7 @@ class SaveOperation extends \Icybee\Modules\Nodes\SaveOperation
 			$record = $this->record;
 			$pattern = $record->url_pattern;
 
-			if (!Route::is_pattern($pattern))
+			if (!Pattern::is_pattern($pattern))
 			{
 				$oldurl = $pattern;
 			}

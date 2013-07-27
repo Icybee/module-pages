@@ -233,7 +233,7 @@ EOT;
 
 namespace Icybee\Modules\Pages\ManageBlock;
 
-use ICanBoogie\Route;
+use ICanBoogie\Routing\Pattern;
 
 use Brickrouge\Element;
 use Brickrouge\Text;
@@ -355,7 +355,7 @@ class URLColumn extends \Icybee\Modules\Nodes\ManageBlock\URLColumn
 
 		if ($options->search || $options->filters)
 		{
-			if (Route::is_pattern($pattern))
+			if (Pattern::is_pattern($pattern))
 			{
 				return;
 			}
@@ -389,7 +389,7 @@ EOT;
 		{
 			$rc .= '<span class="icon-mail-forward" title="' . $t('This page is redirected to: !title (!url)', array('!title' => $location->title, '!url' => $location->url)) . '"></span>';
 		}
-		else if (!Route::is_pattern($pattern))
+		else if (!Pattern::is_pattern($pattern))
 		{
 			$url = ($core->site_id == $record->siteid) ? $record->url : $record->absolute_url;
 
