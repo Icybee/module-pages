@@ -319,7 +319,11 @@ class Hooks
 		$editor = null;
 		$rendered = null;
 
-		if ($contents)
+		if (is_string($contents))
+		{
+			$rendered = $contents;
+		}
+		else if ($contents)
 		{
 			$editor = $contents->editor;
 			$rendered = $contents->render();
