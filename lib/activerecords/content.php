@@ -63,6 +63,11 @@ class Content extends \ICanBoogie\ActiveRecord
 		return $this->render();
 	}
 
+	public function __construct($model='pages/contents')
+	{
+		parent::__construct($model);
+	}
+
 	/**
 	 * Renders the content as a string or an object.
 	 *
