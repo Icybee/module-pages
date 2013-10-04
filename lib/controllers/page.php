@@ -31,22 +31,27 @@ define(__NAMESPACE__ . '\PageController\JS_DOCUMENT_PLACEHOLDER', uniqid());
 
 class PageController
 {
-	public function __invoke(Request $request, Response $response)
+	public function __invoke(Request $request)
 	{
 		global $core;
 
 		try
 		{
-			$page = $this->resolve_request($request);
+			$page = $this->resolve_page($request);
+
+			if (!$page)
+			{
+				return;
+			}
 
 			if ($page instanceof Response)
 			{
 				return $page;
 			}
 
-			return $this->run_callback($page, $request);
+			return $this->resolve_response($page, $request);
 		}
-		catch (\Exception $e)
+		catch (\Exception $e) // TODO-20130812: This shouldn't be handled by the class, but by Icybee or the user.
 		{
 			$code = $e->getCode();
 			$path = \ICanBoogie\DOCUMENT_ROOT . "protected/all/templates/$code.html";
@@ -66,16 +71,23 @@ class PageController
 				);
 
 				$request->context->page = $page;
-				$response->status = $code;
 
-				return $patron($template, $page);
+				return new Response($patron($template, $page), $code);
 			}
 
 			throw $e;
 		}
 	}
 
-	public function run_callback(Page $page, Request $request)
+	/**
+	 * Resolve the specified Page and Request into a Response.
+	 *
+	 * @param Page $page
+	 * @param Request $request
+	 *
+	 * @return \ICanBoogie\HTTP\Response
+	 */
+	protected function resolve_response(Page $page, Request $request)
 	{
 		global $core;
 
@@ -86,7 +98,7 @@ class PageController
 
 		#
 
-		new PageController\BeforeRenderEvent
+		new PageController\BeforeRenderEvent // TODO-20130826: target should be 'page'
 		(
 			$this, array
 			(
@@ -124,7 +136,7 @@ class PageController
 
 		#
 
-		new PageController\RenderEvent
+		new PageController\RenderEvent // TODO-20130826: target should be 'page'
 		(
 			$this, array
 			(
@@ -165,13 +177,14 @@ class PageController
 	 * Resolves a request into a page.
 	 *
 	 * @param Request $request
-	 * @throws NotFound
 	 *
-	 * @return Icybee\Modules\Pages\Page
+	 * @return Page|Response
 	 */
-	protected function resolve_request(Request $request)
+	protected function resolve_page(Request $request)
 	{
 		global $core;
+
+		/* TODO-20130812: Move the following code section in the Sites module. */
 
 		$site = $request->context->site;
 
@@ -196,47 +209,56 @@ class PageController
 			case Site::STATUS_UNAVAILABLE: throw new ServiceUnavailable();
 		}
 
+		/* /TODO */
+
 		$path = $request->path;
 		$page = $core->models['pages']->find_by_path($request->path);
-		$query_string = $request->query_string;
-
-		if ($page)
-		{
-			if ($page->location)
-			{
-				return new RedirectResponse
-				(
-					$page->location->url, 301, array
-					(
-						'Icybee-Redirected-By' => __FILE__ . '::' . __LINE__
-					)
-				);
-			}
-
-			#
-			# We make sure that a normalized URL is used. For instance, "/fr" is redirected to
-			# "/fr/".
-			#
-
-			$parsed_url_pattern = Pattern::from($page->url_pattern);
-
-			if (!$parsed_url_pattern->params && $page->url != $path)
-			{
-				return new RedirectResponse
-				(
-					$page->url . ($query_string ? '?' . $query_string : ''), 301, array
-					(
-						'Icybee-Redirected-By' => __FILE__ . '::' . __LINE__
-					)
-				);
-			}
-		}
 
 		if (!$page)
 		{
-			throw new NotFound;
+			#
+			# Page was not found.
+			#
+
+			return;
 		}
-		else if (!$page->is_online || $page->site->status != Site::STATUS_OK)
+
+		if ($page->location)
+		{
+			#
+			# The page redirects to another location.
+			#
+
+			return new RedirectResponse
+			(
+				$page->location->url, 301, array
+				(
+					'Icybee-Redirected-By' => __FILE__ . '::' . __LINE__
+				)
+			);
+		}
+
+		#
+		# We make sure that a normalized URL is used. For instance, "/fr" is redirected to
+		# "/fr/".
+		#
+
+		$url_pattern = Pattern::from($page->url_pattern);
+
+		if (!$url_pattern->params && $page->url != $path)
+		{
+			$query_string = $request->query_string;
+
+			return new RedirectResponse
+			(
+				$page->url . ($query_string ? '?' . $query_string : ''), 301, array
+				(
+					'Icybee-Redirected-By' => __FILE__ . '::' . __LINE__
+				)
+			);
+		}
+
+		if (!$page->is_online || $page->site->status != Site::STATUS_OK)
 		{
 			#
 			# Offline pages are displayed if the user has ownership, otherwise an HTTP exception
@@ -260,13 +282,8 @@ class PageController
 
 		if (isset($page->url_variables))
 		{
-			$request->path_params = $page->url_variables + $request->path_params;
-
-			#
-			# we unset the request params, it will be reconstructed on the next access.
-			#
-
-			unset($request->params);
+			$request->path_params = array_merge($request->path_params, $page->url_variables);
+			$request->params = array_merge($request->params, $page->url_variables);
 		}
 
 		return $page;

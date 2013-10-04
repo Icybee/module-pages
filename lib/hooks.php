@@ -30,29 +30,28 @@ class Hooks
 	 *
 	 * @param Dispatcher\AlterEvent $event
 	 * @param Dispatcher $target
-	 *
-	 * @return \ICanBoogie\HTTP\Response
 	 */
 	static public function on_http_dispatcher_alter(Dispatcher\AlterEvent $event, Dispatcher $target)
 	{
+		// TODO-20130812: This should be either moved to a Dispatcher class, or used as an event hook
+		// to the Routing dispatcher.
 		$target['pages'] = function(Request $request)
 		{
 			global $core; // used in user-startup.php
 
 			require_once \ICanBoogie\DOCUMENT_ROOT . 'user-startup.php';
 
-			$response = new Response();
 			$controller = new PageController();
+			$response = $controller($request);
 
-			$rc = $controller($request, $response);
-
-			if ($rc instanceof Response)
+			if (!$response)
 			{
-				$response = $rc;
+				return;
 			}
-			else
+
+			if (!($response instanceof Response))
 			{
-				$response->body = $rc;
+				$response = new Response($response);
 			}
 
 			$response->cache_control = 'private, no-cache, no-store, must-revalidate';
