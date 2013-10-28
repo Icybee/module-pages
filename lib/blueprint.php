@@ -301,6 +301,11 @@ class Blueprint
 	 */
 	public function populate()
 	{
+		if (!$this->index)
+		{
+			return array();
+		}
+
 		$records = $this->model->find(array_keys($this->index));
 
 		foreach ($records as $nid => $record)
