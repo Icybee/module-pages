@@ -22,11 +22,11 @@ class SaveOperation extends \Icybee\Modules\Nodes\SaveOperation
 	 * properties are obtained from the current site. If the weight of the page is not defined
 	 * it is computed according to the page having the same parent.
 	 */
-	protected function get_properties()
+	protected function lazy_get_properties()
 	{
 		global $core;
 
-		$properties = parent::get_properties() + array
+		$properties = parent::lazy_get_properties() + array
 		(
 			Page::PARENTID => 0
 		);

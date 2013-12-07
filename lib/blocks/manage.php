@@ -88,7 +88,7 @@ EOT;
 
 	protected $mode = 'tree';
 
-	protected function volatile_get_mode()
+	protected function get_mode()
 	{
 		return $this->mode;
 	}

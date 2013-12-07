@@ -26,10 +26,8 @@ class Module extends \Icybee\Modules\Nodes\Module
 {
 	/**
 	 * Only the "list" view is available and it is used to create the sitemap.
-	 *
-	 * @see ICanBoogie\Module.Nodes::get_views()
 	 */
-	protected function get_views()
+	protected function lazy_get_views()
 	{
 		return array
 		(

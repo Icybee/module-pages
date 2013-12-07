@@ -38,6 +38,19 @@ class Page extends \Icybee\Modules\Nodes\Node
 	const IS_NAVIGATION_EXCLUDED = 'is_navigation_excluded';
 
 	/**
+	 * Returns the language for the page.
+	 *
+	 * This function is only called if the {@link label} property was empty during construct. It
+	 * returns the {@link $title} property.
+	 *
+	 * @return string
+	 */
+	protected function get_language()
+	{
+		return $this->site ? $this->site->language : null;
+	}
+
+	/**
 	 * The identifier of the parent page.
 	 *
 	 * @var int
@@ -73,11 +86,62 @@ class Page extends \Icybee\Modules\Nodes\Node
 	public $template;
 
 	/**
+	 * Returns the template for the page.
+	 *
+	 * This function is only called if the {@link pattern} property was empty during construct. The
+	 * template is guested according the place of the page in the hierarchy:
+	 *
+	 * - The page is the home page: `home.html`
+	 * - The page has a parent which is not the home page: the template of the parent.
+	 * - Otherwise: `page.html`
+	 *
+	 * @return string
+	 */
+	protected function get_template()
+	{
+		if ($this->is_home)
+		{
+			return 'home.html';
+		}
+		else if ($this->parent && !$this->parent->is_home)
+		{
+			return $this->parent->template;
+		}
+
+		return 'page.html';
+	}
+
+	/**
+	 * Returns the extension used by the page's template.
+	 *
+	 * @return string ".html" if the template is "page.html".
+	 */
+	protected function get_extension()
+	{
+		$extension = pathinfo($this->template, PATHINFO_EXTENSION);
+
+		return $extension ? '.' . $extension : null;
+	}
+
+	/**
 	 * The text to use instead of the title when it is used in the navigation of the breadcrumb.
 	 *
 	 * @var string
 	 */
 	public $label;
+
+	/**
+	 * Returns the label for the page.
+	 *
+	 * This function is only called if the {@link label} property was empty during construct. It
+	 * returns the {@link $title} property.
+	 *
+	 * @return string
+	 */
+	protected function get_label()
+	{
+		return $this->title;
+	}
 
 	/**
 	 * Whether the page is excluded from the navigation.
@@ -133,7 +197,7 @@ class Page extends \Icybee\Modules\Nodes\Node
 	{
 		$keys = parent::__sleep();
 
-		// TODO-20130327: is this necessary
+		// TODO-20130327: is this necessary?
 
 		if (isset($this->template))
 		{
@@ -144,22 +208,11 @@ class Page extends \Icybee\Modules\Nodes\Node
 	}
 
 	/**
-	 * If the language of the page is inaccessible the language of the site it belongs to is
-	 * used instead.
-	 *
-	 * @return string
-	 */
-	protected function volatile_get_language()
-	{
-		return $this->site ? $this->site->language : null;
-	}
-
-	/**
 	 * Returns the previous online sibling for the page.
 	 *
 	 * @return Page|false The previous sibling, or false if there is none.
 	 */
-	protected function get_previous()
+	protected function lazy_get_previous()
 	{
 		return $this->model
 		->where('is_online = 1 AND nid != ? AND parentid = ? AND siteid = ? AND weight <= ?', $this->nid, $this->parentid, $this->siteid, $this->weight)
@@ -171,7 +224,7 @@ class Page extends \Icybee\Modules\Nodes\Node
 	 *
 	 * @return Page|false The next sibling, or false if there is none.
 	 */
-	protected function get_next()
+	protected function lazy_get_next()
 	{
 		return $this->model
 		->where('is_online = 1 AND nid != ? AND parentid = ? AND siteid = ? AND weight >= ?', $this->nid, $this->parentid, $this->siteid, $this->weight)
@@ -183,7 +236,7 @@ class Page extends \Icybee\Modules\Nodes\Node
 	 *
 	 * @return string
 	 */
-	protected function get_url()
+	protected function lazy_get_url()
 	{
 		global $core;
 
@@ -238,7 +291,7 @@ class Page extends \Icybee\Modules\Nodes\Node
 	 *
 	 * @return string The absolute URL of the page.
 	 */
-	protected function get_absolute_url()
+	protected function lazy_get_absolute_url()
 	{
 		$site = $this->site;
 
@@ -257,9 +310,9 @@ class Page extends \Icybee\Modules\Nodes\Node
 		return $translation;
 	}
 
-	protected function get_translations()
+	protected function lazy_get_translations()
 	{
-		$translations = parent::get_translations();
+		$translations = parent::lazy_get_translations();
 
 		if (!$translations || empty($this->url_variables))
 		{
@@ -279,7 +332,7 @@ class Page extends \Icybee\Modules\Nodes\Node
 	 *
 	 * @return string
 	 */
-	protected function get_url_pattern()
+	protected function lazy_get_url_pattern()
 	{
 		$site = $this->site;
 
@@ -297,24 +350,9 @@ class Page extends \Icybee\Modules\Nodes\Node
 	}
 
 	/**
-	 * Returns the extension used by the page.
-	 *
-	 * @return string
-	 */
-	protected function volatile_get_extension()
-	{
-		$template = $this->template;
-
-		$pos = strrpos($template, '.');
-	 	$extension = substr($template, $pos);
-
-	 	return $extension;
-	}
-
-	/**
 	 * Returns if the page is accessible or not in the navigation tree.
 	 */
-	protected function volatile_get_is_accessible()
+	protected function get_is_accessible()
 	{
 		global $core;
 
@@ -334,7 +372,7 @@ class Page extends \Icybee\Modules\Nodes\Node
 	 *
 	 * @return bool `true` if the page record is the home page, `false` otherwise.
 	 */
-	protected function volatile_get_is_home()
+	protected function get_is_home()
 	{
 		return (!$this->parentid && !$this->weight && $this->is_online);
 	}
@@ -348,7 +386,7 @@ class Page extends \Icybee\Modules\Nodes\Node
 	 *
 	 * @todo-20130327: create the set_active_page() and get_active_page() helpers ?
 	 */
-	protected function volatile_get_is_active()
+	protected function get_is_active()
 	{
 		global $core;
 
@@ -362,11 +400,11 @@ class Page extends \Icybee\Modules\Nodes\Node
 	 *
 	 * @return bool true if the page is in the active page trail, false otherwise.
 	 */
-	protected function volatile_get_is_trail()
+	protected function get_is_trail()
 	{
 		global $core;
 
-		$node = $core->request->context->page; // TODO-20130327: use a get_active_page() helper ?
+		$node = $core->request->context->page; // TODO-20130327: use a get_active_page() helper?
 
 		while ($node)
 		{
@@ -386,7 +424,7 @@ class Page extends \Icybee\Modules\Nodes\Node
 	 *
 	 * @return Icybee\Modules\Pages\Page|null The location target, or null if there is none.
 	 */
-	protected function volatile_get_location()
+	protected function get_location()
 	{
 		return $this->locationid ? $this->model[$this->locationid] : null;
 	}
@@ -396,7 +434,7 @@ class Page extends \Icybee\Modules\Nodes\Node
 	 *
 	 * @return Icybee\Modules\Pages\Page
 	 */
-	protected function volatile_get_home()
+	protected function get_home()
 	{
 		return $this->model->find_home($this->siteid);
 	}
@@ -406,7 +444,7 @@ class Page extends \Icybee\Modules\Nodes\Node
 	 *
 	 * @return Icybee\Modules\Pages\Page|null The parent page or null is the page has no parent.
 	 */
-	protected function get_parent()
+	protected function lazy_get_parent()
 	{
 		return $this->parentid ? $this->model[$this->parentid] : null;
 	}
@@ -418,7 +456,7 @@ class Page extends \Icybee\Modules\Nodes\Node
 	 * we should create a `online_children` virtual property that returns only _online_ children,
 	 * or maybe a `accessible_children` virtual property ?
 	 */
-	protected function get_children()
+	protected function lazy_get_children()
 	{
 		$blueprint = $this->model->blueprint($this->siteid);
 		$pages = $blueprint['pages'];
@@ -448,7 +486,7 @@ class Page extends \Icybee\Modules\Nodes\Node
 	 *
 	 * @return array[int]Page
 	 */
-	protected function get_navigation_children()
+	protected function lazy_get_navigation_children()
 	{
 		$index = $this->model->blueprint($this->siteid)->index;
 
@@ -492,7 +530,7 @@ class Page extends \Icybee\Modules\Nodes\Node
 	 *
 	 * @return int
 	 */
-	protected function volatile_get_children_count()
+	protected function get_children_count()
 	{
 		return $this->model->blueprint($this->siteid)->children_count($this->nid);
 	}
@@ -502,42 +540,17 @@ class Page extends \Icybee\Modules\Nodes\Node
 	 *
 	 * @return int
 	 */
-	protected function volatile_get_descendents_count()
+	protected function get_descendents_count()
 	{
 		return $this->model->blueprint($this->siteid)->index[$this->nid]->descendents_count;
 	}
 
 	/**
-	 * Returns the label for the page.
-	 *
-	 * This function is only called if no label is defined, in which case the title of the page is
-	 * returned instead.
-	 */
-	protected function volatile_get_label()
-	{
-		return $this->title;
-	}
-
-	/**
 	 * Returns the depth level of this page in the navigation tree.
 	 */
-	protected function volatile_get_depth()
+	protected function get_depth()
 	{
 		return $this->parent ? $this->parent->depth + 1 : 0;
-	}
-
-	protected function volatile_get_template()
-	{
-		if ($this->is_home)
-		{
-			return 'home.html';
-		}
-		else if ($this->parent && !$this->parent->is_home)
-		{
-			return $this->parent->template;
-		}
-
-		return 'page.html';
 	}
 
 	/**
@@ -547,7 +560,7 @@ class Page extends \Icybee\Modules\Nodes\Node
 	 *
 	 * @return array[string]\Icybee\Modules\Pages\Pages\Content
 	 */
-	protected function get_contents()
+	protected function lazy_get_contents()
 	{
 		global $core;
 
@@ -569,7 +582,7 @@ class Page extends \Icybee\Modules\Nodes\Node
 	 *
 	 * @return \Icybee\Modules\Pages\Pages\Content
 	 */
-	protected function get_body()
+	protected function lazy_get_body()
 	{
 		$contents = $this->contents;
 
@@ -589,11 +602,11 @@ class Page extends \Icybee\Modules\Nodes\Node
 	 * - `node-constructor`: "node-constructor-<normalized_constructor>" if the page displays a node.
 	 * - `template`: "template-<name>" the name of the page's template, without its extension.
 	 */
-	protected function get_css_class_names()
+	protected function lazy_get_css_class_names()
 	{
 		$names = array_merge
 		(
-			parent::get_css_class_names(), array
+			parent::lazy_get_css_class_names(), array
 			(
 				'type' => 'page',
 				'id' => 'page-id-' . $this->nid,
@@ -623,12 +636,12 @@ class Page extends \Icybee\Modules\Nodes\Node
 
 	// TODO-20101115: these should be methods added by the "SEO" module
 
-	protected function volatile_get_description()
+	protected function get_description()
 	{
 		return $this->metas['description'];
 	}
 
-	protected function volatile_get_document_title()
+	protected function get_document_title()
 	{
 		return $this->metas['document_title'] ? $this->metas['document_title'] : $this->title;
 	}

@@ -20,8 +20,8 @@
 	"require": {
 		"php": ">=5.3.0",
 		"icanboogie/module-installer": "*",
-		"icanboogie/activerecord": "*",
-		"icybee/module-nodes": "*"
+		"icanboogie/activerecord": "2.x",
+		"icybee/module-nodes": "2.x"
 	},
 	"autoload": {
 		"classmap": [ "lib" ]

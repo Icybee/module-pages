@@ -21,8 +21,8 @@ return array
 
 	'prototypes' => array
 	(
-		'Icybee\Modules\Sites\Site::get_home' => $hooks . 'get_home',
-		'ICanBoogie\Core::volatile_get_page' => $hooks . 'get_page'
+		'Icybee\Modules\Sites\Site::lazy_get_home' => $hooks . 'get_home',
+		'ICanBoogie\Core::get_page' => $hooks . 'get_page'
 	),
 
 	'patron.markups' => array

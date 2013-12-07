@@ -58,7 +58,7 @@ class Content extends \ICanBoogie\ActiveRecord
 	 *
 	 * @return mixed
 	 */
-	protected function volatile_get_rendered()
+	protected function get_rendered()
 	{
 		return $this->render();
 	}
