@@ -11,8 +11,6 @@
 
 namespace Icybee\Modules\Pages;
 
-use Icybee\Modules\Pages\PageTest\PretendSite;
-
 class PageTest extends \PHPUnit_Framework_TestCase
 {
 	static private $instance;
@@ -99,36 +97,4 @@ class PageTest extends \PHPUnit_Framework_TestCase
 			array('extension', array('template' => 'example.xml'), '.xml')
 		);
 	}
-
-	public function testDefinedLanguage()
-	{
-		$page = Page::from(array('language' => 'fr'));
-		$this->assertEquals('fr', $page->language);
-		$this->assertArrayHasKey('language', $page->to_array());
-		$this->assertArrayHasKey('language', $page->__sleep());
-	}
-
-	/**
-	 * The `language` getter MUST NOT create the property.
-	 */
-	public function testUndefinedLanguageDefaultsToSiteLanguage()
-	{
-		$page = new Page;
-
-		$page->site = null;
-		$this->assertNull($page->language);
-
-		$page->site = new PretendSite();
-		$page->site->language = 'fr';
-		$this->assertEquals('fr', $page->language);
-		$this->assertArrayNotHasKey('language', $page->to_array());
-		$this->assertArrayNotHasKey('language', $page->__sleep());
-	}
-}
-
-namespace Icybee\Modules\Pages\PageTest;
-
-class PretendSite extends \ICanBoogie\Object
-{
-	public $language;
 }

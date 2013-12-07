@@ -38,19 +38,6 @@ class Page extends \Icybee\Modules\Nodes\Node
 	const IS_NAVIGATION_EXCLUDED = 'is_navigation_excluded';
 
 	/**
-	 * Returns the language for the page.
-	 *
-	 * This function is only called if the {@link label} property was empty during construct. It
-	 * returns the {@link $title} property.
-	 *
-	 * @return string
-	 */
-	protected function get_language()
-	{
-		return $this->site ? $this->site->language : null;
-	}
-
-	/**
 	 * The identifier of the parent page.
 	 *
 	 * @var int
@@ -175,11 +162,6 @@ class Page extends \Icybee\Modules\Nodes\Node
 
 	public function __construct($model='pages')
 	{
-		if (empty($this->language))
-		{
-			unset($this->language);
-		}
-
 		if (empty($this->label))
 		{
 			unset($this->label);
