@@ -33,7 +33,7 @@ class ManageBlock extends \Icybee\Modules\Nodes\ManageBlock
 			(
 				self::T_COLUMNS_ORDER => array
 				(
-					'title', 'url', 'is_navigation_excluded', 'is_online', 'uid', 'modified'
+					'title', 'url', 'is_navigation_excluded', 'is_online', 'uid', 'updated_at'
 				),
 
 				self::T_ORDER_BY => null
@@ -325,13 +325,13 @@ class TitleColumn extends \Icybee\Modules\Nodes\ManageBlock\TitleColumn
 		}
 
 		#
-		# modified
+		# updated_at
 		#
 
 		$now = time();
-		$modified = strtotime($record->modified);
+		$updated_at = strtotime($record->updated_at);
 
-		if ($now - $modified < 7200)
+		if ($now - $updated_at < 7200)
 		{
 			$rc .= ' <sup style="vertical-align: text-top; color: red;">Récemment modifié</sup>';
 		}

@@ -198,7 +198,7 @@ class Page extends \Icybee\Modules\Nodes\Node
 	{
 		return $this->model
 		->where('is_online = 1 AND nid != ? AND parentid = ? AND siteid = ? AND weight <= ?', $this->nid, $this->parentid, $this->siteid, $this->weight)
-		->order('weight desc, created desc')->one;
+		->order('weight desc, created_at desc')->one;
 	}
 
 	/**
@@ -210,7 +210,7 @@ class Page extends \Icybee\Modules\Nodes\Node
 	{
 		return $this->model
 		->where('is_online = 1 AND nid != ? AND parentid = ? AND siteid = ? AND weight >= ?', $this->nid, $this->parentid, $this->siteid, $this->weight)
-		->order('weight, created')->one;
+		->order('weight, created_at')->one;
 	}
 
 	/**

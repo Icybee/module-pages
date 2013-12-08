@@ -36,8 +36,8 @@ class CopyOperation extends \ICanBoogie\Operation
 
 		unset($record->nid);
 		unset($record->is_online);
-		unset($record->created);
-		unset($record->modified);
+		unset($record->created_at);
+		unset($record->updated_at);
 
 		$record->uid = $core->user_id;
 		$record->title .= ' (copie)';

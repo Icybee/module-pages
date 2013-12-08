@@ -24,7 +24,7 @@ class PopPage extends Element // TODO-20120922: rewrite this element
 			$model = $core->models['pages']; // TODO-20120922: use BluePrint.
 			$nodes = $model->select('nid, parentid, title')
 			->filter_by_siteid($core->site_id)
-			->order('weight, created')
+			->order('weight, created_at')
 			->all(\PDO::FETCH_OBJ);
 
 			$tree = Model::nestNodes($nodes);

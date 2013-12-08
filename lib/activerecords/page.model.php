@@ -62,7 +62,7 @@ class Model extends \Icybee\Modules\Nodes\Model
 	 */
 	protected function scope_ordered(Query $query)
 	{
-		return $query->order('weight, created');
+		return $query->order('weight, created_at');
 	}
 
 	/**
