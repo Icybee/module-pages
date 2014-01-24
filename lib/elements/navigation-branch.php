@@ -12,6 +12,7 @@
 namespace Icybee\Modules\Pages;
 
 use Brickrouge\Element;
+use Brickrouge\ElementIsEmpty;
 
 class NavigationBranchElement extends Element
 {
@@ -109,6 +110,11 @@ class NavigationBranchElement extends Element
 		#
 
 		$tree_blueprint = $this->build_blueprint($page, $parent_id);
+
+		if (!$tree_blueprint)
+		{
+			throw new ElementIsEmpty;
+		}
 
 		new NavigationBranchElement\AlterBlueprintEvent($this, $tree_blueprint, $page, $parent_id);
 
