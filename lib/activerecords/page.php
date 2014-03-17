@@ -584,11 +584,11 @@ class Page extends \Icybee\Modules\Nodes\Node
 	 * - `node-constructor`: "node-constructor-<normalized_constructor>" if the page displays a node.
 	 * - `template`: "template-<name>" the name of the page's template, without its extension.
 	 */
-	protected function lazy_get_css_class_names()
+	protected function get_css_class_names()
 	{
 		$names = array_merge
 		(
-			parent::lazy_get_css_class_names(), array
+			parent::get_css_class_names(), array
 			(
 				'type' => 'page',
 				'id' => 'page-id-' . $this->nid,
