@@ -547,7 +547,7 @@ class Module extends \Icybee\Modules\Nodes\Module
 		#
 		#
 
-		$tree = $parser->parse($html, \Patron\PREFIX);
+		$tree = $parser->parse($html, \Patron\Engine::PREFIX);
 
 		//\ICanBoogie\log('tree: \1', array($tree));
 
