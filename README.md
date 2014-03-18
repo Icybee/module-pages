@@ -8,13 +8,107 @@ views. The module provides a request dispatcher to serve the pages it manages.
 
 
 
-### Prototype methods
+## Blueprint
+
+A blueprint is a simplified data structure representing the relashionship between pages. It
+provides child/parent relations, parent/children relations, an index, and a tree representation.
+The blueprint can be created from a [Query][] or can be obtained from the `pages` model:
+
+```php
+<?php
+
+#
+# Obtain a cached blueprint with only the properties required to build the blueprint: `nid`,
+# `parentid`, `is_online`, `is_navigation_excluded`, `pattern`.
+#
+
+$blueprint = $core->models['pages']->blueprint($site_id = 1);
+
+$blueprint->relations; // child/parent relations
+$blueprint->children;  // parent/children relations
+$blueprint->index;     // index
+$blueprint->tree;      // pages nested in a tree
+$blueprint->model;     // the model associated with the blueprint
+```
 
 
 
 
 
-#### `Icybee\Modules\Sites\Site::get_home`
+### Obtaining a subset of a blueprint
+
+A subset can be created from a blueprint, this is interesting when you whish to work
+with a particuliar branch, or only the nodes that have a maximum depth of 2, or maybe only the
+online nodes.
+
+The following example demonstrates how a subset of a blueprint with only the branch of
+a particuliar branch can be obtained:
+
+```php
+<?php
+
+$subset = $core->models['pages']->blueprint($site_id = 1)->subset(123);
+```
+
+The following example demonstrates how a subset of a blueprint with nodes that have
+a maximum depth of 2 can be obtained:
+
+```php
+<?php
+
+$subset = $core->models['pages']->blueprint($site_id = 1)->subset(null, 2);
+```
+
+The following example demonstrates how subset of a blueprint with only the online
+nodes can be obtained:
+
+```php
+<?php
+
+use Icybee\Modules\Pages\BlueprintNode;
+
+$subset = $core->models['pages']
+->blueprint($site_id = 1)
+->subset(null, null, function(BlueprintNode $node) {
+
+	return !$node->is_online;
+
+});
+```
+
+
+
+
+
+### Populating the blueprint
+
+Once you have obtained a blueprint you might want to populate it with the actual records. The
+`populate()` method populates the blueprint by loading the records associated, and updates the
+nodes of the blueprint with these records. Don't worry about performance, the records are obtained
+with a single query to the database.
+
+```php
+<?php
+
+$blueprint->populate();
+
+foreach ($blueprint->index as $node)
+{
+	var_dump($node->record);
+}
+```
+
+
+
+
+
+## Prototype methods
+
+
+
+
+
+### `Icybee\Modules\Sites\Site::lazy_get_home`
 
 The `home` getter is added to instances of `Icybee\Modules\Sites\Site`. It returns the home
 page of the instance:
@@ -29,7 +123,7 @@ echo "Home page URL: " . $core->site->home->url;
 
 
 
-#### `ICanBoogie\Core::volatile_get_page`
+### `ICanBoogie\Core::get_page`
 
 The `page` getter is added to instances of `ICanBoogie\Core`. It returns the page currently being
 displayed. The getter is a shortcut to `$core->request->context->page`.
@@ -38,9 +132,15 @@ displayed. The getter is a shortcut to `$core->request->context->page`.
 
 
 
+----------
+
+
+
+
+
 ## Requirement
 
-The package requires PHP 5.3 or later.
+The package requires PHP 5.4 or later.
 
 
 
@@ -102,4 +202,10 @@ The package directory can later by cleaned with the `make clean` command.
 
 ## License
 
-The module is licensed under the New BSD License - See the LICENSE file for details.
+This package is licensed under the New BSD License - See the [LICENSE](LICENSE) file for details.
+
+
+
+
+
+[Query]: http://icanboogie.org/docs/class-ICanBoogie.ActiveRecord.Query.html

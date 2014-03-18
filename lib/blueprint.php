@@ -15,7 +15,7 @@ use ICanBoogie\ActiveRecord\Query;
 use ICanBoogie\PropertyNotDefined;
 
 /**
- * A blueprint of a record tree.
+ * A simplified data structure representing the relashionship between pages.
  *
  * @property-read array[]Page $ordered_records Records ordered according to their position and
  * relation. See: {@link get_ordered_records()}.
@@ -243,6 +243,22 @@ class Blueprint
 	 * to discart a node. The callback function have the following signature:
 	 *
 	 *     function(BlueprintNode $node)
+	 *
+	 * The following example demonstrate how offline nodes cen be filtered out.
+	 *
+	 * <pre>
+	 * <?php
+	 *
+	 * use Icybee\Modules\Pages\BlueprintNode;
+	 *
+	 * $subset = $core->models['pages']
+	 * ->blueprint($site_id = 1)
+	 * ->subset(null, null, function(BlueprintNode $node) {
+	 *
+	 *     return !$node->is_online;
+	 *
+	 * });
+	 * </pre>
 	 *
 	 * @param int $nid Identifier of the starting branch.
 	 * @param int $depth Maximum depth of the subset.
