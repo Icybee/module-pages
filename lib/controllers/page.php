@@ -98,14 +98,7 @@ class PageController
 
 		#
 
-		new PageController\BeforeRenderEvent // TODO-20130826: target should be 'page'
-		(
-			$this, array
-			(
-				'request' => $request,
-				'page' => $page
-			)
-		);
+		new PageController\BeforeRenderEvent($this, $request, $page);
 
 		#
 		# The page body is rendered before the template is parsed.
@@ -136,15 +129,7 @@ class PageController
 
 		#
 
-		new PageController\RenderEvent // TODO-20130826: target should be 'page'
-		(
-			$this, array
-			(
-				'request' => $request,
-				'page' => $page,
-				'html' => &$html
-			)
-		);
+		new PageController\RenderEvent($this, $request, $page, $html);
 
 		#
 		# late replace
@@ -329,6 +314,10 @@ class PageController
 
 namespace Icybee\Modules\Pages\PageController;
 
+use ICanBoogie\HTTP\Request;
+
+use Icybee\Modules\Pages\Page;
+
 /**
  * Event class for the 'Icybee\Modules\Pages\PageController::render:before'.
  */
@@ -349,28 +338,17 @@ class BeforeRenderEvent extends \ICanBoogie\Event
 	public $response;
 
 	/**
-	 * Constructor for the page.
-	 *
-	 * @var \callable
-	 */
-	public $constructor;
-
-	/**
-	 * Reference to an empty variable that can be altered to put the rendered HTML.
-	 *
-	 * @var string
-	 */
-	public $html;
-
-	/**
 	 * The event is constructed with the type `render:before`.
 	 *
 	 * @param \Icybee\Modules\Pages\PageController $target
 	 * @param array $payload
 	 */
-	public function __construct(\Icybee\Modules\Pages\PageController $target, array $payload)
+	public function __construct(\Icybee\Modules\Pages\PageController $target, Request $request, Page $page)
 	{
-		parent::__construct($target, 'render:before', $payload);
+		$this->request = $request;
+		$this->page = $page;
+
+		parent::__construct($target, 'render:before');
 	}
 }
 
@@ -406,8 +384,12 @@ class RenderEvent extends \ICanBoogie\Event
 	 * @param \Icybee\Modules\Pages\PageController $target
 	 * @param array $payload
 	 */
-	public function __construct(\Icybee\Modules\Pages\PageController $target, array $payload)
+	public function __construct(\Icybee\Modules\Pages\PageController $target, Request $request, Page $page, &$html)
 	{
-		parent::__construct($target, 'render', $payload);
+		$this->request = $request;
+		$this->page = $page;
+		$this->html = &$html;
+
+		parent::__construct($target, 'render');
 	}
 }
