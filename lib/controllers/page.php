@@ -12,7 +12,6 @@
 namespace Icybee\Modules\Pages;
 
 use ICanBoogie\AuthenticationRequired;
-use ICanBoogie\Event;
 use ICanBoogie\Exception;
 use ICanBoogie\HTTP\NotFound;
 use ICanBoogie\HTTP\RedirectResponse;
@@ -22,8 +21,6 @@ use ICanBoogie\HTTP\ServiceUnavailable;
 use ICanBoogie\I18n;
 use ICanBoogie\Routing\Pattern;
 
-use Brickrouge\Alert;
-
 use Icybee\Modules\Sites\Site;
 
 define(__NAMESPACE__ . '\PageController\CSS_DOCUMENT_PLACEHOLDER', uniqid());
@@ -31,13 +28,15 @@ define(__NAMESPACE__ . '\PageController\JS_DOCUMENT_PLACEHOLDER', uniqid());
 
 class PageController
 {
+	const DOCUMENT_JS_PLACEHOLDER = '<!-- $document.js -->';
+
 	public function __invoke(Request $request)
 	{
 		global $core;
 
 		try
 		{
-			$page = $this->resolve_page($request);
+			$request->context->page = $page = $this->resolve_page($request);
 
 			if (!$page)
 			{
@@ -54,23 +53,20 @@ class PageController
 		catch (\Exception $e) // TODO-20130812: This shouldn't be handled by the class, but by Icybee or the user.
 		{
 			$code = $e->getCode();
-			$path = \ICanBoogie\DOCUMENT_ROOT . "protected/all/templates/$code.html";
+			$pathname = \ICanBoogie\DOCUMENT_ROOT . "protected/all/templates/$code.html";
 
-			if (file_exists($path))
+			if (file_exists($pathname))
 			{
-				$template = file_get_contents($path);
-				$patron = new \Patron\Engine();
-				$page = Page::from
-				(
-					array
-					(
-						'siteid' => $core->site_id,
-						'title' => I18n\t($e->getCode(), array(), array('scope' => 'exception')),
-						'body' => I18n\t($e->getMessage(), array(), array('scope' => 'exception'))
-					)
-				);
+				$request->context->page = $page = Page::from([
 
-				$request->context->page = $page;
+					'siteid' => $core->site_id,
+					'title' => I18n\t($e->getCode(), [], [ 'scope' => 'exception' ]),
+					'body' => I18n\t($e->getMessage(), [], [ 'scope' => 'exception' ])
+
+				]);
+
+				$template = file_get_contents($pathname);
+				$engine = $this->resolve_engine($template);
 
 				return new Response($patron($template, $page), $code);
 			}
@@ -91,13 +87,6 @@ class PageController
 	{
 		global $core;
 
-		// FIXME: because set() doesn't handle global vars ('$') correctly,
-		// we have to set '$page', otherwise a new variable '$page' is created
-
-		$request->context->page = $page;
-
-		#
-
 		new PageController\BeforeRenderEvent($this, $request, $page);
 
 		#
@@ -109,16 +98,12 @@ class PageController
 			$page->body->render();
 		}
 
-		# template
-
 		$template = $this->resolve_template($page->template);
 		$document = $core->document;
 		$engine = $this->resolve_engine($template);
 		$engine->context['document'] = $document;
 
-		$html = $engine($template, $page, array('file' => $page->template));
-
-		#
+		$html = $engine($template, $page, [ 'file' => $page->template ]);
 
 		new PageController\RenderEvent($this, $request, $page, $html);
 
@@ -126,27 +111,24 @@ class PageController
 		# late replace
 		#
 
-		$markup = '<!-- $document.js -->';
-		$pos = strpos($html, $markup);
+		$pos = strpos($html, self::DOCUMENT_JS_PLACEHOLDER);
 
 		if ($pos !== false)
 		{
-			$html = substr($html, 0, $pos) . $document->js . substr($html, $pos + strlen($markup));
+			$html = substr($html, 0, $pos)
+			. $document->js
+			. substr($html, $pos + strlen(self::DOCUMENT_JS_PLACEHOLDER));
 		}
 		else
 		{
 			$html = str_replace('</body>', PHP_EOL . PHP_EOL . $document->js . PHP_EOL . '</body>', $html);
 		}
 
-		$response = new Response
-		(
-			$html, 200, array
-			(
-				'Content-Type' => 'text/html; charset=utf-8'
-			)
-		);
+		return new Response($html, 200, [
 
-		return $response;
+			'Content-Type' => 'text/html; charset=utf-8'
+
+		]);
 	}
 
 	/**
@@ -176,10 +158,11 @@ class PageController
 			case Site::STATUS_UNAUTHORIZED: throw new AuthenticationRequired();
 			case Site::STATUS_NOT_FOUND: throw new NotFound
 			(
-				\ICanBoogie\format("The requested URL does not exists: %uri", array
-				(
+				\ICanBoogie\format("The requested URL does not exists: %uri", [
+
 					'uri' => $request->uri
-				))
+
+				])
 			);
 
 			case Site::STATUS_UNAVAILABLE: throw new ServiceUnavailable();
@@ -192,26 +175,16 @@ class PageController
 
 		if (!$page)
 		{
-			#
-			# Page was not found.
-			#
-
 			return;
 		}
 
 		if ($page->location)
 		{
-			#
-			# The page redirects to another location.
-			#
+			return new RedirectResponse($page->location->url, 301, [
 
-			return new RedirectResponse
-			(
-				$page->location->url, 301, array
-				(
-					'Icybee-Redirected-By' => __FILE__ . '::' . __LINE__
-				)
-			);
+				'Icybee-Redirected-By' => __FILE__ . '::' . __LINE__
+
+			]);
 		}
 
 		#
@@ -225,13 +198,11 @@ class PageController
 		{
 			$query_string = $request->query_string;
 
-			return new RedirectResponse
-			(
-				$page->url . ($query_string ? '?' . $query_string : ''), 301, array
-				(
-					'Icybee-Redirected-By' => __FILE__ . '::' . __LINE__
-				)
-			);
+			return new RedirectResponse($page->url . ($query_string ? '?' . $query_string : ''), 301, [
+
+				'Icybee-Redirected-By' => __FILE__ . '::' . __LINE__
+
+			]);
 		}
 
 		if (!$page->is_online || $page->site->status != Site::STATUS_OK)
@@ -246,10 +217,11 @@ class PageController
 			{
 				throw new AuthenticationRequired
 				(
-					\ICanBoogie\format('The requested URL %url requires authentication.', array
-					(
+					\ICanBoogie\format('The requested URL %url requires authentication.', [
+
 						'url' => $path
-					))
+
+					])
 				);
 			}
 
@@ -274,7 +246,7 @@ class PageController
 
 		if (!$pathname)
 		{
-			throw new Exception('Unable to resolve path for template: %template', array('%template' => $pathname));
+			throw new Exception('Unable to resolve path for template: %template', [ '%template' => $pathname ]);
 		}
 
 		return file_get_contents($root . $pathname, true);
@@ -283,23 +255,6 @@ class PageController
 	protected function resolve_engine($template)
 	{
 		return new \Patron\Engine;
-	}
-
-	static public $nodes = array();
-
-	static public function on_loaded_nodes(\BlueTihi\Context\LoadedNodesEvent $event)
-	{
-		$nodes = $event->nodes;
-
-		foreach ($nodes as $node)
-		{
-			if (!$node instanceof \Icybee\Modules\Nodes\Node)
-			{
-				throw new Exception('Not a node object: \1', array($node));
-			}
-		}
-
-		self::$nodes = array_merge(self::$nodes, $event->nodes);
 	}
 }
 
