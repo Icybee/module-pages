@@ -118,15 +118,6 @@ class PageController
 
 		$html = $engine($template, $page, array('file' => $page->template));
 
-		# admin menu
-
-		$admin_menu = (string) new \Icybee\Element\AdminMenu();
-
-		if ($admin_menu)
-		{
-			$html = str_replace('</body>', $admin_menu . '</body>', $html);
-		}
-
 		#
 
 		new PageController\RenderEvent($this, $request, $page, $html);
