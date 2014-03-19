@@ -168,12 +168,40 @@ class Blueprint
 	 */
 	public function __get($property)
 	{
-		if ($property == 'ordered_records')
+		switch ($property)
 		{
-			return $this->get_ordered_records();
+			case 'ordered_nodes';
+
+				return $this->get_ordered_nodes();
+
+			case 'ordered_records':
+
+				return $this->get_ordered_records();
 		}
 
 		throw new PropertyNotDefined(array($property, $this));
+	}
+
+	protected function get_ordered_nodes()
+	{
+		$nodes = array();
+
+		$ordering = function(array $branch) use(&$ordering, &$nodes) {
+
+			foreach ($branch as $node)
+			{
+				$nodes[$node->nid] = $node;
+
+				if ($node->children)
+				{
+					$ordering($node->children);
+				}
+			}
+		};
+
+		$ordering($this->tree);
+
+		return $nodes;
 	}
 
 	/**
