@@ -271,7 +271,7 @@ class Hooks
 
 		$render = $args['render'];
 
-		if ($render == 'none')
+		if ($render === 'none')
 		{
 			return;
 		}
@@ -334,25 +334,14 @@ class Hooks
 			return;
 		}
 
-		$element = new Element
-		(
-			'div', array
-			(
-				'id' => 'content-' . $contentid,
-				'class' => 'editor-' . \ICanBoogie\normalize($editor)
-			)
-		);
+		$element = new Element('div', [
 
-		if (version_compare(PHP_VERSION, '5.3.4', '>='))
-		{
-			$patron->context['self']['element'] = $element;
-		}
-		else // COMPAT
-		{
-			$self = $patron->context['self'];
-			$self['element'] = $element;
-			$patron->context['self'] = $self;
-		}
+			'id' => 'content-' . $contentid,
+			'class' => 'editor-' . \ICanBoogie\normalize($editor)
+
+		]);
+
+		$patron->context['self']['element'] = $element;
 
 		$rc = $template ? $patron($template, $rendered) : $rendered;
 
