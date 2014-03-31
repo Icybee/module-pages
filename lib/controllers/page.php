@@ -68,7 +68,7 @@ class PageController
 				$template = file_get_contents($pathname);
 				$engine = $this->resolve_engine($template);
 
-				return new Response($patron($template, $page), $code);
+				return new Response($engine($template, $page), $code);
 			}
 
 			throw $e;
