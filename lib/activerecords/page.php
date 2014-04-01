@@ -595,7 +595,7 @@ class Page extends \Icybee\Modules\Nodes\Node
 				'slug' => 'page-slug-'. $this->slug,
 				'home' => ($this->home->nid == $this->nid),
 				'active' => $this->is_active,
-				'trail' => (!$this->is_active && $this->is_trail),
+				'trail' => $this->is_trail,
 				'template' => 'template-' . preg_replace('#\.(html|php)$#', '', $this->template),
 				'has-children' => count($this->navigation_children) != 0
 			)
