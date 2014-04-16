@@ -11,8 +11,6 @@
 
 namespace Icybee\Modules\Pages;
 
-use ICanBoogie\I18n\FormattedString;
-
 /**
  * Updates the order and relation of the specified records.
  */
@@ -39,7 +37,7 @@ class UpdateTreeOperation extends \ICanBoogie\Operation
 			{
 				if (!isset($relation[$nid]))
 				{
-					$errors['relation'] = new FormattedString("Missing relation for nid %nid.", array('nid' => $nid));
+					$errors['relation'] = $errors->format("Missing relation for nid %nid.", array('nid' => $nid));
 				}
 			}
 		}
@@ -47,12 +45,12 @@ class UpdateTreeOperation extends \ICanBoogie\Operation
 		{
 			if (!$order)
 			{
-				$errors['order'] = new FormattedString("The %param param is required", array('param' => 'order'));
+				$errors['order'] = $errors->format("The %param param is required", array('param' => 'order'));
 			}
 
 			if (!$relation)
 			{
-				$errors['relation'] = new FormattedString("The %param param is required", array('param' => 'relation'));
+				$errors['relation'] = $errors->format("The %param param is required", array('param' => 'relation'));
 			}
 		}
 

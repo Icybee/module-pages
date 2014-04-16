@@ -12,7 +12,6 @@
 namespace Icybee\Modules\Pages;
 
 use ICanBoogie\Event;
-use ICanBoogie\I18n\FormattedString;
 use ICanBoogie\Routing\Pattern;
 
 class SaveOperation extends \Icybee\Modules\Nodes\SaveOperation
@@ -76,7 +75,7 @@ class SaveOperation extends \Icybee\Modules\Nodes\SaveOperation
 			{
 				if (!array_key_exists($name, $editors))
 				{
-					$errors['content'][] = new FormattedString('The editor is missing for the content %name.', array('name' => $name));
+					$errors['content'][] = $errors->format('The editor is missing for the content %name.', array('name' => $name));
 				}
 			}
 		}

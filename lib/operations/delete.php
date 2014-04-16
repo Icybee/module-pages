@@ -12,7 +12,6 @@
 namespace Icybee\Modules\Pages;
 
 use ICanBoogie\Errors;
-use ICanBoogie\I18n\FormattedString;
 
 class DeleteOperation extends \Icybee\Modules\Nodes\DeleteOperation
 {
@@ -24,14 +23,14 @@ class DeleteOperation extends \Icybee\Modules\Nodes\DeleteOperation
 
 		if ($count)
 		{
-			$errors[] = new FormattedString('This page has :count direct children.', array(':count' => $count));
+			$errors[] = $errors->format('This page has :count direct children.', array(':count' => $count));
 		}
 
 		$count = $this->module->model->filter_by_locationid($nid)->count;
 
 		if ($count)
 		{
-			$errors[] = new FormattedString('This page is used in :count redirections.', array(':count' => $count));
+			$errors[] = $errors->format('This page is used in :count redirections.', array(':count' => $count));
 		}
 
 		return parent::validate($errors);
