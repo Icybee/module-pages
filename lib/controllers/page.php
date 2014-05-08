@@ -87,21 +87,22 @@ class PageController
 	{
 		global $core;
 
-		new PageController\BeforeRenderEvent($this, $request, $page);
+		$template = $this->resolve_template($page->template);
+		$document = $core->document;
+		$engine = $this->resolve_engine($template);
+		$engine->context['page'] = $page;
+		$engine->context['document'] = $document;
+
+		new PageController\BeforeRenderEvent($this, $request, $page, $engine->context);
 
 		#
 		# The page body is rendered before the template is parsed.
 		#
 
-		if ($page->body)
+		if ($page->body && is_callable(array($page->body, 'render')))
 		{
 			$page->body->render();
 		}
-
-		$template = $this->resolve_template($page->template);
-		$document = $core->document;
-		$engine = $this->resolve_engine($template);
-		$engine->context['document'] = $document;
 
 		$html = $engine($template, $page, [ 'file' => $page->template ]);
 
@@ -284,15 +285,23 @@ class BeforeRenderEvent extends \ICanBoogie\Event
 	public $response;
 
 	/**
+	 * Rendering context.
+	 *
+	 * @var mixed
+	 */
+	public $context;
+
+	/**
 	 * The event is constructed with the type `render:before`.
 	 *
 	 * @param \Icybee\Modules\Pages\PageController $target
 	 * @param array $payload
 	 */
-	public function __construct(\Icybee\Modules\Pages\PageController $target, Request $request, Page $page)
+	public function __construct(\Icybee\Modules\Pages\PageController $target, Request $request, Page $page, &$context)
 	{
 		$this->request = $request;
 		$this->page = $page;
+		$this->context = &$context;
 
 		parent::__construct($target, 'render:before');
 	}
