@@ -60,9 +60,11 @@ class Model extends \Icybee\Modules\Nodes\Model
 	 *
 	 * @return Query
 	 */
-	protected function scope_ordered(Query $query)
+	protected function scope_ordered(Query $query, $direction=1)
 	{
-		return $query->order('weight, created_at');
+		$direction = $direction < 0 ? 'DESC' : 'ASC';
+
+		return $query->order("weight {$direction}, created_at {$direction}");
 	}
 
 	/**
