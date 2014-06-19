@@ -218,7 +218,7 @@ class Page extends \Icybee\Modules\Nodes\Node
 	 *
 	 * @return string
 	 */
-	protected function lazy_get_url()
+	protected function get_url()
 	{
 		global $core;
 
@@ -314,7 +314,7 @@ class Page extends \Icybee\Modules\Nodes\Node
 	 *
 	 * @return string
 	 */
-	protected function lazy_get_url_pattern()
+	protected function get_url_pattern()
 	{
 		$site = $this->site;
 
