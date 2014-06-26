@@ -240,6 +240,7 @@ use Brickrouge\Text;
 
 use Icybee\ManageBlock\Column;
 use Icybee\ManageBlock\BooleanColumn;
+use Icybee\Modules\Nodes\ManageBlock\EditDecorator;
 
 class TitleColumn extends \Icybee\Modules\Nodes\ManageBlock\TitleColumn
 {
@@ -310,7 +311,7 @@ class TitleColumn extends \Icybee\Modules\Nodes\ManageBlock\TitleColumn
 			}
 		}
 
-		$rc .= parent::render_cell($record);
+		$rc .= new EditDecorator($record->label, $record);
 
 		if (0)
 		{

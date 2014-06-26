@@ -13,38 +13,26 @@ namespace Icybee\Modules\Pages;
 
 use Brickrouge\Element;
 
-class PopPage extends Element // TODO-20120922: rewrite this element
+class PopPage extends Element
 {
-	public function __toString()
+	public function render()
 	{
 		global $core;
 
-		try
+		/* @var $blueprint Blueprint */
+
+		$blueprint = $core->models['pages']->blueprint($core->site_id);
+		$blueprint->populate();
+
+		$options = [];
+
+		foreach ($blueprint->ordered_records as $record)
 		{
-			$model = $core->models['pages']; // TODO-20120922: use BluePrint.
-			$nodes = $model->select('nid, parentid, title')
-			->filter_by_siteid($core->site_id)
-			->order('weight, created_at')
-			->all(\PDO::FETCH_OBJ);
-
-			$tree = Model::nestNodes($nodes);
-			Model::setNodesDepth($tree);
-			$entries = Model::levelNodesById($tree);
-
-			$options = array();
-
-			foreach ($entries as $entry)
-			{
-				$options[$entry->nid] = str_repeat("\xC2\xA0", $entry->depth * 4) . $entry->title;
-			}
-
-			$this[self::OPTIONS] = array(null => '') + $options;
-		}
-		catch (\Exception $e)
-		{
-			return $e->getMessage();
+			$options[$record->nid] = str_repeat("\xC2\xA0", $record->depth * 4) . $record->label;
 		}
 
-		return parent::__toString();
+		$this[self::OPTIONS] = [ null => '' ] + $options;
+
+		return parent::render();
 	}
 }
