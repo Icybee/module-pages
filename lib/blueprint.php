@@ -17,7 +17,9 @@ use ICanBoogie\PropertyNotDefined;
 /**
  * A simplified data structure representing the relashionship between pages.
  *
- * @property-read array[]Page $ordered_records Records ordered according to their position and
+ * @property-read BlueprintNode[] $ordered_nodes Blueprint nodes ordered according to their
+ * position and relation. See: {@link get_ordered_nodes()}.
+ * @property-read Page[] $ordered_records Records ordered according to their position and
  * relation. See: {@link get_ordered_records()}.
  *
  * @see BlueprintNode

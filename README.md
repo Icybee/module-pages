@@ -102,6 +102,22 @@ foreach ($blueprint->index as $node)
 
 
 
+### Obtening and ordered array of nodes or records
+
+Through the `ordered_nodes` and `ordered_records` read-only properties you can obtain an array of
+nodes or records. They are ordered according to their weight and relation.
+
+```php
+<?php
+
+$blueprint->ordered_nodes;   // an array of BluePrintNodes instances
+$blueprint->ordered_records; // an array of Page instances
+```
+
+
+
+
+
 ## Prototype methods
 
 
