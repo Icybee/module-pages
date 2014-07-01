@@ -80,7 +80,7 @@ $subset = $core->models['pages']
 
 
 
-### Populating the blueprint
+### Populating a blueprint
 
 Once you have obtained a blueprint you might want to populate it with the actual records. The
 `populate()` method populates the blueprint by loading the records associated, and updates the
@@ -112,6 +112,24 @@ nodes or records. They are ordered according to their weight and relation.
 
 $blueprint->ordered_nodes;   // an array of BluePrintNodes instances
 $blueprint->ordered_records; // an array of Page instances
+```
+
+
+
+
+
+### Traversing a blueprint
+
+The `index` of the blueprint holds all of its nodes in a flat array. The order is non important.
+
+The following example demonstrates how to traverse a blueprint using its index:
+
+```php
+<?php
+
+foreach ($blueprint->index as $node);
+# or
+foreach ($blueprint as $node);
 ```
 
 

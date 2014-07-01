@@ -24,7 +24,7 @@ use ICanBoogie\PropertyNotDefined;
  *
  * @see BlueprintNode
  */
-class Blueprint
+class Blueprint implements \IteratorAggregate
 {
 	/**
 	 * Creates a {@link Blueprint} instance from an {@link ActiveRecord\Query}.
@@ -182,6 +182,11 @@ class Blueprint
 		}
 
 		throw new PropertyNotDefined(array($property, $this));
+	}
+
+	public function getIterator()
+	{
+		return new \ArrayIterator($this->index);
 	}
 
 	protected function get_ordered_nodes()
