@@ -26,9 +26,9 @@ $blueprint = $core->models['pages']->blueprint($site_id = 1);
 
 $blueprint->relations; // child/parent relations
 $blueprint->children;  // parent/children relations
-$blueprint->index;     // index
-$blueprint->tree;      // pages nested in a tree
-$blueprint->model;     // the model associated with the blueprint
+$blueprint->index;	  // index
+$blueprint->tree;		// pages nested in a tree
+$blueprint->model;	  // the model associated with the blueprint
 ```
 
 
@@ -116,7 +116,7 @@ nodes or records. They are ordered according to their weight and relation.
 ```php
 <?php
 
-$blueprint->ordered_nodes;   // an array of BluePrintNodes instances
+$blueprint->ordered_nodes;	// an array of BluePrintNodes instances
 $blueprint->ordered_records; // an array of Page instances
 ```
 
@@ -137,6 +137,100 @@ foreach ($blueprint->index as $node);
 # or
 foreach ($blueprint as $node);
 ```
+
+
+
+
+
+## The navigation element
+
+The [NavigationElement][] class makes it very easy to render a navigation element from a blueprint.
+
+```php
+<?php
+
+use Icybee\Modules\Pages\NavigationElement;
+
+echo new NavigationElement($blueprint);
+```
+
+Will render something like this (prettyfied for lisibility):
+
+```html
+<ol class="nav lv1">
+	<li class="page page-id-1 has-children trail">
+		<a href="/example1">Example 1</a>
+		<ol class="dropdown-menu lv2">
+			<li class="page page-id-10 active"><a href="/example1/example-a.html">Example A</a></li>
+			<li class="page page-id-11 active"><a href="/example1/example-b.html">Example B</a></li>
+		</ol>
+	</li>
+	<li class="page page-id-4">
+		<a href="/contact.html">Contact</a>
+	</li>
+</ol>
+```
+
+### Before the navigation element is populated with children
+
+The event `Icybee\Modules\Pages\NavigationElement::populate:before`
+of class [BeforePopulateEvent][] is fired before the navigation element is populated with children.
+
+Third parties may use this event to alter the blueprint. For instance, using a subset instead of
+the complete blueprint.
+
+The following code demonstrates how the node with id "5" is discarted from the navigation:
+
+```php
+<?php
+
+use Icybee\Modules\Pages\BluePrintNode;
+use Icybee\Modules\Pages\NavigationElement;
+
+$core->events->attach(function(NavigationElement\BeforePopulateEvent $event, NavigationElement $target) {
+
+	$event->blueprint = $event->blueprint->subset(function(BluePrintNode $node) {
+
+		return $node->nid == 5;
+
+	});
+
+});
+```
+
+
+
+
+
+### After the navigation element was populated with children
+
+The event `Icybee\Modules\Pages\NavigationElement::populate`
+of class [PopulateEvent][] is fired after the navigation element was populated with children.
+
+Third parties may use this event to alter the renderable elements of the navigation. For
+instance, one can replace links, classes or titles.
+
+The following example demonstrates how to alter the `href` and `target` attributes of
+navigation links:
+
+```php
+<?php
+
+use Icybee\Modules\Pages\NavigationElement;
+
+$core->events->attach(function(NavigationElement\PopulateEvent $event, NavigationElement $target) {
+
+	foreach ($event->blueprint as $node)
+	{
+		$link = $node->renderables['link'];
+
+		$link['href'] = '#';
+		$link['target'] = '_blank';
+	}
+
+});
+```
+
 
 
 
@@ -248,4 +342,7 @@ This package is licensed under the New BSD License - See the [LICENSE](LICENSE) 
 
 
 
+[BeforePopulateEvent]: http://icybee.org/docs/class-Icybee.Modules.Pages.NavigationElement.BeforePopulateEvent.html
+[NavigationElement]: http://icybee.org/docs/class-Icybee.Modules.Pages.NavigationElement.html
+[PopulateEvent]: http://icybee.org/docs/class-Icybee.Modules.Pages.NavigationElement.PopulateEvent.html
 [Query]: http://icanboogie.org/docs/class-ICanBoogie.ActiveRecord.Query.html

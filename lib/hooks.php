@@ -406,6 +406,102 @@ class Hooks
 			$html
 		);
 	}
+
+	static public function markup_navigation(array $args, \Patron\Engine $engine, $template)
+	{
+		global $core;
+
+		$page = $core->request->context->page;
+		$mode = $args['mode'];
+
+		if ($mode == 'leaf')
+		{
+			$node = $page;
+
+			while ($node)
+			{
+				if ($node->navigation_children)
+				{
+					break;
+				}
+
+				$node = $node->parent;
+			}
+
+			if (!$node)
+			{
+				return;
+			}
+
+			return $patron($template, $node);
+		}
+
+		$model = $core->models['pages'];
+		$depth = $args['depth'];
+
+		if ($args['from-level'])
+		{
+			$node = $page;
+			$from_level = $args['from-level'];
+
+			#
+			# The current page level is smaller than the page level requested, the navigation is
+			# canceled.
+			#
+
+			if ($node->depth < $from_level)
+			{
+				return;
+			}
+
+			while ($node->depth > $from_level)
+			{
+				$node = $node->parent;
+			}
+
+			$parentid = $node->nid;
+		}
+		else
+		{
+			$parentid = $args['parent'];
+
+			if (is_object($parentid))
+			{
+				$parentid = $parentid->nid;
+			}
+			else if ($parentid && !is_numeric($parentid))
+			{
+				$parent = $model->find_by_path($parentid);
+
+				$parentid = $parent->nid;
+			}
+		}
+
+		$blueprint = $model->blueprint($page->siteid);
+		$min_child = $args['min-child'];
+
+		$subset = $blueprint->subset
+		(
+			$parentid, $depth === null ? null : $depth - 1, function($branch) use($min_child)
+			{
+				if ($min_child && count($branch->children) < $min_child)
+				{
+					return true;
+				}
+
+				return (!$branch->is_online || $branch->is_navigation_excluded || $branch->pattern);
+			}
+		);
+
+		if ($template)
+		{
+			$subset->populate();
+
+			return $engine($template, $subset->tree);
+		}
+
+		return new NavigationElement($subset);
+	}
 }
 
 namespace Icybee\Modules\Pages\Page;

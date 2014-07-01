@@ -46,17 +46,19 @@ return array
 			)
 		),
 
-		'navigation' => array
-		(
-			__NAMESPACE__ . '\NavigationElement::markup', array
-			(
+		'navigation' => [
+
+			$hooks . 'markup_navigation', [
+
 				'parent' => 0,
-				'depth' => array('default' => 2),
+				'depth' => [ 'default' => 2 ],
 				'min-child' => false,
 				'from-level' => null,
 				'mode' => null
-			)
-		),
+
+			]
+
+		],
 
 		'navigation:leaf' => array
 		(

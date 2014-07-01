@@ -11,215 +11,234 @@
 
 namespace Icybee\Modules\Pages;
 
-use ICanBoogie\Event;
-
+use Brickrouge\A;
 use Brickrouge\Element;
 
-class NavigationElement extends Element // TODO-20120922: rewrite this element
+use Icybee\Modules\Pages\NavigationElement\BeforePopulateEvent;
+use Icybee\Modules\Pages\NavigationElement\PopulateEvent;
+
+/**
+ * A navigation element.
+ */
+class NavigationElement extends Element
 {
-	public function __construct()
+	protected $blueprint;
+
+	public function __construct(Blueprint $blueprint, $type='ol', $attributes=[])
 	{
-		// this is fake :(
+		$this->blueprint = $blueprint;
+
+		parent::__construct($type, $attributes + [
+
+			'class' => 'nav lv1'
+
+		]);
 	}
 
-	static protected function render_navigation_tree(array $tree, $depth=1)
+	/**
+	 * Render the element.
+	 *
+	 * The method emits the {@link BeforePopulateEvent} and {@link PopulateEvent} events.
+	 */
+	public function render()
 	{
-		$rc = '';
+		$blueprint = $this->blueprint;
 
-		foreach ($tree as $branch)
-		{
-			$record = $branch->record;
-			$class = $record->css_class('-constructor -slug');
+		new BeforePopulateEvent($this, $blueprint);
 
-			$rc .=  $class ? '<li class="' . $class . '">' : '<li>';
-			$rc .= '<a href="' . $record->url . '">' . $record->label . '</a>';
+		$blueprint->populate();
 
-			if ($branch->children)
-			{
-				$rc .= static::render_navigation_tree($branch->children, $depth + 1);
-			}
+		$this->create_renderables($blueprint);
+		$children = $this->create_children($blueprint);
 
-			$rc .= '</li>';
-		}
+		new PopulateEvent($this, $children, $blueprint);
 
-		return '<ol class="' . ($depth == 1 ? 'nav' : 'dropdown-menu') . ' lv' . $depth . '">' . $rc . '</ol>';
+		$this[self::CHILDREN] = $children;
+
+		return parent::render();
 	}
 
-	static public function markup(array $args, \Patron\Engine $patron, $template)
+	/**
+	 * Creates the renderable elements for each node of the blueprint.
+	 *
+	 * The renderable elements of a node are stored in the `renderables` property. The following
+	 * elements are created:
+	 *
+	 * - `link`: A `A` element with the record's URL as `href` and the record's label as
+	 * inner HTML.
+	 * - `item_decorator`: A `LI` element used to contain the rendered content of the node. The
+	 * class of the element is created with the `css_class()` method of the record and the
+	 * following modifier "-constructor -slug -template".
+	 * - `menu`: A `OL` element with the class "dropdown-menu". The element is only created if the
+	 * node has children, otherwise `menu` is `null`.
+	 *
+	 * @param Blueprint $blueprint
+	 */
+	protected function create_renderables(Blueprint $blueprint)
 	{
-		global $core;
-
-		$page = $core->request->context->page;
-		$mode = $args['mode'];
-
-		if ($mode == 'leaf')
+		foreach ($blueprint as $node)
 		{
-			$node = $page;
+			$record = $node->record;
 
-			while ($node)
+			$node->renderables = [
+
+				'link' => new Element('a', [
+
+					Element::INNER_HTML => \Brickrouge\escape($record->label),
+
+					'href' => $record->url
+
+				]),
+
+				'item_decorator' => new Element('li', [
+
+					'class' => $record->css_class('-constructor -slug -template')
+
+				]),
+
+				'menu' => null
+
+			];
+
+			if ($node->children)
 			{
-				if ($node->navigation_children)
-				{
-					break;
-				}
+				$node->renderables['menu'] = new Element('ol', [
 
-				$node = $node->parent;
-			}
+					'class' => "dropdown-menu"
 
-			if (!$node)
-			{
-				return;
-			}
-
-			return $patron($template, $node);
-		}
-
-
-		$model = $core->models['pages'];
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-		$depth = $args['depth'];
-
-		if ($args['from-level'])
-		{
-			$node = $page;
-			$from_level = $args['from-level'];
-
-			#
-			# The current page level is smaller than the page level requested, the navigation is
-			# canceled.
-			#
-
-			if ($node->depth < $from_level)
-			{
-				return;
-			}
-
-			while ($node->depth > $from_level)
-			{
-				$node = $node->parent;
-			}
-
-//			\ICanBoogie\log('from node: \1', array($node));
-
-			$parentid = $node->nid;
-		}
-		else
-		{
-			$parentid = $args['parent'];
-
-			if (is_object($parentid))
-			{
-				$parentid = $parentid->nid;
-			}
-			else
-			{
-				if ($parentid && !is_numeric($parentid))
-				{
-					$parent = $model->find_by_path($parentid);
-
-					$parentid = $parent->nid;
-				}
+				]);
 			}
 		}
+	}
 
-		$blueprint = $model->blueprint($page->siteid);
-		$min_child = $args['min-child'];
+	/**
+	 * Create the children of the element.
+	 *
+	 * The renderables associated with the nodes are used to build the children array.
+	 *
+	 * @param Blueprint $blueprint
+	 *
+	 * @return Element[]
+	 */
+	protected function create_children(Blueprint $blueprint)
+	{
+		$render_node = function(BlueprintNode $node, $depth=1) use(&$render_node) {
 
-		$subset = $blueprint->subset
-		(
-			$parentid, $depth === null ? null : $depth - 1, function($branch) use($min_child)
+			$renderables = $node->renderables;
+			$item_decorator = $renderables['item_decorator'];
+			$item_decorator->adopt($renderables['link']);
+
+			if (empty($renderables['menu']))
 			{
-				if ($min_child && count($branch->children) < $min_child)
-				{
-					return true;
-				}
-
-				return (!$branch->is_online || $branch->is_navigation_excluded || $branch->pattern);
+				return $item_decorator;
 			}
-		);
 
-		$html = null;
-		$tree = $subset->tree;
+			$children = [];
 
-		if ($tree)
+			foreach ($node->children as $child)
+			{
+				$children[] = $render_node($child, $depth + 1);
+			}
+
+			$menu = $renderables['menu'];
+			$menu->adopt($children);
+			$menu->add_class("lv{$depth}");
+
+			$item_decorator->adopt($menu);
+
+			return $item_decorator;
+		};
+
+		$children = [];
+
+		foreach ($blueprint->tree as $node)
 		{
-			$subset->populate();
-
-			$html = $template ? $patron($template, $tree) : static::render_navigation_tree($tree);
+			$children[] = $render_node($node);
 		}
 
-		new NavigationElement\AlterEvent(new self, $html, $page, $blueprint, $args);
-
-		return $html;
+		return $children;
 	}
 }
+
+/*
+ * Events
+ */
 
 namespace Icybee\Modules\Pages\NavigationElement;
 
 use Icybee\Modules\Pages\Blueprint;
 use Icybee\Modules\Pages\NavigationElement;
-use Icybee\Modules\Pages\Page;
 
-class AlterEvent extends \ICanBoogie\Event
+/**
+ * Event class for the `Icybee\Modules\Pages\NavigationElement::populate:before` event.
+ *
+ * Third parties may use this event to create a subset of the blueprint.
+ */
+class BeforePopulateEvent extends \ICanBoogie\Event
 {
 	/**
-	 * Reference to the rendered HTML.
-	 *
-	 * @var string
-	 */
-	public $html;
-
-	/**
-	 * Page for which the navigation is rendered.
-	 *
-	 * @var Page
-	 */
-	public $page;
-
-	/**
-	 * Blueprint of the navigation.
+	 * Reference to the blueprint.
 	 *
 	 * @var Blueprint
 	 */
 	public $blueprint;
 
+	public function __construct(NavigationElement $target, Blueprint &$blueprint)
+	{
+		$this->blueprint = &$blueprint;
+
+		parent::__construct($target, 'populate:before');
+	}
+}
+
+/**
+ * Event class for the `Icybee\Modules\Pages\NavigationElement::populate` event.
+ *
+ * Third parties may use this event to alter the renderable elements of the navigation. For
+ * instance, one can replace links, classes or titles.
+ *
+ * The following example demonstrates how to alter the `href` and `target` attributes of
+ * navigation links:
+ *
+ * <pre>
+ * <?php
+ *
+ * use Icybee\Modules\Pages\NavigationElement;
+ *
+ * $core->events->attach(function(NavigationElement\PopulateEvent $event, NavigationElement $target) {
+ *
+ *     foreach ($event->blueprint as $node)
+ *     {
+ *         $link = $node->renderables['link'];
+ *
+ *         $link['href'] = '#';
+ *         $link['target'] = '_blank';
+ *     }
+ *
+ * });
+ * </pre>
+ */
+class PopulateEvent extends \ICanBoogie\Event
+{
 	/**
-	 * Options of the navigation.
+	 * Reference to the children array.
 	 *
 	 * @var array
 	 */
-	public $options;
+	public $children;
 
 	/**
-	 * The event is constructed with the type `alter`.
+	 * Reference to the blueprint.
 	 *
-	 * @param NavigationElement $target
-	 * @param string $html
-	 * @param Page $page
-	 * @param Blueprint $blueprint
-	 * @param array $options
+	 * @var Blueprint
 	 */
-	public function __construct(NavigationElement $target, &$html, Page $page, Blueprint $blueprint, array $options)
-	{
-		$this->html = &$html;
-		$this->page = $page;
-		$this->blueprint = $blueprint;
-		$this->options = $options;
+	public $blueprint;
 
-		parent::__construct($target, 'alter');
+	public function __construct(NavigationElement $target, array &$children, Blueprint &$blueprint)
+	{
+		$this->children = &$children;
+		$this->blueprint = &$blueprint;
+
+		parent::__construct($target, 'populate');
 	}
 }
