@@ -295,17 +295,26 @@ class Blueprint implements \IteratorAggregate
 	 * });
 	 * </pre>
 	 *
-	 * @param int $nid Identifier of the starting branch.
+	 * @param int $nid_or_filter Identifier of the starting branch, or a closure
+	 * to filter the nodes.
 	 * @param int $depth Maximum depth of the subset.
-	 * @param callable $filter The filter callback.
+	 * @param callable $filter A filter callback.
 	 *
 	 * @return Blueprint
 	 */
-	public function subset($nid=null, $depth=null, $filter=null)
+	public function subset($nid_or_filter=null, $depth=null, $filter=null)
 	{
 		$relation = array();
 		$children = array();
 		$index = array();
+
+		$nid = $nid_or_filter;
+
+		if ($nid_or_filter instanceof \Closure)
+		{
+			$nid = null;
+			$filter = $nid_or_filter;
+		}
 
 		$iterator = function(array $branch) use(&$iterator, &$filter, &$depth, &$relation, &$children, &$index)
 		{

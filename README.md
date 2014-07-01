@@ -74,6 +74,12 @@ $subset = $core->models['pages']
 	return !$node->is_online;
 
 });
+/* or
+->subset(function(BlueprintNode $node) {
+
+	return !$node->is_online;
+
+}); */
 ```
 
 
