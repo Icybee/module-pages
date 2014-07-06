@@ -142,7 +142,7 @@ class Model extends \Icybee\Modules\Nodes\Model
 	 *
 	 * @return Page
 	 */
-	public function find_by_path($path) // TODO-20120922: use a BluePrint object
+	public function find_by_path($path)
 	{
 		global $core;
 
@@ -167,7 +167,7 @@ class Model extends \Icybee\Modules\Nodes\Model
 		#
 
 		$site = $core->site;
-		$siteid = $site->siteid;
+		$site_id = $site->siteid;
 		$site_path = $site->path;
 
 		if ($site_path)
@@ -186,7 +186,7 @@ class Model extends \Icybee\Modules\Nodes\Model
 			# The home page is requested, we load the first parentless online page of the site.
 			#
 
-			$page = $this->find_home($siteid);
+			$page = $this->find_home($site_id);
 
 			if (!$page)
 			{
@@ -207,18 +207,16 @@ class Model extends \Icybee\Modules\Nodes\Model
 
 		$parts_n = count($parts);
 
-		$vars = array();
+		$query = $this
+		->select('nid, parentid, slug, pattern')
+		->filter_by_siteid($site_id)
+		->ordered;
 
-		#
-		# We load from all the pages just what we need to find a matching path, and create a tree
-		# with it.
-		#
-
-		$tries = $this->select('nid, parentid, slug, pattern')->filter_by_siteid($siteid)->ordered->all(\PDO::FETCH_OBJ);
-		$tries = self::nestNodes($tries);
+		$tries = Blueprint::from($query)->tree;
 
 		$try = null;
 		$pages_by_ids = array();
+		$vars = array();
 
 		for ($i = 0 ; $i < $parts_n ; $i++)
 		{
@@ -318,66 +316,14 @@ class Model extends \Icybee\Modules\Nodes\Model
 			$page->url_part = $pages_by_ids[$page->nid]['url_part'];
 			$page->url_variables = $pages_by_ids[$page->nid]['url_variables'];
 
-			if ($parent)
+			if ($parent && !$parent->is_online)
 			{
-// 				$page->parent = $parent;
-
-				if (!$parent->is_online)
-				{
-					$page->is_online = false;
-				}
+				$page->is_online = false;
 			}
 
 			$parent = $page;
 		}
 
 		return $page;
-	}
-
-	/**
-	 * Nest an array of nodes, using their `parentid` property.
-	 *
-	 * Children are stored in the `children` property of their parents.
-	 *
-	 * Parent is stored in the `parent` property of its children.
-	 *
-	 * @param array $entries The array of nodes.
-	 * @param array $parents The array of nodes, where the key is the entry's `nid`.
-	 */
-	static public function nestNodes($entries, &$entries_by_ids=null) // TODO-20120922: deprecate
-	{
-		#
-		# In order to easily access entries, they are store by their Id in an array.
-		#
-
-		$entries_by_ids = array();
-
-		foreach ($entries as $entry)
-		{
-			$entry->children = array();
-
-			$entries_by_ids[$entry->nid] = $entry;
-		}
-
-		#
-		#
-		#
-
-		$tree = array();
-
-		foreach ($entries_by_ids as $entry)
-		{
-			if (!$entry->parentid || empty($entries_by_ids[$entry->parentid]))
-			{
-				$tree[] = $entry;
-
-				continue;
-			}
-
-			$entry->parent = $entries_by_ids[$entry->parentid];
-			$entry->parent->children[] = $entry;
-		}
-
-		return $tree;
 	}
 }
