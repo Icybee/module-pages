@@ -12,23 +12,56 @@ views. The module provides a request dispatcher to serve the pages it manages.
 
 A blueprint is a simplified data structure representing the relashionship between pages. It
 provides child/parent relations, parent/children relations, an index, and a tree representation.
-The blueprint can be created from a [Query][] or can be obtained from the `pages` model:
+The blueprint can be created from a [Query][] or can be obtained from the `pages` model.
+
+The following properties are available:
+
+- `relations`: Child/parent relations, key to key.
+- `children`: Parent/children relations, key to key.
+- `index`: The blueprint nodes, indexed by key.
+- `tree`: The blueprint nodes, nested in a tree.
+- `model`: The model associated with the blueprint.
+
+
+
+
+
+### Obtaining a blueprint from a query
+
+The following example demonstrates how a blueprint can be obained from a [Query][] instance. Only
+the `nid` and `parentid` properties are required to build the bulueprint, but you might want
+more than that to be usefull. In the example, the blueprint is created with the additional
+properties `slug` and `pattern`:
 
 ```php
 <?php
 
-#
-# Obtain a cached blueprint with only the properties required to build the blueprint: `nid`,
-# `parentid`, `is_online`, `is_navigation_excluded`, `pattern`.
-#
+$query = $core->models['pages']
+->select('nid, parentid, slug, pattern')
+->filter_by_siteid($site_id = 1)
+->ordered;
+
+$blueprint = Blueprint::from($query);
+```
+
+
+
+
+
+### Obtaining a blueprint from the model
+
+A blueprint can be obtained from the `pages` model. This blueprint is often used to compute
+navigation or resolve routes. It is created with the additional properties `is_online`,
+`is_navigation_excluded`, and `pattern`.
+
+**Note**: This blueprint is cached, that is two calls to the `blueprint()` method with the same
+argument yield the same instance. If you require to modify the blueprint itself you are advised to
+use a clone.
+
+```php
+<?php
 
 $blueprint = $core->models['pages']->blueprint($site_id = 1);
-
-$blueprint->relations; // child/parent relations
-$blueprint->children;  // parent/children relations
-$blueprint->index;	  // index
-$blueprint->tree;		// pages nested in a tree
-$blueprint->model;	  // the model associated with the blueprint
 ```
 
 
@@ -59,8 +92,8 @@ a maximum depth of 2 can be obtained:
 $subset = $core->models['pages']->blueprint($site_id = 1)->subset(null, 2);
 ```
 
-The following example demonstrates how subset of a blueprint with only the online
-nodes can be obtained:
+The following example demonstrates how a subset of a blueprint with only the online
+nodes can be obtained using a closure:
 
 ```php
 <?php
@@ -88,19 +121,26 @@ $subset = $core->models['pages']
 
 ### Populating a blueprint
 
-Once you have obtained a blueprint you might want to populate it with the actual records. The
-`populate()` method populates the blueprint by loading the records associated, and updates the
-nodes of the blueprint with these records. Don't worry about performance, the records are obtained
-with a single query to the database.
+Once you have obtained a blueprint you might want to populate it with actual records. The
+`populate()` method populates a blueprint by loading the associated records, and updates the
+blueprint nodes with them. Don't worry about performance, the records are obtained with a single
+query through the `find()` method of the model, and benefit from its caching mechanisms.
 
 ```php
 <?php
 
 $blueprint->populate();
 
-foreach ($blueprint->index as $node)
+foreach ($blueprint as $node)
 {
 	var_dump($node->record);
+}
+
+# or
+
+foreach ($blueprint->populate() as $record)
+{
+	var_dump($record);
 }
 ```
 
@@ -162,7 +202,7 @@ Will render something like this (prettyfied for lisibility):
 		<a href="/example1">Example 1</a>
 		<ol class="dropdown-menu lv2">
 			<li class="page page-id-10 active"><a href="/example1/example-a.html">Example A</a></li>
-			<li class="page page-id-11 active"><a href="/example1/example-b.html">Example B</a></li>
+			<li class="page page-id-11"><a href="/example1/example-b.html">Example B</a></li>
 		</ol>
 	</li>
 	<li class="page page-id-4">
