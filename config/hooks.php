@@ -4,10 +4,10 @@ namespace Icybee\Modules\Pages;
 
 $hooks = __NAMESPACE__ . '\Hooks::';
 
-return array
-(
-	'events' => array
-	(
+return [
+
+	'events' => [
+
 		'Brickrouge\Document::render_title:before' => $hooks . 'before_document_render_title',
 		'ICanBoogie\HTTP\Dispatcher::alter' => $hooks . 'on_http_dispatcher_alter',
 		'ICanBoogie\SaveOperation::process' => $hooks . 'invalidate_cache',
@@ -16,35 +16,40 @@ return array
 		'Icybee\Modules\Pages\Page::move' => $hooks . 'on_page_move',
 		'Icybee\Modules\Nodes\OnlineOperation::process' => $hooks . 'invalidate_cache',
 		'Icybee\Modules\Nodes\OfflineOperation::process' => $hooks . 'invalidate_cache'
-	),
 
-	'prototypes' => array
-	(
+	],
+
+	'prototypes' => [
+
 		'Icybee\Modules\Sites\Site::lazy_get_home' => $hooks . 'get_home',
 		'ICanBoogie\Core::get_page' => $hooks . 'get_page'
-	),
 
-	'patron.markups' => array
-	(
-		'page:content' => array
-		(
-			$hooks . 'markup_page_content', array
-			(
-				'id' => array('required' => true),
-				'title' => array('required' => true),
+	],
+
+	'patron.markups' => [
+
+		'page:content' => [
+
+			$hooks . 'markup_page_content', [
+
+				'id' => [ 'required' => true ],
+				'title' => [ 'required' => true ],
 				'editor' => null,
-				'render' => array('required' => true, 'default' => 'auto'),
+				'render' => [ 'required' => true, 'default' => 'auto' ],
 				'no-wrapper' => false
-			)
-		),
 
-		'page:languages' => array
-		(
-			__NAMESPACE__ . '\LanguagesElement::markup', array
-			(
+			]
 
-			)
-		),
+		],
+
+		'page:languages' => [
+
+			__NAMESPACE__ . '\LanguagesElement::markup', [
+
+
+			]
+
+		],
 
 		'navigation' => [
 
@@ -60,44 +65,53 @@ return array
 
 		],
 
-		'navigation:leaf' => array
-		(
-			__NAMESPACE__ . '\NavigationBranchElement::markup_navigation_leaf', array
-			(
+		'navigation:leaf' => [
+
+			__NAMESPACE__ . '\NavigationBranchElement::markup_navigation_leaf', [
+
 				/* FIXME-20120715: not implemented
 				'level' => 1,
 				'depth' => null,
 				'title-link' => null
 				*/
-			)
-		),
 
-		'breadcrumb' => array
-		(
-			__NAMESPACE__ . '\BreadcrumbElement::markup', array
-			(
-				'page' => array('expression' => true, 'required' => true, 'default' => 'this')
-			)
-		),
+			]
+
+		],
+
+		'breadcrumb' => [
+
+			__NAMESPACE__ . '\BreadcrumbElement::markup', [
+
+				'page' => [ 'expression' => true, 'required' => true, 'default' => 'this' ]
+
+			]
+
+		],
 
 		#
 		# cache
 		#
 
-		'page:region' => array
-		(
-			$hooks . 'markup_page_region', array
-			(
-				'id' => array('required' => true)
-			)
-		),
+		'page:region' => [
 
-		'page:title' => array
-		(
-			$hooks . 'markup_page_title', array
-			(
+			$hooks . 'markup_page_region', [
 
-			)
-		)
-	)
-);
+				'id' => [ 'required' => true ]
+
+			]
+
+		],
+
+		'page:title' => [
+
+			$hooks . 'markup_page_title', [
+
+
+			]
+
+		]
+
+	]
+
+];

@@ -91,32 +91,28 @@ class BreadcrumbElement extends Element
 	{
 		global $core;
 
-		return new static
-		(
-			array
-			(
-				self::PAGE => $core->request->context->page
-			)
-		);
+		return new static([
+
+			self::PAGE => $core->request->context->page
+
+		]);
 	}
 
 	public function __construct($tags)
 	{
-		parent::__construct
-		(
-			'ol', $tags + array
-			(
-				self::DIVIDER => self::DEFAULT_DIVIDER,
+		parent::__construct('ol', $tags + [
 
-				'class' => 'breadcrumb'
-			)
-		);
+			self::DIVIDER => self::DEFAULT_DIVIDER,
+
+			'class' => 'breadcrumb'
+
+		]);
 	}
 
 	protected function render_inner_html()
 	{
 		$page = $node = $this[self::PAGE];
-		$slices = array();
+		$slices = [];
 
 		while ($node)
 		{
@@ -125,13 +121,14 @@ class BreadcrumbElement extends Element
 			$label = \ICanBoogie\shorten($label, 48);
 			$label = \Brickrouge\escape($label);
 
-			$slices[] = array
-			(
+			$slices[] = [
+
 				'url' => $url,
 				'label' => $label,
 				'class' => $node->css_class('-type -slug -template -constructor -node-id -node-constructor'),
 				'page' => $node
-			);
+
+			];
 
 			if (!$node->parent && !$node->is_home)
 			{
@@ -146,15 +143,13 @@ class BreadcrumbElement extends Element
 		$slices = array_reverse($slices);
 		$divider = $this[self::DIVIDER] ?: self::DEFAULT_DIVIDER;
 
-		new BreadcrumbElement\BeforeRenderInnerHTMLEvent
-		(
-			$this, array
-			(
-				'slices' => &$slices,
-				'divider' => &$divider,
-				'page' => $page
-			)
-		);
+		new BreadcrumbElement\BeforeRenderInnerHTMLEvent($this, [
+
+			'slices' => &$slices,
+			'divider' => &$divider,
+			'page' => $page
+
+		]);
 
 		$html = '';
 		$slices = array_values($slices);
@@ -184,14 +179,12 @@ class BreadcrumbElement extends Element
 			$html .= '</li>';
 		}
 
-		new BreadcrumbElement\RenderInnerHTMLEvent
-		(
-			$this, array
-			(
-				'html' => &$html,
-				'page' => $page
-			)
-		);
+		new BreadcrumbElement\RenderInnerHTMLEvent($this, [
+
+			'html' => &$html,
+			'page' => $page
+
+		]);
 
 		return $html;
 	}

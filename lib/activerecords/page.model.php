@@ -20,7 +20,7 @@ class Model extends \Icybee\Modules\Nodes\Model
 	/**
 	 * Before saving the record, we make sure that it is not its own parent.
 	 */
-	public function save(array $properties, $key=null, array $options=array())
+	public function save(array $properties, $key=null, array $options=[])
 	{
 		if ($key && isset($properties[Page::PARENTID]) && $key == $properties[Page::PARENTID])
 		{
@@ -93,7 +93,7 @@ class Model extends \Icybee\Modules\Nodes\Model
 	 *
 	 * @var array
 	 */
-	private static $blueprint_cache = array();
+	private static $blueprint_cache = [];
 
 	/**
 	 * Returns the home page of the specified site.
@@ -133,7 +133,7 @@ class Model extends \Icybee\Modules\Nodes\Model
 		return $home;
 	}
 
-	private static $home_by_siteid = array();
+	private static $home_by_siteid = [];
 
 	/**
 	 * Finds a page using its path.
@@ -215,8 +215,8 @@ class Model extends \Icybee\Modules\Nodes\Model
 		$tries = Blueprint::from($query)->tree;
 
 		$try = null;
-		$pages_by_ids = array();
-		$vars = array();
+		$pages_by_ids = [];
+		$vars = [];
 
 		for ($i = 0 ; $i < $parts_n ; $i++)
 		{
@@ -290,11 +290,12 @@ class Model extends \Icybee\Modules\Nodes\Model
 			# otherwise, we continue
 			#
 
-			$pages_by_ids[$try->nid] = array
-			(
+			$pages_by_ids[$try->nid] = [
+
 				'url_part' => $path_part,
 				'url_variables' => $vars
-			);
+
+			];
 		}
 
 		#

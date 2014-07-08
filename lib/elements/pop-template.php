@@ -15,7 +15,7 @@ use Brickrouge\Element;
 
 class PopTemplate extends Element
 {
-	public function __construct(array $attributes=array())
+	public function __construct(array $attributes=[])
 	{
 		parent::__construct('select', $attributes);
 	}
@@ -33,7 +33,7 @@ class PopTemplate extends Element
 
 		$options = array_combine($list, $list);
 
-		$this[self::OPTIONS] = array(null => '<auto>') + $options;
+		$this[self::OPTIONS] = [ null => '<auto>' ] + $options;
 
 		return parent::__toString();
 	}

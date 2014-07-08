@@ -17,12 +17,11 @@ class TemplateEditorsOperation extends Operation
 {
 	protected function get_controls()
 	{
-		return array
-		(
-			self::CONTROL_PERMISSION => Module::PERMISSION_CREATE
-		)
+		return [
 
-		+ parent::get_controls();
+			self::CONTROL_PERMISSION => Module::PERMISSION_CREATE
+
+		] + parent::get_controls();
 	}
 
 	protected function validate(\ICanboogie\Errors $errors)
@@ -60,7 +59,7 @@ class TemplateEditorsOperation extends Operation
 
 		$this->response['template'] = $template_info;
 
-		$form = (string) new \Brickrouge\Form(array(\Brickrouge\Form::RENDERER => 'Simple') + $contents_tags);
+		$form = (string) new \Brickrouge\Form([ \Brickrouge\Form::RENDERER => 'Simple' ] + $contents_tags);
 
 		$this->response['assets'] = $core->document->assets;
 

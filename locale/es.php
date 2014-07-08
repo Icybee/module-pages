@@ -1,6 +1,7 @@
 <?php
 
-return array
-(
+return [
+
 	'module_title.site_pages' => 'Páginas'
-);
+
+];

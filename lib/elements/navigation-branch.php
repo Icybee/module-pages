@@ -27,24 +27,22 @@ class NavigationBranchElement extends Element
 		return new static($page);
 	}
 
-	public function __construct(Page $page, array $attributes=array())
+	public function __construct(Page $page, array $attributes=[])
 	{
 		$this->page = $page;
 
-		parent::__construct
-		(
-			'div', $attributes + array
-			(
-				'class' => 'nav-branch'
-			)
-		);
+		parent::__construct('div', $attributes + [
+
+			'class' => 'nav-branch'
+
+		]);
 	}
 
 	protected function build_blueprint($page, $parent_id)
 	{
 		global $core;
 
-		$trail = array();
+		$trail = [];
 		$p = $page;
 
 		while ($p)
@@ -63,7 +61,7 @@ class NavigationBranchElement extends Element
 				return;
 			}
 
-			$children = array();
+			$children = [];
 
 			foreach ($blueprint->children[$parent_id] as $nid)
 			{
@@ -77,7 +75,7 @@ class NavigationBranchElement extends Element
 				$page_blueprint = clone $page_blueprint;
 
 				unset($page_blueprint->parent);
-				$page_blueprint->children = array();
+				$page_blueprint->children = [];
 
 				if (isset($trail[$nid]) && $page_blueprint->depth < $max_depth)
 				{
@@ -118,7 +116,7 @@ class NavigationBranchElement extends Element
 
 		new NavigationBranchElement\AlterBlueprintEvent($this, $tree_blueprint, $page, $parent_id);
 
-		$ids = array();
+		$ids = [];
 
 		$collect_ids = function(array $blueprint) use(&$collect_ids, &$ids)
 		{

@@ -5,50 +5,59 @@ namespace Icybee\Modules\Pages;
 use ICanBoogie\ActiveRecord\Model;
 use ICanBoogie\Module;
 
-return array
-(
+return [
+
 	Module::T_TITLE => 'Pages',
 	Module::T_CATEGORY => 'site',
 	Module::T_EXTENDS => 'nodes',
-	Module::T_MODELS => array
-	(
-		'primary' => array
-		(
+	Module::T_MODELS => [
+
+		'primary' => [
+
 			Model::EXTENDING => 'nodes',
-			Model::SCHEMA => array
-			(
-				'fields' => array
-				(
+			Model::SCHEMA => [
+
+				'fields' => [
+
 					'parentid' => 'foreign',
 					'locationid' => 'foreign',
-					'label' => array('varchar', 80),
+					'label' => [ 'varchar', 80 ],
 					'pattern' => 'varchar',
-					'weight' => array('integer', 'unsigned' => true),
-					'template' => array('varchar', 32),
-					'is_navigation_excluded' => array('boolean', 'indexed' => true)
-				)
-			)
-		),
+					'weight' => [ 'integer', 'unsigned' => true ],
+					'template' => [ 'varchar', 32 ],
+					'is_navigation_excluded' => [ 'boolean', 'indexed' => true ]
 
-		'contents' => array
-		(
-			Model::SCHEMA => array
-			(
-				'fields' => array
-				(
-					'pageid' => array('foreign', 'primary' => true),
-					'contentid' => array('varchar', 64, 'primary' => true),
-					'content' => array('text', 'long'),
-					'editor' => array('varchar', 32)
-				)
-			)
-		)
-	),
+				]
+
+			]
+
+		],
+
+		'contents' => [
+
+			Model::SCHEMA => [
+
+				'fields' => [
+
+					'pageid' => [ 'foreign', 'primary' => true ],
+					'contentid' => [ 'varchar', 64, 'primary' => true ],
+					'content' => [ 'text', 'long' ],
+					'editor' => [ 'varchar', 32 ]
+
+				]
+
+			]
+
+		]
+
+	],
 
 	Module::T_NAMESPACE => __NAMESPACE__,
 	Module::T_REQUIRED => true,
-	Module::T_REQUIRES => array
-	(
+	Module::T_REQUIRES => [
+
 		'editor' => '1.0'
-	)
-);
+
+	]
+
+];

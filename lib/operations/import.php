@@ -15,8 +15,8 @@ use ICanBoogie\HTTP\Request;
 
 class ImportOperation extends \Icybee\Modules\Nodes\ImportOperation
 {
-	private $parentid = array();
-	private $locationid = array();
+	private $parentid = [];
+	private $locationid = [];
 
 	protected function parse_data(array $data)
 	{
@@ -103,7 +103,7 @@ class ImportOperation extends \Icybee\Modules\Nodes\ImportOperation
 
 			if ($parentid || $locationid)
 			{
-				$update->execute(array($parentid, $locationid, $this->keys_translations[$nid]));
+				$update->execute([ $parentid, $locationid, $this->keys_translations[$nid] ]);
 			}
 		}
 	}

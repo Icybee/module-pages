@@ -33,26 +33,27 @@ class EditBlock extends \Icybee\Modules\Nodes\EditBlock
 	{
 		global $core;
 
-		return \ICanBoogie\array_merge_recursive
-		(
-			parent::lazy_get_attributes(), array
-			(
-				Form::HIDDENS => array
-				(
-					Page::SITEID => $core->site_id,
-					Page::LANGUAGE => $core->site->language
-				),
+		return \ICanBoogie\array_merge_recursive(parent::lazy_get_attributes(), [
 
-				Element::GROUPS => array
-				(
-					'advanced' => array
-					(
-						'title' => 'Advanced',
-						'weight' => 30
-					)
-				)
-			)
-		);
+			Form::HIDDENS => [
+
+				Page::SITEID => $core->site_id,
+				Page::LANGUAGE => $core->site->language
+
+			],
+
+			Element::GROUPS => [
+
+				'advanced' => [
+
+					'title' => 'Advanced',
+					'weight' => 30
+
+				]
+
+			]
+
+		]);
 	}
 
 	protected function lazy_get_children()
@@ -61,7 +62,7 @@ class EditBlock extends \Icybee\Modules\Nodes\EditBlock
 
 		$values = $this->values;
 		$nid = $values[Node::NID];
-		$is_alone = !$this->module->model->select('nid')->where(array('siteid' => $core->site_id))->rc;
+		$is_alone = !$this->module->model->select('nid')->where([ 'siteid' => $core->site_id ])->rc;
 
 		list($contents_tags) = $this->module->get_contents_section($values[Node::NID], $values[Page::TEMPLATE]);
 
@@ -73,15 +74,13 @@ class EditBlock extends \Icybee\Modules\Nodes\EditBlock
 
 		if (!$is_alone)
 		{
-			$parentid_el = new PopPage
-			(
-				'select', array
-				(
-					Form::LABEL => 'parentid',
-					Element::OPTIONS_DISABLED => $nid ? array($nid => true) : null,
-					Element::DESCRIPTION => 'parentid'
-				)
-			);
+			$parentid_el = new PopPage('select', [
+
+				Form::LABEL => 'parentid',
+				Element::OPTIONS_DISABLED => $nid ? [ $nid => true ] : null,
+				Element::DESCRIPTION => 'parentid'
+
+			]);
 		}
 
 		#
@@ -92,20 +91,18 @@ class EditBlock extends \Icybee\Modules\Nodes\EditBlock
 
 		if (!$is_alone)
 		{
-			$location_el = new PopPage
-			(
-				'select', array
-				(
-					Form::LABEL => 'location',
-					Element::GROUP => 'advanced',
-					Element::WEIGHT => 10,
-					Element::OPTIONS_DISABLED => $nid ? array($nid => true) : null,
-					Element::DESCRIPTION => 'location'
-				)
-			);
+			$location_el = new PopPage('select', [
+
+				Form::LABEL => 'location',
+				Element::GROUP => 'advanced',
+				Element::WEIGHT => 10,
+				Element::OPTIONS_DISABLED => $nid ? [ $nid => true ] : null,
+				Element::DESCRIPTION => 'location'
+
+			]);
 		}
 
-		$contents_children = array();
+		$contents_children = [];
 
 		if (isset($contents_tags[Element::CHILDREN]))
 		{
@@ -116,46 +113,36 @@ class EditBlock extends \Icybee\Modules\Nodes\EditBlock
 			$this->attributes = \ICanBoogie\array_merge_recursive($this->attributes, $contents_tags);
 		}
 
-		return array_merge
-		(
-			parent::lazy_get_children(), array
-			(
-				Page::LABEL => new Text
-				(
-					array
-					(
-						Form::LABEL => 'label',
-						Element::DESCRIPTION => 'label'
-					)
-				),
+		return array_merge(parent::lazy_get_children(), [
 
-				Page::PARENTID => $parentid_el,
-				Page::SITEID => null,
+			Page::LABEL => new Text([
 
-				Page::IS_NAVIGATION_EXCLUDED => new Element
-				(
-					Element::TYPE_CHECKBOX, array
-					(
-						Element::LABEL => 'is_navigation_excluded',
-						Element::GROUP => 'visibility',
-						Element::DESCRIPTION => 'is_navigation_excluded'
-					)
-				),
+				Form::LABEL => 'label',
+				Element::DESCRIPTION => 'label'
 
-				Page::PATTERN => new Text
-				(
-					array
-					(
-						Form::LABEL => 'pattern',
-						Element::GROUP => 'advanced',
-						Element::DESCRIPTION => 'pattern'
-					)
-				),
+			]),
 
-				Page::LOCATIONID => $location_el
-			),
+			Page::PARENTID => $parentid_el,
+			Page::SITEID => null,
 
-			$contents_children
-		);
+			Page::IS_NAVIGATION_EXCLUDED => new Element(Element::TYPE_CHECKBOX, [
+
+				Element::LABEL => 'is_navigation_excluded',
+				Element::GROUP => 'visibility',
+				Element::DESCRIPTION => 'is_navigation_excluded'
+
+			]),
+
+			Page::PATTERN => new Text([
+
+				Form::LABEL => 'pattern',
+				Element::GROUP => 'advanced',
+				Element::DESCRIPTION => 'pattern'
+
+			]),
+
+			Page::LOCATIONID => $location_el
+
+		], $contents_children);
 	}
 }

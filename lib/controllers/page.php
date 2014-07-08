@@ -99,7 +99,7 @@ class PageController
 		# The page body is rendered before the template is parsed.
 		#
 
-		if ($page->body && is_callable(array($page->body, 'render')))
+		if ($page->body && is_callable([ $page->body, 'render' ]))
 		{
 			$page->body->render();
 		}

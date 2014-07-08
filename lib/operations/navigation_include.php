@@ -18,14 +18,13 @@ class NavigationIncludeOperation extends Operation
 {
 	protected function get_controls()
 	{
-		return array
-		(
+		return [
+
 			self::CONTROL_PERMISSION => Module::PERMISSION_MAINTAIN,
 			self::CONTROL_RECORD => true,
 			self::CONTROL_OWNERSHIP => true
-		)
 
-		+ parent::get_controls();
+		] + parent::get_controls();
 	}
 
 	public function __invoke(Request $request)

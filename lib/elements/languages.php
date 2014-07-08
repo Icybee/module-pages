@@ -29,15 +29,13 @@ class LanguagesElement extends Element
 		return new static();
 	}
 
-	public function __construct(array $attributes=array())
+	public function __construct(array $attributes=[])
 	{
-		parent::__construct
-		(
-			'div', array
-			(
-				'class' => 'btn-group i18n-languages'
-			)
-		);
+		parent::__construct('div', [
+
+			'class' => 'btn-group i18n-languages'
+
+		]);
 	}
 
 	protected function render_inner_html()
@@ -47,7 +45,7 @@ class LanguagesElement extends Element
 		$page = $core->request->context->page;
 		$translations_by_language = $this->collect();
 
-		new LanguagesElement\CollectEvent($this, array('languages' => &$translations_by_language));
+		new LanguagesElement\CollectEvent($this, [ 'languages' => &$translations_by_language ]);
 
 		if (count($translations_by_language) == 1)
 		{
@@ -62,20 +60,18 @@ class LanguagesElement extends Element
 		*/
 
 		$page_language = $page->language;
-		$links = array();
+		$links = [];
 
 		foreach ($translations_by_language as $language => $record)
 		{
-			$link = new Element
-			(
-				'a', array
-				(
-					Element::INNER_HTML => $language,
+			$link = new Element('a', [
 
-					'class' => 'btn language--' . \Brickrouge\normalize($language),
-					'href' => $record->url
-				)
-			);
+				Element::INNER_HTML => $language,
+
+				'class' => 'btn language--' . \Brickrouge\normalize($language),
+				'href' => $record->url
+
+			]);
 
 			if ($language == $page_language)
 			{
@@ -85,7 +81,7 @@ class LanguagesElement extends Element
 			$links[$language] = $link;
 		}
 
-		new LanguagesElement\AlterEvent($this, array('links' => &$links, 'languages' => &$translations_by_language, 'page' => $page));
+		new LanguagesElement\AlterEvent($this, [ 'links' => &$links, 'languages' => &$translations_by_language, 'page' => $page ]);
 
 		return implode('', $links);
 	}
@@ -97,7 +93,7 @@ class LanguagesElement extends Element
 		$page = $core->request->context->page;
 		$source = $page->node ?: $page;
 		$translations = $source->translations;
-		$translations_by_language = array();
+		$translations_by_language = [];
 
 		if ($translations)
 		{
@@ -145,10 +141,11 @@ class LanguagesElement extends Element
 
 		if (!$translations_by_language)
 		{
-			$translations_by_language = array
-			(
+			$translations_by_language = [
+
 				($source->language ? $source->language : $page->language) => $source
-			);
+
+			];
 		}
 
 		return $translations_by_language;

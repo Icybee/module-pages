@@ -25,20 +25,19 @@ class ManageBlock extends \Icybee\Modules\Nodes\ManageBlock
 		$document->js->add('manage.js');
 	}
 
-	public function __construct(Module $module, array $attributes=array())
+	public function __construct(Module $module, array $attributes=[])
 	{
-		parent::__construct
-		(
-			$module, $attributes + array
-			(
-				self::T_COLUMNS_ORDER => array
-				(
-					'title', 'url', 'is_navigation_excluded', 'is_online', 'uid', 'updated_at'
-				),
+		parent::__construct($module, $attributes + [
 
-				self::T_ORDER_BY => null
-			)
-		);
+			self::T_COLUMNS_ORDER => [
+
+				'title', 'url', 'is_navigation_excluded', 'is_online', 'uid', 'updated_at'
+
+			],
+
+			self::T_ORDER_BY => null
+
+		]);
 	}
 
 	/**
@@ -50,12 +49,13 @@ class ManageBlock extends \Icybee\Modules\Nodes\ManageBlock
 	 */
 	protected function get_available_columns()
 	{
-		return array_merge(parent::get_available_columns(), array(
+		return array_merge(parent::get_available_columns(), [
 
 			'title' => __CLASS__ . '\TitleColumn',
 			'url' => __CLASS__ . '\URLColumn',
 			'is_navigation_excluded' => __CLASS__ . '\IsNavigationExcluded'
-		));
+
+		]);
 	}
 
 	/**
@@ -65,10 +65,11 @@ class ManageBlock extends \Icybee\Modules\Nodes\ManageBlock
 	 */
 	protected function get_available_jobs()
 	{
-		return array_merge(parent::get_available_jobs(), array
-		(
+		return array_merge(parent::get_available_jobs(), [
+
 			'copy' => 'Copier'
-		));
+
+		]);
 	}
 
 	protected function render_jobs(array $jobs)
@@ -107,7 +108,7 @@ EOT;
 
 		if (!isset($options->expanded))
 		{
-			$options->expanded = array();
+			$options->expanded = [];
 		}
 
 		if (isset($modifiers['expand']) || isset($modifiers['collapse']))
@@ -175,7 +176,7 @@ EOT;
 			return parent::render_controls();
 		}
 
-		$count = $this->t(':count pages', array(':count' => $this->count));
+		$count = $this->t(':count pages', [ ':count' => $this->count ]);
 
 		# A `SELECT` element is added to have the same height as the jobs element.
 
@@ -255,59 +256,39 @@ class TitleColumn extends \Icybee\Modules\Nodes\ManageBlock\TitleColumn
 
 			if (0)
 			{
-				$rc .= new Text
-				(
-					array
-					(
-						Element::LABEL => 'w',
-						Element::LABEL_POSITION => 'before',
-						'name' => 'weights[' . $record->nid . ']',
-						'value' => $record->weight,
-						'size' => 3,
-						'style' => 'border: none; background: transparent; color: green'
-					)
-				);
+				$rc .= new Text([
+
+					Element::LABEL => 'w',
+					Element::LABEL_POSITION => 'before',
+					'name' => 'weights[' . $record->nid . ']',
+					'value' => $record->weight,
+					'size' => 3,
+					'style' => 'border: none; background: transparent; color: green'
+
+				]);
 
 				$rc .= '&nbsp;';
 
-				$rc .= new Text
-				(
-					array
-					(
-						Element::LABEL => 'p',
-						Element::LABEL_POSITION => 'before',
-						'name' => 'parents[' . $record->nid . ']',
-						'value' => $record->parentid,
-						'size' => 3,
-						'style' => 'border: none; background: transparent; color: green'
-					)
-				);
+				$rc .= new Text([
+
+					Element::LABEL => 'p',
+					Element::LABEL_POSITION => 'before',
+					'name' => 'parents[' . $record->nid . ']',
+					'value' => $record->parentid,
+					'size' => 3,
+					'style' => 'border: none; background: transparent; color: green'
+
+				]);
 			}
 			else
 			{
-				/*
-				$rc .= new Element
-				(
-					'input', array
-					(
-						'name' => 'weights[' . $entry->nid . ']',
-						'type' => 'hidden',
-						'value' => $entry->weight
-					)
-				);
+				$rc .= new Element('input', [
 
-				$rc .= '&nbsp;';
-				*/
+					'name' => 'parents[' . $record->nid . ']',
+					'type' => 'hidden',
+					'value' => $record->parentid
 
-				$rc .= new Element
-				(
-					'input', array
-					(
-						'name' => 'parents[' . $record->nid . ']',
-						'type' => 'hidden',
-						'value' => $record->parentid
-					)
-				);
+				]);
 			}
 		}
 
@@ -368,7 +349,12 @@ class URLColumn extends \Icybee\Modules\Nodes\ManageBlock\URLColumn
 			if ($record->location)
 			{
 				$location = $record->location;
-				$title = $t('This page is redirected to: !title (!url)', array('!title' => $location->title, '!url' => $location->url));
+				$title = $t('This page is redirected to: !title (!url)', [
+
+					'!title' => $location->title,
+					'!url' => $location->url
+
+				]);
 
 				return <<<EOT
 <span class="small">
@@ -388,13 +374,18 @@ EOT;
 
 		if ($location)
 		{
-			$rc .= '<span class="icon-mail-forward" title="' . $t('This page is redirected to: !title (!url)', array('!title' => $location->title, '!url' => $location->url)) . '"></span>';
+			$rc .= '<span class="icon-mail-forward" title="' . $t('This page is redirected to: !title (!url)', [
+
+				'!title' => $location->title,
+				'!url' => $location->url
+
+			]) . '"></span>';
 		}
 		else if (!Pattern::is_pattern($pattern))
 		{
 			$url = ($core->site_id == $record->siteid) ? $record->url : $record->absolute_url;
 
-			$title = $t('Go to the page: !url', array('!url' => $url));
+			$title = $t('Go to the page: !url', [ '!url' => $url ]);
 
 			$rc .= '<a href="' . $url . '" title="' . $title . '" target="_blank"><i class="icon-external-link"></i></a>';
 		}
@@ -408,37 +399,35 @@ EOT;
  */
 class IsNavigationExcluded extends BooleanColumn
 {
-	public function __construct(\Icybee\ManageBlock $manager, $id, array $options=array())
+	public function __construct(\Icybee\ManageBlock $manager, $id, array $options=[])
 	{
-		parent::__construct
-		(
-			$manager, $id, $options + array
-			(
-				'title' => null,
-				'filters' => array
-				(
-					'options' => array
-					(
-						'=1' => 'Excluded from navigation',
-						'=0' => 'Included in navigation'
-					)
-				),
+		parent::__construct($manager, $id, $options + [
 
-				'sortable' => false
-			)
-		);
+			'title' => null,
+			'filters' => [
+
+				'options' => [
+
+					'=1' => 'Excluded from navigation',
+					'=0' => 'Included in navigation'
+
+				]
+
+			],
+
+			'sortable' => false
+
+		]);
 	}
 
 	public function render_cell($record)
 	{
-		return new Element
-		(
-			'i', array
-			(
-				'class' => 'icon-sitemap trigger ' . ($record->is_navigation_excluded ? 'on' : ''),
-				'data-nid' => $record->nid,
-				'title' => "Inclure ou exclure la page du menu de navigation principal"
-			)
-		);
+		return new Element('i', [
+
+			'class' => 'icon-sitemap trigger ' . ($record->is_navigation_excluded ? 'on' : ''),
+			'data-nid' => $record->nid,
+			'title' => "Inclure ou exclure la page du menu de navigation principal"
+
+		]);
 	}
 }

@@ -1,46 +1,53 @@
 <?php
 
-return array
-(
-	'pages' => array
-	(
-		'count' => array
-		(
+return [
+
+	'pages' => [
+
+		'count' => [
+
 			'none' => 'Aucune page',
 			'one' => 'Une page',
 			'other' => ':count pages'
-		),
 
-		'name' => array
-		(
+		],
+
+		'name' => [
+
 			'one' => 'Page',
 			'other' => 'Pages'
-		),
 
-		'search' => array
-		(
-			'found' => array
-			(
+		],
+
+		'search' => [
+
+			'found' => [
+
 				'none' => 'Aucun résulat trouvé dans les pages.',
 				'one' => 'Un résultat trouvé dans les pages.',
 				'other' => ':count résultats trouvés dans les pages.'
-			),
 
-			'more' => array
-			(
+			],
+
+			'more' => [
+
 				'one' => 'Voir le résultat trouvé pour %search dans les pages',
 				'other' => 'Voir les :count résultats trouvés pour %search dans les pages'
-			)
-		)
-	),
 
-	'content.title' => array
-	(
+			]
+
+		]
+
+	],
+
+	'content.title' => [
+
 		'body' => 'Corps de la page'
-	),
 
-	'description' => array
-	(
+	],
+
+	'description' => [
+
 		'is_navigation_excluded' => "Les pages exclues de la navigation principale n'apparaissent pas dans les menus.
 		Elles peuvent tout de même apparaitre sur le plan du site.",
 
@@ -57,22 +64,25 @@ return array
 
 		'contents.inherit' => "Les contenus suivants peuvent être hérités. Si la page ne définit
 		pas un contenu, alors celui d'une page parente est utilisé."
-	),
 
-	'label' => array
-	(
+	],
+
+	'label' => [
+
 		'is_navigation_excluded' => 'Exclure la page de la navigation principale',
 		'label' => 'Étiquette de la page',
 		'location' => 'Redirection',
 		'parentid' => 'Page parente',
 		'pattern' => 'Motif',
 		'template' => 'Gabarit'
-	),
 
-	'group.legend' => array
-	(
+	],
+
+	'group.legend' => [
+
 		'Template' => 'Gabarit'
-	),
+
+	],
 
 	"The template defines a page model of which some elements are editable."
 	=> "Le gabarit définit un modèle de page dont certains éléments sont modifiables.",
@@ -97,4 +107,5 @@ return array
 	'Record detail' => "Détail d'un enregistrement",
 	'Records list' => "Liste des enregistrements",
 	'Records home' => "Accueil des enregistrements"
-);
+
+];

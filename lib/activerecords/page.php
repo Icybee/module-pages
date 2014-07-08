@@ -147,7 +147,7 @@ class Page extends \Icybee\Modules\Nodes\Node
 	 * @var array Variables captured from the URL using the pattern.
 	 * @todo-20130327: rename as "path_params"
 	 */
-	public $url_variables = array();
+	public $url_variables = [];
 
 	/**
 	 * @var Node Node object currently acting as the body of the page.
@@ -445,10 +445,10 @@ class Page extends \Icybee\Modules\Nodes\Node
 
 		if (!$pages[$this->nid]->children)
 		{
-			return array();
+			return [];
 		}
 
-		$ids = array();
+		$ids = [];
 
 		foreach ($pages[$this->nid]->children as $nid => $child)
 		{
@@ -474,10 +474,10 @@ class Page extends \Icybee\Modules\Nodes\Node
 
 		if (empty($index[$this->nid]) || !$index[$this->nid]->children)
 		{
-			return array();
+			return [];
 		}
 
-		$ids = array();
+		$ids = [];
 
 		foreach ($index[$this->nid]->children as $nid => $child)
 		{
@@ -491,7 +491,7 @@ class Page extends \Icybee\Modules\Nodes\Node
 
 		if (!$ids)
 		{
-			return array();
+			return [];
 		}
 
 		return $this->model->find($ids);
@@ -547,7 +547,7 @@ class Page extends \Icybee\Modules\Nodes\Node
 		global $core;
 
 		$entries = $core->models['pages/contents']->filter_by_pageid($this->nid);
-		$contents = array();
+		$contents = [];
 
 		foreach ($entries as $entry)
 		{
@@ -586,20 +586,18 @@ class Page extends \Icybee\Modules\Nodes\Node
 	 */
 	protected function get_css_class_names()
 	{
-		$names = array_merge
-		(
-			parent::get_css_class_names(), array
-			(
-				'type' => 'page',
-				'id' => 'page-id-' . $this->nid,
-				'slug' => 'page-slug-'. $this->slug,
-				'home' => ($this->home->nid == $this->nid),
-				'active' => $this->is_active,
-				'trail' => $this->is_trail,
-				'template' => 'template-' . preg_replace('#\.(html|php)$#', '', $this->template),
-				'has-children' => count($this->navigation_children) != 0
-			)
-		);
+		$names = array_merge(parent::get_css_class_names(), [
+
+			'type' => 'page',
+			'id' => 'page-id-' . $this->nid,
+			'slug' => 'page-slug-'. $this->slug,
+			'home' => ($this->home->nid == $this->nid),
+			'active' => $this->is_active,
+			'trail' => $this->is_trail,
+			'template' => 'template-' . preg_replace('#\.(html|php)$#', '', $this->template),
+			'has-children' => count($this->navigation_children) != 0
+
+		]);
 
 		if (isset($this->node))
 		{

@@ -23,14 +23,14 @@ class DeleteOperation extends \Icybee\Modules\Nodes\DeleteOperation
 
 		if ($count)
 		{
-			$errors[] = $errors->format('This page has :count direct children.', array(':count' => $count));
+			$errors[] = $errors->format('This page has :count direct children.', [ ':count' => $count ]);
 		}
 
 		$count = $this->module->model->filter_by_locationid($nid)->count;
 
 		if ($count)
 		{
-			$errors[] = $errors->format('This page is used in :count redirections.', array(':count' => $count));
+			$errors[] = $errors->format('This page is used in :count redirections.', [ ':count' => $count ]);
 		}
 
 		return parent::validate($errors);

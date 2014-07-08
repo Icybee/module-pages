@@ -73,7 +73,7 @@ class Hooks
 
 		$core->models['pages/contents']->execute
 		(
-			'UPDATE {self} SET content = REPLACE(content, ?, ?)', array($event->from, $event->to)
+			'UPDATE {self} SET content = REPLACE(content, ?, ?)', [ $event->from, $event->to ]
 		);
 	}
 
@@ -115,13 +115,11 @@ class Hooks
 				continue;
 			}
 
-			$model->execute
-			(
-				'UPDATE {self} SET content = ? WHERE pageid = ? AND contentid = ?', array
-				(
-					$content, $record->pageid, $record->contentid
-				)
-			);
+			$model->execute('UPDATE {self} SET content = ? WHERE pageid = ? AND contentid = ?', [
+
+				$content, $record->pageid, $record->contentid
+
+			]);
 		}
 	}
 
@@ -133,13 +131,11 @@ class Hooks
 	{
 		global $core;
 
-		$cache = new FileCache
-		(
-			array
-			(
-				FileCache::T_REPOSITORY => $core->config['repository.cache'] . '/pages'
-			)
-		);
+		$cache = new FileCache([
+
+			FileCache::T_REPOSITORY => $core->config['repository.cache'] . '/pages'
+
+		]);
 
 		return $cache->clear();
 	}
@@ -192,19 +188,17 @@ class Hooks
 
 		$id = $args['id'];
 		$page = $core->request->context->page;
-		$element = new Element('div', array('id' => $id, 'class' => "region region-$id"));
+		$element = new Element('div', [ 'id' => $id, 'class' => "region region-$id" ]);
 		$html = null;
 
-		new Page\RenderRegionEvent
-		(
-			$page, array
-			(
-				'id' => $id,
-				'page' => $page,
-				'element' => $element,
-				'html' => &$html
-			)
-		);
+		new Page\RenderRegionEvent($page, [
+
+			'id' => $id,
+			'page' => $page,
+			'element' => $element,
+			'html' => &$html
+
+		]);
 
 		if (!$html)
 		{
@@ -224,7 +218,7 @@ class Hooks
 		$title = $page->title;
 		$html = \ICanBoogie\escape($title);
 
-		new Page\RenderTitleEvent($page, array('title' => $title, 'html' => &$html));
+		new Page\RenderTitleEvent($page, [ 'title' => $title, 'html' => &$html ]);
 
 		return $template ? $engine($template, $html) : $html;
 	}

@@ -25,10 +25,11 @@ class SaveOperation extends \Icybee\Modules\Nodes\SaveOperation
 	{
 		global $core;
 
-		$properties = parent::lazy_get_properties() + array
-		(
+		$properties = parent::lazy_get_properties() + [
+
 			Page::PARENTID => 0
-		);
+
+		];
 
 		if (!$this->key)
 		{
@@ -75,7 +76,11 @@ class SaveOperation extends \Icybee\Modules\Nodes\SaveOperation
 			{
 				if (!array_key_exists($name, $editors))
 				{
-					$errors['content'][] = $errors->format('The editor is missing for the content %name.', array('name' => $name));
+					$errors['content'][] = $errors->format('The editor is missing for the content %name.', [
+
+						'name' => $name
+
+					]);
 				}
 			}
 		}
@@ -110,7 +115,7 @@ class SaveOperation extends \Icybee\Modules\Nodes\SaveOperation
 
 		/* var $contents_model ContentModel */
 
-		$preserve = array();
+		$preserve = [];
 		$contents_model = $this->module->model('contents');
 
 		$contents = $this->request['contents'];
@@ -136,27 +141,23 @@ class SaveOperation extends \Icybee\Modules\Nodes\SaveOperation
 
 				$preserve[$content_id] = $content_id;
 
-				$values = array
-				(
+				$values = [
+
 					'content' => $content,
 					'editor' => $editor_id
-				);
 
-				$contents_model->insert
-				(
-					array
-					(
-						'pageid' => $nid,
-						'contentid' => $content_id
-					)
+				];
 
-					+ $values,
+				$contents_model->insert([
 
-					array
-					(
-						'on duplicate' => $values
-					)
-				);
+					'pageid' => $nid,
+					'contentid' => $content_id
+
+				] + $values, [
+
+					'on duplicate' => $values
+
+				]);
 			}
 		}
 
@@ -168,7 +169,7 @@ class SaveOperation extends \Icybee\Modules\Nodes\SaveOperation
 
 		if ($preserve)
 		{
-			$arr->where(array('!contentid' => $preserve));
+			$arr->where([ '!contentid' => $preserve ]);
 		}
 
 		$arr->delete();

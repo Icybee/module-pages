@@ -29,22 +29,24 @@ class Module extends \Icybee\Modules\Nodes\Module
 	 */
 	protected function lazy_get_views()
 	{
-		return array
-		(
-			'list' => array
-			(
+		return [
+
+			'list' => [
+
 				'title' => 'Sitemap',
 				'class' => __NAMESPACE__ . '\ListView',
-				'assets' => array(),
+				'assets' => [],
 				'renders' => \Icybee\Modules\Views\View::RENDERS_MANY
-			)
-		);
+
+			]
+
+		];
 	}
 
 	// FIXME-20110918: this should be an operation
 	protected function operation_query_delete(WdOperation $operation)
 	{
-		$entries = array();
+		$entries = [];
 
 		foreach ($operation->params['entries'] as $id)
 		{
@@ -67,7 +69,7 @@ class Module extends \Icybee\Modules\Nodes\Module
 
 	private function get_all_children_ids($record)
 	{
-		$ids = array();
+		$ids = [];
 
 		if ($record->children)
 		{
@@ -89,16 +91,18 @@ class Module extends \Icybee\Modules\Nodes\Module
 	{
 		$entries = $operation->params['entries'];
 
-		return array
-		(
+		return [
+
 			'title' => 'Copy entries',
-			'message' => I18n\t('Are you sure you want to copy the :count selected entries ?', array(':count' => count($entries))),
-			'confirm' => array('Don\'t copy', 'Copy'),
-			'params' => array
-			(
+			'message' => I18n\t('Are you sure you want to copy the :count selected entries ?', [ ':count' => count($entries) ]),
+			'confirm' => [ 'Don\'t copy', 'Copy' ],
+			'params' => [
+
 				'entries' => $entries
-			)
-		);
+
+			]
+
+		];
 	}
 
 	public function get_contents_section($nid, $template=null)
@@ -115,27 +119,20 @@ class Module extends \Icybee\Modules\Nodes\Module
 			$template_description = I18n\t("The <q>:template</q> template does not define any editable element.", array(':template' => $template));
 		}
 
-		$elements = array_merge
-		(
-			array
-			(
-				Page::TEMPLATE => new PopTemplate
-				(
-					array
-					(
-						Element::GROUP => 'contents',
-						Element::DESCRIPTION => $template_description
-					)
-				)
-			),
+		$elements = array_merge([
 
-			$elements
-		);
+			Page::TEMPLATE => new PopTemplate([
 
-		return array
-		(
-			array
-			(
+				Element::GROUP => 'contents',
+				Element::DESCRIPTION => $template_description
+
+			])
+
+		], $elements);
+
+		return [
+
+			[
 				Form::HIDDENS => $hiddens,
 
 				#
@@ -143,36 +140,43 @@ class Module extends \Icybee\Modules\Nodes\Module
 				# inheritence, easier to manage.
 				#
 
-				Form::VALUES => array
-				(
-					Page::TEMPLATE => $is_inherited ? null : $template
-				),
+				Form::VALUES => [
 
-				Element::GROUPS => array
-				(
-					'contents' => array
-					(
+					Page::TEMPLATE => $is_inherited ? null : $template
+
+				],
+
+				Element::GROUPS => [
+
+					'contents' => [
+
 						'title' => 'Template',
 						'weight' => 10
-					),
 
-					'contents.inherit' => array
-					(
+					],
+
+					'contents.inherit' => [
+
 						'weight' => 11,
 						'description' => 'contents.inherit'
-					)
-				),
+
+					]
+
+				],
 
 				Element::CHILDREN => $elements
-			),
 
-			array
-			(
+			],
+
+			[
+
 				'name' => $template,
 				'description' => $template_description,
 				'inherited' => $is_inherited
-			)
-		);
+
+			]
+
+		];
 	}
 
 	protected function get_contents_section_elements($nid, $template)
@@ -183,13 +187,13 @@ class Module extends \Icybee\Modules\Nodes\Module
 
 		if (!$info)
 		{
-			return array(array(), array());
+			return [ [], [] ];
 		}
 
 		list($editables, $styles) = $info;
 
-		$elements = array();
-		$hiddens = array();
+		$elements = [];
+		$hiddens = [];
 
 		$contents_model = $this->model('contents');
 		$context = $core->site->path;
@@ -198,7 +202,7 @@ class Module extends \Icybee\Modules\Nodes\Module
 		{
 			$id = $editable['id'];
 			$title = $editable['title'];
-			$title = I18n\t($id, array(), array('scope' => array('content', 'title'), 'default' => $title));
+			$title = I18n\t($id, [], [ 'scope' => [ 'content', 'title' ], 'default' => $title ]);
 
 			$does_inherit = !empty($editable['inherit']);
 
@@ -259,25 +263,23 @@ class Module extends \Icybee\Modules\Nodes\Module
 
 					if ($inherited)
 					{
-						$elements[] = new Element
-						(
-							'div', array
-							(
-								Form::LABEL => $title,
-								Element::GROUP => 'contents.inherit',
-								Element::INNER_HTML => '',
-								Element::DESCRIPTION => I18n\t
-								(
-									'This content is currently inherited from the <q><a href="!url">!title</a></q> parent page. <a href="#edit" class="btn">Edit the content</a>', array
-									(
-										'!url' => $context . '/admin/' . $this->id . '/' . $inherited->nid . '/edit',
-										'!title' => $inherited->title
-									)
-								),
+						$elements[] = new Element('div', [
 
-								\Brickrouge\Section::T_PANEL_CLASS => 'inherit-toggle'
-							)
-						);
+							Form::LABEL => $title,
+							Element::GROUP => 'contents.inherit',
+							Element::INNER_HTML => '',
+							Element::DESCRIPTION => I18n\t
+							(
+								'This content is currently inherited from the <q><a href="!url">!title</a></q> parent page. <a href="#edit" class="btn">Edit the content</a>', array
+								(
+									'!url' => $context . '/admin/' . $this->id . '/' . $inherited->nid . '/edit',
+									'!title' => $inherited->title
+								)
+							),
+
+							\Brickrouge\Section::T_PANEL_CLASS => 'inherit-toggle'
+
+						]);
 					}
 					else
 					{
@@ -301,12 +303,13 @@ class Module extends \Icybee\Modules\Nodes\Module
 				{
 					$elements["contents[$id]"] = new Alert
 					(
-						I18n\t('Éditeur inconnu : %editor', array('%editor' => $editable['editor'])), array
-						(
+						I18n\t('Éditeur inconnu : %editor', [ '%editor' => $editable['editor'] ]), [
+
 							Form::LABEL => $title,
 							Element::GROUP => $does_inherit ? 'contents.inherit' : 'contents',
 							Alert::CONTEXT => Alert::CONTEXT_ERROR
-						)
+
+						]
 					);
 
 					continue;
@@ -314,22 +317,20 @@ class Module extends \Icybee\Modules\Nodes\Module
 
 				$editor = $core->editors[$editor_id];
 
-				$elements["contents[$id]"] = $editor->from
-				(
-					array
-					(
-						Form::LABEL => $title,
+				$elements["contents[$id]"] = $editor->from([
 
-						EditorElement::STYLESHEETS => $styles,
-						EditorElement::CONFIG => $editor_config,
+					Form::LABEL => $title,
 
-						Element::GROUP => $does_inherit ? 'contents.inherit' : 'contents',
-						Element::DESCRIPTION => $editor_description,
+					EditorElement::STYLESHEETS => $styles,
+					EditorElement::CONFIG => $editor_config,
 
-						'id' => 'editor-' . $id,
-						'value' => $editor->unserialize($value)
-					)
-				);
+					Element::GROUP => $does_inherit ? 'contents.inherit' : 'contents',
+					Element::DESCRIPTION => $editor_description,
+
+					'id' => 'editor-' . $id,
+					'value' => $editor->unserialize($value)
+
+				]);
 
 				#
 				# we add the editor's id as a hidden field
@@ -339,31 +340,29 @@ class Module extends \Icybee\Modules\Nodes\Module
 			}
 			else
 			{
-				$elements["contents[$id]"] = new MultiEditorElement
-				(
-					$editor_id, array
+				$elements["contents[$id]"] = new MultiEditorElement($editor_id, [
+
+					Form::LABEL => $title,
+
+					MultiEditorElement::NOT_SWAPPABLE => isset($editable['editor']),
+					MultiEditorElement::SELECTOR_NAME => "editors[$id]",
+					MultiEditorElement::EDITOR_TAGS => array
 					(
-						Form::LABEL => $title,
+						EditorElement::STYLESHEETS => $styles,
+						EditorElement::CONFIG => $editor_config
+					),
 
-						MultiEditorElement::NOT_SWAPPABLE => isset($editable['editor']),
-						MultiEditorElement::SELECTOR_NAME => "editors[$id]",
-						MultiEditorElement::EDITOR_TAGS => array
-						(
-							EditorElement::STYLESHEETS => $styles,
-							EditorElement::CONFIG => $editor_config
-						),
+					Element::GROUP => $does_inherit ? 'contents.inherit' : 'contents',
+					Element::DESCRIPTION => $editor_description,
 
-						Element::GROUP => $does_inherit ? 'contents.inherit' : 'contents',
-						Element::DESCRIPTION => $editor_description,
+					'id' => 'editor-' . $id,
+					'value' => $editor_id ? $core->editors[$editor_id]->unserialize($value) : $value
 
-						'id' => 'editor-' . $id,
-						'value' => $editor_id ? $core->editors[$editor_id]->unserialize($value) : $value
-					)
-				);
+				]);
 			}
 		}
 
-		return array($elements, $hiddens);
+		return [ $elements, $hiddens ];
 	}
 
 	/**
@@ -403,14 +402,14 @@ class Module extends \Icybee\Modules\Nodes\Module
 				$template = $request_template;
 			}
 
-			return array($template, $description, $template == 'page.html');
+			return [ $template, $description, $template == 'page.html' ];
 		}
 
 		$record = $this->model[$nid];
 		$definer = null;
 		$template = $request_template !== null ? $request_template : $record->template;
 
-//		\ICanBoogie\log('template: \1 (requested: \3), is_home: \2', array($template, $record->is_home, $request_template));
+//		\ICanBoogie\log('template: \1 (requested: \3), is_home: \2', [ $template, $record->is_home, $request_template ]);
 
 		if ($template == 'page.html' && (!$record->parent || ($record->parent && $record->parent->is_home)))
 		{
@@ -447,11 +446,11 @@ class Module extends \Icybee\Modules\Nodes\Module
 			$definer = $record;
 			$parent = $record->parent;
 
-//			\ICanBoogie\log('parent: \1 (\2 ?= \3)', array($definer->title, $definer->template, $template));
+//			\ICanBoogie\log('parent: \1 (\2 ?= \3)', [ $definer->title, $definer->template, $template ]);
 
 			while ($parent)
 			{
-//				\ICanBoogie\log('parent: \1, template: \2', array($parent->title, $parent->template));
+//				\ICanBoogie\log('parent: \1, template: \2', [ $parent->title, $parent->template ]);
 
 				if ($parent->template == $request_template)
 				{
@@ -461,14 +460,14 @@ class Module extends \Icybee\Modules\Nodes\Module
 				$parent = $parent->parent;
 			}
 
-//			\ICanBoogie\log('end parent: \1', array($parent ? $parent->title : 'none'));
+//			\ICanBoogie\log('end parent: \1', [ $parent ? $parent->title : 'none' ]);
 
 			if ($parent && $parent->template == $request_template)
 			{
 				$definer = $parent;
 			}
 
-//			\ICanBoogie\log('definer: \1:\3 (\2), record: \4:\5', array($definer->title,  $definer->template, $definer->nid, $record->title, $record->nid));
+//			\ICanBoogie\log('definer: \1:\3 (\2), record: \4:\5', [ $definer->title,  $definer->template, $definer->nid, $record->title, $record->nid ]);
 		}
 
 		if ($definer && $definer != $record)
@@ -477,18 +476,19 @@ class Module extends \Icybee\Modules\Nodes\Module
 
 			$description .= ' ' . I18n\t
 			(
-				'This page uses the <q>:template</q> template, inherited from the parent page <q><a href="!url">!title</a></q>.', array
-				(
+				'This page uses the <q>:template</q> template, inherited from the parent page <q><a href="!url">!title</a></q>.', [
+
 					'template' => $template,
 					'url' => \ICanBoogie\Routing\contextualize("/admin/{$this->id}/{$definer->nid}/edit"),
 					'title' => $definer->title
-				)
+
+				]
 			);
 
 			$inherited = true;
 		}
 
-		return array($template, $description, $inherited);
+		return [ $template, $description, $inherited ];
 	}
 
 	static public function get_template_info($name)
@@ -500,9 +500,9 @@ class Module extends \Icybee\Modules\Nodes\Module
 
 		if (!$path)
 		{
-			\ICanBoogie\log_error('Uknown template file %name', array('%name' => $name));
+			\ICanBoogie\log_error('Uknown template file %name', [ '%name' => $name ]);
 
-			return array();
+			return [];
 		}
 
 		$html = file_get_contents(\ICanBoogie\DOCUMENT_ROOT . $path);
@@ -513,8 +513,8 @@ class Module extends \Icybee\Modules\Nodes\Module
 
 	static protected function get_template_info_callback($html, $parser)
 	{
-		$styles = array();
-		$contents = array();
+		$styles = [];
+		$contents = [];
 
 		#
 		# search css files
@@ -526,7 +526,7 @@ class Module extends \Icybee\Modules\Nodes\Module
 		{
 			preg_match_all('#(\S+)="([^"]+)"#', $match, $attributes_matches, PREG_SET_ORDER);
 
-			$attributes = array();
+			$attributes = [];
 
 			foreach ($attributes_matches as $attribute_match)
 			{
@@ -549,15 +549,11 @@ class Module extends \Icybee\Modules\Nodes\Module
 
 		$tree = $parser->parse($html, \Patron\Engine::PREFIX);
 
-		//\ICanBoogie\log('tree: \1', array($tree));
-
 		#
 		# contents
 		#
 
 		$contents_collection = \Patron\HTMLParser::collectMarkup($tree, 'page:content');
-
-//		\ICanBoogie\log('contents collection: \1', array($contents_collection));
 
 		foreach ($contents_collection as $node)
 		{
@@ -590,14 +586,13 @@ class Module extends \Icybee\Modules\Nodes\Module
 				}
 			}
 
-//			\ICanBoogie\log('found content: \1', array($node));
+			$contents[] = $node['args'] + [
 
-			$contents[] = $node['args'] + array
-			(
 				'editor' => null,
 				'config' => null,
 				'description' => null
-			);
+
+			];
 		}
 
 		#
@@ -620,7 +615,7 @@ class Module extends \Icybee\Modules\Nodes\Module
 
 			if (!$path)
 			{
-				\ICanBoogie\log_error('Partial template %name not found', array('%name' => $file));
+				\ICanBoogie\log_error('Partial template %name not found', [ '%name' => $file ]);
 
 				continue;
 			}
@@ -637,6 +632,6 @@ class Module extends \Icybee\Modules\Nodes\Module
 			}
 		}
 
-		return array($contents, $styles);
+		return [ $contents, $styles ];
 	}
 }

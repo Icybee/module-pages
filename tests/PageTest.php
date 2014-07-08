@@ -60,18 +60,19 @@ class PageTest extends \PHPUnit_Framework_TestCase
 
 	public function provide_test_fallback_properties()
 	{
-		return array
-		(
-			array('label', array(), null),
-			array('label', array('title' => 'madonna'), 'madonna'),
-			array('label', array('title' => 'madonna', 'label' => 'lady gaga'), 'lady gaga'),
+		return [
 
-			array('template', array(), 'page.html'),
-			array('template', array('template' => 'example.html'), 'example.html'),
-			array('template', array('weight' => 0, 'is_online' => true), 'home.html'),
-			array('template', array('parent' => Page::from(array('template' => 'example.html'))), 'example.html'),
-			array('template', array('parent' => Page::from(array('weight' => 0, 'is_online' => true, 'template' => 'example.html'))), 'page.html')
-		);
+			[ 'label', [], null ],
+			[ 'label', [ 'title' => 'madonna' ], 'madonna' ],
+			[ 'label', [ 'title' => 'madonna', 'label' => 'lady gaga' ], 'lady gaga' ],
+
+			[ 'template', [], 'page.html' ],
+			[ 'template', [ 'template' => 'example.html' ], 'example.html' ],
+			[ 'template', [ 'weight' => 0, 'is_online' => true ], 'home.html' ],
+			[ 'template', [ 'parent' => Page::from([ 'template' => 'example.html' ]) ], 'example.html' ],
+			[ 'template', [ 'parent' => Page::from([ 'weight' => 0, 'is_online' => true, 'template' => 'example.html' ]) ], 'page.html' ]
+
+		];
 	}
 
 	/**
@@ -86,15 +87,16 @@ class PageTest extends \PHPUnit_Framework_TestCase
 
 	public function provide_test_get_property()
 	{
-		return array
-		(
-			array('is_home', array(), false),
-			array('is_home', array('is_online' => true), true),
-			array('is_home', array('is_online' => true, 'weight' => 1), false),
-			array('is_home', array('is_online' => true, 'weight' => 0, 'parentid' => 1), false),
+		return [
 
-			array('extension', array(), '.html'),
-			array('extension', array('template' => 'example.xml'), '.xml')
-		);
+			[ 'is_home', [], false ],
+			[ 'is_home', [ 'is_online' => true ], true ],
+			[ 'is_home', [ 'is_online' => true, 'weight' => 1 ], false ],
+			[ 'is_home', [ 'is_online' => true, 'weight' => 0, 'parentid' => 1 ], false ],
+
+			[ 'extension', [], '.html' ],
+			[ 'extension', [ 'template' => 'example.xml' ], '.xml' ]
+
+		];
 	}
 }

@@ -18,12 +18,11 @@ class UpdateTreeOperation extends \ICanBoogie\Operation
 {
 	protected function get_controls()
 	{
-		return array
-		(
-			self::CONTROL_PERMISSION => Module::PERMISSION_ADMINISTER
-		)
+		return [
 
-		+ parent::get_controls();
+			self::CONTROL_PERMISSION => Module::PERMISSION_ADMINISTER
+
+		] + parent::get_controls();
 	}
 
 	protected function validate(\ICanboogie\Errors $errors)
@@ -37,7 +36,7 @@ class UpdateTreeOperation extends \ICanBoogie\Operation
 			{
 				if (!isset($relation[$nid]))
 				{
-					$errors['relation'] = $errors->format("Missing relation for nid %nid.", array('nid' => $nid));
+					$errors['relation'] = $errors->format("Missing relation for nid %nid.", [ 'nid' => $nid ]);
 				}
 			}
 		}
@@ -45,12 +44,12 @@ class UpdateTreeOperation extends \ICanBoogie\Operation
 		{
 			if (!$order)
 			{
-				$errors['order'] = $errors->format("The %param param is required", array('param' => 'order'));
+				$errors['order'] = $errors->format("The %param param is required", [ 'param' => 'order' ]);
 			}
 
 			if (!$relation)
 			{
-				$errors['relation'] = $errors->format("The %param param is required", array('param' => 'relation'));
+				$errors['relation'] = $errors->format("The %param param is required", [ 'param' => 'relation' ]);
 			}
 		}
 

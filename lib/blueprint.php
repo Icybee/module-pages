@@ -37,15 +37,15 @@ class Blueprint implements \IteratorAggregate
 	{
 		$query->mode(\PDO::FETCH_CLASS, __NAMESPACE__ . '\BluePrintNode');
 
-		$relation = array();
-		$children = array();
-		$index = array();
+		$relation = [];
+		$children = [];
+		$index = [];
 
 		foreach ($query as $row)
 		{
 			$row->parent = null;
 			$row->depth = null;
-			$row->children = array();
+			$row->children = [];
 
 			$nid = $row->nid;
 			$parent_id = $row->parentid;
@@ -54,7 +54,7 @@ class Blueprint implements \IteratorAggregate
 			$children[$parent_id][$nid] = $nid;
 		}
 
-		$tree = array();
+		$tree = [];
 
 		foreach ($index as $nid => $page)
 		{
@@ -181,7 +181,7 @@ class Blueprint implements \IteratorAggregate
 				return $this->get_ordered_records();
 		}
 
-		throw new PropertyNotDefined(array($property, $this));
+		throw new PropertyNotDefined([ $property, $this ]);
 	}
 
 	public function getIterator()
@@ -191,7 +191,7 @@ class Blueprint implements \IteratorAggregate
 
 	protected function get_ordered_nodes()
 	{
-		$nodes = array();
+		$nodes = [];
 
 		$ordering = function(array $branch) use(&$ordering, &$nodes) {
 
@@ -220,7 +220,7 @@ class Blueprint implements \IteratorAggregate
 	 */
 	protected function get_ordered_records()
 	{
-		$records = array();
+		$records = [];
 
 		$ordering = function(array $branch) use(&$ordering, &$records) {
 
@@ -304,9 +304,9 @@ class Blueprint implements \IteratorAggregate
 	 */
 	public function subset($nid_or_filter=null, $depth=null, $filter=null)
 	{
-		$relation = array();
-		$children = array();
-		$index = array();
+		$relation = [];
+		$children = [];
+		$index = [];
 
 		$nid = $nid_or_filter;
 
@@ -318,13 +318,13 @@ class Blueprint implements \IteratorAggregate
 
 		$iterator = function(array $branch) use(&$iterator, &$filter, &$depth, &$relation, &$children, &$index)
 		{
-			$pages = array();
+			$pages = [];
 
 			foreach ($branch as $nid => $node)
 			{
 				$node_children = $node->children;
 				$node = clone $node;
-				$node->children = array();
+				$node->children = [];
 
 				if ($node_children && ($depth === null || $node->depth < $depth))
 				{
@@ -363,7 +363,7 @@ class Blueprint implements \IteratorAggregate
 	{
 		if (!$this->index)
 		{
-			return array();
+			return [];
 		}
 
 		$records = $this->model->find(array_keys($this->index));
@@ -448,7 +448,7 @@ class BlueprintNode
 	 */
 	protected function get_descendents()
 	{
-		$descendents = array();
+		$descendents = [];
 
 		foreach ($this->children as $nid => $child)
 		{
