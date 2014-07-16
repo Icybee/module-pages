@@ -68,7 +68,7 @@ class PageController
 				$template = file_get_contents($pathname);
 				$engine = $this->resolve_engine($template);
 
-				return new Response($engine($template, $page), $code);
+				return new Response($engine($template, $page, [ 'file' => $pathname ]), $code);
 			}
 
 			throw $e;
@@ -87,7 +87,9 @@ class PageController
 	{
 		global $core;
 
-		$template = $this->resolve_template($page->template);
+		$template_pathname = $this->resolve_template_pathname($page->template);
+		$template = file_get_contents($template_pathname);
+
 		$document = $core->document;
 		$engine = $this->resolve_engine($template);
 		$engine->context['page'] = $page;
@@ -104,7 +106,7 @@ class PageController
 			$page->body->render();
 		}
 
-		$html = $engine($template, $page, [ 'file' => $page->template ]);
+		$html = $engine($template, $page, [ 'file' => $template_pathname ]);
 
 		new PageController\RenderEvent($this, $request, $page, $html);
 
@@ -238,7 +240,7 @@ class PageController
 		return $page;
 	}
 
-	protected function resolve_template($name)
+	protected function resolve_template_pathname($name)
 	{
 		global $core;
 
@@ -250,7 +252,12 @@ class PageController
 			throw new Exception('Unable to resolve path for template: %template', [ '%template' => $pathname ]);
 		}
 
-		return file_get_contents($root . $pathname, true);
+		return $root . $pathname;
+	}
+
+	protected function resolve_template($name)
+	{
+		return file_get_contents($this->resolve_template_pathname($name), true);
 	}
 
 	protected function resolve_engine($template)
