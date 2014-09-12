@@ -168,6 +168,24 @@ class Hooks
 		return $core->models['pages']->find_home($site->siteid);
 	}
 
+	/**
+	 * Render a {@link Page} instance into a string using a {@link PageRenderer} instance.
+	 *
+	 * @param Page $page
+	 *
+	 * @return string
+	 */
+	static public function render_page(Page $page)
+	{
+		$renderer = new PageRenderer;
+
+		return $renderer($page);
+	}
+
+	/*
+	 * Events
+	 */
+
 	static public function before_document_render_title(\Icybee\Document\BeforeRenderTitleEvent $event)
 	{
 		global $core;

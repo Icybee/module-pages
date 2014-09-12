@@ -22,7 +22,8 @@ return [
 	'prototypes' => [
 
 		'Icybee\Modules\Sites\Site::lazy_get_home' => $hooks . 'get_home',
-		'ICanBoogie\Core::get_page' => $hooks . 'get_page'
+		'ICanBoogie\Core::get_page' => $hooks . 'get_page',
+		__NAMESPACE__ . '\Page::render' => $hooks . 'render_page'
 
 	],
 

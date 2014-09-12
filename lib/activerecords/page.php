@@ -18,6 +18,9 @@ use Icybee\Modules\Sites\Site;
 /**
  * Representation of a page.
  *
+ * @method string render() render() Renders the instance into a string. The method needs to be
+ * implemented using the class' Prototype.
+ *
  * @property Page $parent Parent page of the page.
  * @property \Icybee\Modules\Sites\Site $site The site the page belongs to.
  * @property-read bool $is_accessible Whether the page is accessible or not.
@@ -187,6 +190,18 @@ class Page extends \Icybee\Modules\Nodes\Node
 		}
 
 		return $keys;
+	}
+
+	public function __toString()
+	{
+		try
+		{
+			return (string) $this->render();
+		}
+		catch (\Exception $e)
+		{
+			return \ICanBoogie\Debug::format_alert($e);
+		}
 	}
 
 	/**
