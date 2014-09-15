@@ -1,4 +1,4 @@
-# Pages [![Build Status](https://travis-ci.org/Icybee/modules-pages.png?branch=2.0)](https://travis-ci.org/Icybee/modules-pages)
+# Pages [![Build Status](https://travis-ci.org/Icybee/module-pages.svg?branch=2.0)](https://travis-ci.org/Icybee/module-pages)
 
 The Pages module (`pages`) introduces the "Page" content type to the CMS
 [Icybee](http://icybee.org). Pages are used to created the website tree, display contents and
@@ -536,7 +536,7 @@ directory can later be cleaned with the `make clean` command.
 
 The package is continuously tested by [Travis CI](http://about.travis-ci.org/).
 
-[![Build Status](https://travis-ci.org/Icybee/modules-pages.png?branch=2.0)](https://travis-ci.org/Icybee/modules-pages)
+[![Build Status](https://travis-ci.org/Icybee/module-pages.svg?branch=2.0)](https://travis-ci.org/Icybee/module-pages)
 
 
 
