@@ -371,8 +371,31 @@ $core->events->attach(function(PageRenderer\RenderEvent $event, PageRenderer $ta
 });
 ```
 
+The `inject()` method is used to insert a HTML fragment relative to an element in the produced
+HTML. The following example demonstrates how the content of a `$fragment` variable can be injected
+at the bottom of the `BODY` element.
 
+```php
+<?php
 
+	// …
+
+	$event->inject($fragment, 'body');
+
+	// …
+```
+
+The `replace()` method is used to replace a placeholder by a HTML fragment.
+
+```php
+<?php
+
+	// …
+
+	$event->replace($placeholder, $fragment);
+
+	// …
+```
 
 
 
