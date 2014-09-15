@@ -16,15 +16,21 @@ use Brickrouge\ElementIsEmpty;
 
 class NavigationBranchElement extends Element
 {
+	const CSS_CLASS_NAMES = '#nav-branc-css-class-names';
+
 	protected $page;
 
 	static public function markup_navigation_leaf(array $args, $patron, $template)
 	{
 		global $core;
 
-		$page = $core->request->context->page;
+		$element = new static($core->request->context->page, [
 
-		return new static($page);
+			self::CSS_CLASS_NAMES => $args['css-class-names']
+
+		]);
+
+		return $template ? $patron($template, $element) : $element;
 	}
 
 	public function __construct(Page $page, array $attributes=[])
@@ -33,7 +39,9 @@ class NavigationBranchElement extends Element
 
 		parent::__construct('div', $attributes + [
 
-			'class' => 'nav-branch'
+			'class' => 'nav-branch',
+
+			self::CSS_CLASS_NAMES => 'active trail'
 
 		]);
 	}
@@ -88,13 +96,15 @@ class NavigationBranchElement extends Element
 			return $children;
 		};
 
-		return $build_blueprint($parent_id, 2);
+		$blueprint =  $build_blueprint($parent_id, 2);
+
+		new NavigationBranchElement\AlterBlueprintEvent($this, $blueprint, $page, $this->start->nid);
+
+		return $blueprint;
 	}
 
-	protected function render_inner_html()
+	protected function get_start()
 	{
-		global $core;
-
 		$page = $this->page;
 		$parent = $this->page;
 
@@ -103,18 +113,36 @@ class NavigationBranchElement extends Element
 			$parent = $parent->parent;
 		}
 
-		$parent_id = $parent->nid;
+		return $parent;
+	}
+
+	protected function get_rendered_header()
+	{
+		$start = $this->start;
+		$url = \Brickrouge\escape($start->url);
+		$label = \Brickrouge\escape($start->label);
+
+		return <<<EOT
+<div class="nav-branch-header"><h5><a href="$url">$label</a></h5></div>
+EOT;
+	}
+
+	protected function render_inner_html()
+	{
+		global $core;
+
+		$page = $this->page;
+		$start = $this->start;
+		$start_id = $start->nid;
 
 		#
 
-		$tree_blueprint = $this->build_blueprint($page, $parent_id);
+		$tree_blueprint = $this->build_blueprint($page, $start_id);
 
 		if (!$tree_blueprint)
 		{
 			throw new ElementIsEmpty;
 		}
-
-		new NavigationBranchElement\AlterBlueprintEvent($this, $tree_blueprint, $page, $parent_id);
 
 		$ids = [];
 
@@ -131,14 +159,14 @@ class NavigationBranchElement extends Element
 			}
 		};
 
-		$html = '<div class="nav-branch-header"><h5><a href="' . \Brickrouge\escape($parent->url) . '">' . \Brickrouge\escape($parent->label) . '</a></h5></div>';
+		$html = $this->rendered_header;
 
 		if ($tree_blueprint)
 		{
 			$collect_ids($tree_blueprint);
 
 			$pages = $core->models['pages']->find($ids);
-			$html .= '<div class="nav-branch-content">' . $this->render_page_recursive($tree_blueprint, $pages, $parent->depth + 1, 0) . '</div>';
+			$html .= '<div class="nav-branch-content">' . $this->render_page_recursive($tree_blueprint, $pages, $start->depth + 1, 0) . '</div>';
 		}
 
 		return $html;
@@ -146,13 +174,15 @@ class NavigationBranchElement extends Element
 
 	protected function render_page_recursive(array $children, $pages, $depth, $relative_depth)
 	{
+		$class_names = $this[self::CSS_CLASS_NAMES];
+
 		$html = '';
 
 		foreach ($children as $blueprint_child)
 		{
 			$child = $pages[$blueprint_child->nid];
 
-			$html .= '<li class="' . $child->css_class('active trail') . '"><a href="' . \Brickrouge\escape($child->url) . '">' . \Brickrouge\escape($child->label) . '</a>';
+			$html .= '<li class="' . $child->css_class($class_names) . '"><a href="' . \Brickrouge\escape($child->url) . '">' . \Brickrouge\escape($child->label) . '</a>';
 
 			if ($blueprint_child->children)
 			{
