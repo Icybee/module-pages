@@ -70,13 +70,8 @@ return [
 
 			__NAMESPACE__ . '\NavigationBranchElement::markup_navigation_leaf', [
 
-				'css-class-names' => 'active trail'
-
-				/* FIXME-20120715: not implemented
-				'level' => 1,
-				'depth' => null,
-				'title-link' => null
-				*/
+				'css-class-names' => 'active trail id',
+				'depth' => 2
 
 			]
 

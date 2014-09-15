@@ -432,6 +432,58 @@ displayed. The getter is a shortcut to `$core->request->context->page`.
 
 
 
+## Patron markups
+
+The following [Patron][] markups are defined by the module:
+
+- `p:breadcrumb`
+- `p:navigation`
+- `p:navigation:leaf`
+- `p:page:content`
+- `p:page:languages`
+- `p:page:region`
+- `p:page:title`
+
+
+
+
+
+### The `p:navigation:leaf` markup
+
+Render a navigation leaf from the current page.
+
+```html
+<p:navigation:leaf
+	css-class-name = string
+	depth = int>
+	<!-- Content: p:with-param*, template? -->
+</p:navigation:leaf>
+```
+
+`css-class-name` specifies the modifiers to use to generate the CSS classes of the header
+and the content nodes. It defaults to "active trail id". `depth` is the maximum depth of the
+branch. It defaults to 2.
+
+The template is published with a [NavigationBranchElement][] instance as _thisArg_.
+
+```html
+<p:navigation:leaf />
+
+<!-- or -->
+
+<p:navigation:leaf>
+	<div class="nav-branch">
+		#{@rendered_header=}
+		#{@rendered_content=}
+	</div>
+</p>
+```
+
+
+
+
+
+
 ----------
 
 
@@ -510,10 +562,12 @@ This package is licensed under the New BSD License - See the [LICENSE](LICENSE) 
 
 [BeforePopulateEvent]: http://icybee.org/docs/class-Icybee.Modules.Pages.NavigationElement.BeforePopulateEvent.html
 [BeforeRenderEvent]: http://icybee.org/docs/class-Icybee.Modules.Pages.PageRenderer.BeforeRenderEvent.html
+[NavigationBranchElement]: http://icybee.org/docs/class-Icybee.Modules.Pages.NavigationBranchElement.html
 [NavigationElement]: http://icybee.org/docs/class-Icybee.Modules.Pages.NavigationElement.html
 [Page]: http://icybee.org/docs/class-Icybee.Modules.Pages.Page.html
 [PageController]: http://icybee.org/docs/class-Icybee.Modules.Pages.PageController.html
 [PageRenderer]: http://icybee.org/docs/class-Icybee.Modules.Pages.PageRenderer.html
+[Patron]: https://github.com/Icybee/Patron
 [PopulateEvent]: http://icybee.org/docs/class-Icybee.Modules.Pages.NavigationElement.PopulateEvent.html
 [Query]: http://icanboogie.org/docs/class-ICanBoogie.ActiveRecord.Query.html
 [RenderEvent]: http://icybee.org/docs/class-Icybee.Modules.Pages.PageRenderer.RenderEvent.html
