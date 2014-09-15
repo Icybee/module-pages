@@ -23,7 +23,16 @@
 		"icanboogie/activerecord": "2.x",
 		"icybee/module-nodes": "2.x"
 	},
+	"require-dev": {
+		"icanboogie/icanboogie": "2.x",
+		"brickrouge/brickrouge": "2.x",
+		"icybee/patron": "1.x",
+		"icybee/bluetihi": "*"
+	},
 	"autoload": {
 		"classmap": [ "lib" ]
+	},
+	"scripts": {
+		"post-autoload-dump": "ICanBoogie\\AutoConfig\\Generator::on_autoload_dump"
 	}
 }

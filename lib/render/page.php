@@ -11,52 +11,52 @@
 
 namespace Icybee\Modules\Pages;
 
+use ICanBoogie\HTTP\Request;
+
+use Icybee\Modules\Pages\PageRenderer\BeforeRenderEvent;
+use Icybee\Modules\Pages\PageRenderer\RenderEvent;
+
+/**
+ * Render a {@link Page} instance into an HTML string.
+ */
 class PageRenderer
 {
-	public function __invoke($page)
+	use \ICanBoogie\GetterTrait;
+
+	public function __invoke(Page $page)
 	{
 		global $core;
 
-		require_once \ICanBoogie\DOCUMENT_ROOT . 'user-startup.php';
+		$template_pathname = $this->resolve_template_pathname($page->template);
+		$template = file_get_contents($template_pathname);
+		$document = $core->document;
+		$engine = $this->resolve_engine($template);
+		$engine->context['page'] = $page;
+		$engine->context['document'] = $document;
+
+		$user_startup = \ICanBoogie\DOCUMENT_ROOT . 'user-startup.php';
+
+		if (file_exists($user_startup))
+		{
+			require $user_startup;
+		}
+
+		new BeforeRenderEvent($this, $page, $document, $engine->context);
 
 		#
 		# The page body is rendered before the template is parsed.
 		#
 
-		if ($page->body && is_callable(array($page->body, 'render')))
+		if ($page->body && is_callable([ $page->body, 'render' ]))
 		{
 			$page->body->render();
 		}
 
 		# template
 
-		$template_pathname = $this->resolve_template_pathname($page->template);
-		$template = file_get_contents($template_pathname);
-		$document = $core->document;
-		$engine = $this->resolve_engine($template);
-		$engine->context['document'] = $document;
-
 		$html = $engine($template, $page, [ 'file' => $template_pathname ]);
 
-		#
-		# late replace
-		#
-
-		$html = preg_replace('#\<\!-- document-css-placeholder-[^\s]+ --\>#', (string) $document->css, $html);
-
-		#
-
-		$markup = '<!-- $document.js -->';
-		$pos = strpos($html, $markup);
-
-		if ($pos !== false)
-		{
-			$html = substr($html, 0, $pos) . $document->js . substr($html, $pos + strlen($markup));
-		}
-		else
-		{
-			$html = str_replace('</body>', PHP_EOL . PHP_EOL . $document->js . PHP_EOL . '</body>', $html);
-		}
+		new RenderEvent($this, $html, $page, $document);
 
 		return $html;
 	}
@@ -70,7 +70,11 @@ class PageRenderer
 
 		if (!$pathname)
 		{
-			throw new Exception('Unable to resolve path for template: %template', array('%template' => $pathname));
+			throw new \Exception(\ICanBoogie\format('Unable to resolve path for template: %name', [
+
+				'%name' => $name
+
+			]));
 		}
 
 		return $root . $pathname;
@@ -79,5 +83,104 @@ class PageRenderer
 	protected function resolve_engine($template)
 	{
 		return new \Patron\Engine;
+	}
+}
+
+namespace Icybee\Modules\Pages\PageRenderer;
+
+use ICanBoogie\HTTP\Request;
+
+use Brickrouge\Document;
+
+use Icybee\Modules\Pages\Page;
+use Icybee\Modules\Pages\PageRenderer;
+
+/**
+ * Event class for the 'Icybee\Modules\Pages\PageRenderer::render:before'.
+ *
+ * Third parties may use this event to alter the context of the rendering.
+ */
+class BeforeRenderEvent extends \ICanBoogie\Event
+{
+	/**
+	 * The {@link Page} being rendered.
+	 *
+	 * @var Page
+	 */
+	public $page;
+
+	/**
+	 * Document.
+	 *
+	 * @var Document
+	 */
+	public $document;
+
+	/**
+	 * Reference to the rendering context.
+	 *
+	 * @var mixed
+	 */
+	public $context;
+
+	/**
+	 * The event is constructed with the type `render:before`.
+	 *
+	 * @param PageRenderer $target
+	 * @param Page $page
+	 * @param mixed $context
+	 */
+	public function __construct(PageRenderer $target, Page $page, Document $document, &$context)
+	{
+		$this->page = $page;
+		$this->document = $document;
+		$this->context = &$context;
+
+		parent::__construct($target, 'render:before');
+	}
+}
+
+/**
+ * Event class for the `Icybee\Modules\Pages\PageRenderer::render` event.
+ *
+ * Third parties may use this event to alter the renderer HTML.
+ */
+class RenderEvent extends \ICanBoogie\Event
+{
+	/**
+	 * Reference to the rendered HTML.
+	 *
+	 * @var string
+	 */
+	public $html;
+
+	/**
+	 * The page being rendered.
+	 *
+	 * @var Page
+	 */
+	public $page;
+
+	/**
+	 * Document.
+	 *
+	 * @var Document
+	 */
+	public $document;
+
+	/**
+	 * The event is constructed with the type `render`.
+	 *
+	 * @param PageRenderer $target
+	 * @param Page $page The page being rendered.
+	 * @param string $html Reference to the rendered HTML.
+	 */
+	public function __construct(PageRenderer $target, &$html, Page $page, Document $document)
+	{
+		$this->html = &$html;
+		$this->page = $page;
+		$this->document = $document;
+
+		parent::__construct($target, 'render');
 	}
 }

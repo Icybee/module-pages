@@ -12,7 +12,6 @@
 namespace Icybee\Modules\Pages;
 
 use ICanBoogie\AuthenticationRequired;
-use ICanBoogie\Exception;
 use ICanBoogie\HTTP\NotFound;
 use ICanBoogie\HTTP\RedirectResponse;
 use ICanBoogie\HTTP\Request;
@@ -23,13 +22,8 @@ use ICanBoogie\Routing\Pattern;
 
 use Icybee\Modules\Sites\Site;
 
-define(__NAMESPACE__ . '\PageController\CSS_DOCUMENT_PLACEHOLDER', uniqid());
-define(__NAMESPACE__ . '\PageController\JS_DOCUMENT_PLACEHOLDER', uniqid());
-
 class PageController
 {
-	const DOCUMENT_JS_PLACEHOLDER = '<!-- $document.js -->';
-
 	public function __invoke(Request $request)
 	{
 		global $core;
@@ -48,7 +42,7 @@ class PageController
 				return $page;
 			}
 
-			return $this->resolve_response($page, $request);
+			return $this->render_page($page);
 		}
 		catch (\Exception $e) // TODO-20130812: This shouldn't be handled by the class, but by Icybee or the user.
 		{
@@ -79,53 +73,13 @@ class PageController
 	 * Resolve the specified Page and Request into a Response.
 	 *
 	 * @param Page $page
-	 * @param Request $request
 	 *
 	 * @return \ICanBoogie\HTTP\Response
 	 */
-	protected function resolve_response(Page $page, Request $request)
+	protected function render_page(Page $page)
 	{
-		global $core;
-
-		$template_pathname = $this->resolve_template_pathname($page->template);
-		$template = file_get_contents($template_pathname);
-
-		$document = $core->document;
-		$engine = $this->resolve_engine($template);
-		$engine->context['page'] = $page;
-		$engine->context['document'] = $document;
-
-		new PageController\BeforeRenderEvent($this, $request, $page, $engine->context);
-
-		#
-		# The page body is rendered before the template is parsed.
-		#
-
-		if ($page->body && is_callable([ $page->body, 'render' ]))
-		{
-			$page->body->render();
-		}
-
-		$html = $engine($template, $page, [ 'file' => $template_pathname ]);
-
-		new PageController\RenderEvent($this, $request, $page, $html);
-
-		#
-		# late replace
-		#
-
-		$pos = strpos($html, self::DOCUMENT_JS_PLACEHOLDER);
-
-		if ($pos !== false)
-		{
-			$html = substr($html, 0, $pos)
-			. $document->js
-			. substr($html, $pos + strlen(self::DOCUMENT_JS_PLACEHOLDER));
-		}
-		else
-		{
-			$html = str_replace('</body>', PHP_EOL . PHP_EOL . $document->js . PHP_EOL . '</body>', $html);
-		}
+		$renderer = new PageRenderer;
+		$html = $renderer($page);
 
 		return new Response($html, 200, [
 
@@ -240,118 +194,8 @@ class PageController
 		return $page;
 	}
 
-	protected function resolve_template_pathname($name)
-	{
-		global $core;
-
-		$root = \ICanBoogie\DOCUMENT_ROOT;
-		$pathname = $core->site->resolve_path('templates/' . $name);
-
-		if (!$pathname)
-		{
-			throw new Exception('Unable to resolve path for template: %template', [ '%template' => $pathname ]);
-		}
-
-		return $root . $pathname;
-	}
-
-	protected function resolve_template($name)
-	{
-		return file_get_contents($this->resolve_template_pathname($name), true);
-	}
-
 	protected function resolve_engine($template)
 	{
 		return new \Patron\Engine;
-	}
-}
-
-namespace Icybee\Modules\Pages\PageController;
-
-use ICanBoogie\HTTP\Request;
-
-use Icybee\Modules\Pages\Page;
-
-/**
- * Event class for the 'Icybee\Modules\Pages\PageController::render:before'.
- */
-class BeforeRenderEvent extends \ICanBoogie\Event
-{
-	/**
-	 * Request.
-	 *
-	 * @var \ICanBoogie\HTTP\Request
-	 */
-	public $request;
-
-	/**
-	 * Response.
-	 *
-	 * @var \ICanBoogie\HTTP\Response
-	 */
-	public $response;
-
-	/**
-	 * Rendering context.
-	 *
-	 * @var mixed
-	 */
-	public $context;
-
-	/**
-	 * The event is constructed with the type `render:before`.
-	 *
-	 * @param \Icybee\Modules\Pages\PageController $target
-	 * @param array $payload
-	 */
-	public function __construct(\Icybee\Modules\Pages\PageController $target, Request $request, Page $page, &$context)
-	{
-		$this->request = $request;
-		$this->page = $page;
-		$this->context = &$context;
-
-		parent::__construct($target, 'render:before');
-	}
-}
-
-/**
- * Event class for the `Icybee\Modules\Pages\PageController::render` event.
- */
-class RenderEvent extends \ICanBoogie\Event
-{
-	/**
-	 * The request.
-	 *
-	 * @var \ICanBoogie\HTTP\Request
-	 */
-	public $request;
-
-	/**
-	 * The page being rendered.
-	 *
-	 * @var \Icybee\Modules\Pages\Page
-	 */
-	public $page;
-
-	/**
-	 * The rendered HTML.
-	 *
-	 * @var string
-	 */
-	public $html;
-
-	/**
-	 * The event is constructed with the type `render`.
-	 *
-	 * @param \Icybee\Modules\Pages\PageController $target
-	 * @param array $payload
-	 */
-	public function __construct(\Icybee\Modules\Pages\PageController $target, Request $request, Page $page, &$html)
-	{
-		$this->request = $request;
-		$this->page = $page;
-		$this->html = &$html;
-
-		parent::__construct($target, 'render');
 	}
 }

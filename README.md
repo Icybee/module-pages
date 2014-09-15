@@ -275,6 +275,109 @@ $core->events->attach(function(NavigationElement\PopulateEvent $event, Navigatio
 
 
 
+## Rendering pages
+
+[Page][] instances are rendered using a [PageRenderer][] instance. This is usually handled by the
+[PageController], but sometimes you might want to do that yourself, without being required to
+dispatch a request, for example when rendering a [Page][] instance that you have created yourself.
+
+Events are fired before and after the rendering, allowing third parties to alter the rendering.
+
+```php
+<?php
+
+use Icybee\Modules\Pages\Page;
+use Icybee\Modules\Pages\PageRenderer;
+
+$page = Page::form([
+
+	'title' => "My page",
+	'body' => "My body"
+
+]);
+
+$renderer = new PageRenderer;
+$html = $renderer($page);
+```
+
+The module also provides a default renderer that is used when rendering a [Page][] instance to a
+HTML string with either the `render()` prototype method, or `__toString()`.
+
+```php
+<?php
+
+$html = $page->render();
+$html = (string) $page;
+```
+
+You can override the `render()` method to use your own renderer:
+
+```php
+<?php
+
+use ICanBoogie\Prototype;
+
+Prototype::from('Icybee\Modules\Pages\Page')['render'] = function(Page $page)
+{
+	// …
+
+	return $html;
+};
+```
+
+
+
+
+
+### Before the rendering
+
+The event `Icybee\Modules\Pages\PageRenderer::render:before` event of class [BeforeRenderEvent][]
+is fired before the page is rendered. Third parties may use this event to alter the rendering
+context, or the assets of the document.
+
+```php
+<?php
+
+use Icybee\Modules\Pages\PageRenderer;
+
+$core->events->attach(function(PageRenderer\BeforeRenderEvent $event, PageRenderer $target) {
+
+	$event->context['my_variable'] = "My value";
+
+	$event->document->css->add('/public/page.css');
+	$event->document->js->add('/public/page.js');
+
+});
+```
+
+
+
+
+
+### After the rendering
+
+The event `Icybee\Modules\Pages\PageRenderer::render` event of class [RenderEvent][] is fired
+after the page was rendered. Third parties may use this event to alter the HTML string produced.
+
+```php
+<?php
+
+use Icybee\Modules\Pages\PageRenderer;
+
+$core->events->attach(function(PageRenderer\RenderEvent $event, PageRenderer $target) {
+
+	$event->html .= "<!-- My awesome comment -->";
+
+});
+```
+
+
+
+
+
+
+
+
 
 ## Prototype methods
 
@@ -383,6 +486,11 @@ This package is licensed under the New BSD License - See the [LICENSE](LICENSE) 
 
 
 [BeforePopulateEvent]: http://icybee.org/docs/class-Icybee.Modules.Pages.NavigationElement.BeforePopulateEvent.html
+[BeforeRenderEvent]: http://icybee.org/docs/class-Icybee.Modules.Pages.PageRenderer.BeforeRenderEvent.html
 [NavigationElement]: http://icybee.org/docs/class-Icybee.Modules.Pages.NavigationElement.html
+[Page]: http://icybee.org/docs/class-Icybee.Modules.Pages.Page.html
+[PageController]: http://icybee.org/docs/class-Icybee.Modules.Pages.PageController.html
+[PageRenderer]: http://icybee.org/docs/class-Icybee.Modules.Pages.PageRenderer.html
 [PopulateEvent]: http://icybee.org/docs/class-Icybee.Modules.Pages.NavigationElement.PopulateEvent.html
 [Query]: http://icanboogie.org/docs/class-ICanBoogie.ActiveRecord.Query.html
+[RenderEvent]: http://icybee.org/docs/class-Icybee.Modules.Pages.PageRenderer.RenderEvent.html
