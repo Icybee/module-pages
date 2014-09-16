@@ -19,16 +19,40 @@ use Icybee\Modules\Pages\NavigationElement\PopulateEvent;
 
 /**
  * A navigation element.
+ *
+ * @property-read Blueprint $blueprint The blueprint of the navigation.
  */
 class NavigationElement extends Element
 {
+	const CSS_CLASS_NAMES = '#navigation-css-class-names';
+	const CSS_CLASS_NAMES_DEFAULT = '-constructor -slug -template';
+
 	protected $blueprint;
 
-	public function __construct(Blueprint $blueprint, $type='ol', $attributes=[])
+	/**
+	 * Return the blueprint of the navigation.
+	 *
+	 * @return Blueprint
+	 */
+	protected function get_blueprint()
+	{
+		return $this->blueprint;
+	}
+
+	/**
+	 * Initialize the {@link $blueprint} property.
+	 *
+	 * @param Blueprint $blueprint
+	 * @param string $type
+	 * @param array $attributes
+	 */
+	public function __construct(Blueprint $blueprint, $type='ol', array $attributes=[])
 	{
 		$this->blueprint = $blueprint;
 
 		parent::__construct($type, $attributes + [
+
+			self::CSS_CLASS_NAMES => self::CSS_CLASS_NAMES_DEFAULT,
 
 			'class' => 'nav lv1'
 
@@ -76,6 +100,8 @@ class NavigationElement extends Element
 	 */
 	protected function create_renderables(Blueprint $blueprint)
 	{
+		$css_class_names = $this[self::CSS_CLASS_NAMES];
+
 		foreach ($blueprint as $node)
 		{
 			$record = $node->record;
@@ -92,7 +118,7 @@ class NavigationElement extends Element
 
 				'item_decorator' => new Element('li', [
 
-					'class' => $record->css_class('-constructor -slug -template')
+					'class' => $record->css_class($css_class_names)
 
 				]),
 

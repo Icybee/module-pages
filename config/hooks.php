@@ -56,11 +56,11 @@ return [
 
 			$hooks . 'markup_navigation', [
 
-				'parent' => 0,
-				'depth' => [ 'default' => 2 ],
-				'min-child' => false,
-				'from-level' => null,
-				'mode' => null
+				'css-class-names' => '-constructor -slug -template',
+				'depth' => 2,
+				'from-level' => 0,
+				'min-children' => 0,
+				'parent' => 0
 
 			]
 

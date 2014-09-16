@@ -419,35 +419,40 @@ class Hooks
 		);
 	}
 
+	/**
+	 * Render a navigation element.
+	 *
+	 * <pre>
+	 * <p:navigation
+	 *     css-class-name = string
+	 *     depth = int
+	 *     from-level = int
+	 *     min-children = int
+	 *     parent = int|string|Page>
+	 *     <!-- Content: p:with-param*, template? -->
+	 * </p:navigation>
+	 * </pre>
+	 *
+	 * The CSS class names to use by the navigation branch can be specified with the
+	 * `css-class-names` parameter. The default is "'-constructor -slug -template'", which
+	 * removes the constructor, slug, and template names. The maximum depth of the navigation is
+	 * specified by the `depth` parameter. The starting level of the navigation is specified by
+	 * the `from-level` parameter. Using the `min-children` parameter, navigation branches can be
+	 * discarted if they don't include enough direct children. Finally, the `parent` parameter can
+	 * be used to specify the parent of the navigation, which can be specified as a {@link Page}
+	 * instance, an identifier, or a path.
+	 *
+	 * @param array $args
+	 * @param \Patron\Engine $engine
+	 * @param mixed $template
+	 *
+	 * @return void|boolean|NavigationElement
+	 */
 	static public function markup_navigation(array $args, \Patron\Engine $engine, $template)
 	{
 		global $core;
 
 		$page = $core->request->context->page;
-		$mode = $args['mode'];
-
-		if ($mode == 'leaf')
-		{
-			$node = $page;
-
-			while ($node)
-			{
-				if ($node->navigation_children)
-				{
-					break;
-				}
-
-				$node = $node->parent;
-			}
-
-			if (!$node)
-			{
-				return;
-			}
-
-			return $patron($template, $node);
-		}
-
 		$model = $core->models['pages'];
 		$depth = $args['depth'];
 
@@ -477,7 +482,7 @@ class Hooks
 		{
 			$parentid = $args['parent'];
 
-			if (is_object($parentid))
+			if ($parentid instanceof Page)
 			{
 				$parentid = $parentid->nid;
 			}
@@ -485,34 +490,43 @@ class Hooks
 			{
 				$parent = $model->find_by_path($parentid);
 
+				if (!$parent)
+				{
+					throw new \Exception(\ICanBoogie\format("Unable to locate parent with path %path", [
+
+						'path' => $parentid
+
+					]));
+				}
+
 				$parentid = $parent->nid;
 			}
 		}
 
-		$blueprint = $model->blueprint($page->siteid);
-		$min_child = $args['min-child'];
+		$min_children = $args['min-children'];
 
-		$subset = $blueprint->subset
-		(
-			$parentid, $depth === null ? null : $depth - 1, function($branch) use($min_child)
+		$blueprint = $model
+		->blueprint($page->siteid)
+		->subset($parentid, $depth === null ? null : $depth - 1, function(BlueprintNode $node) use($min_children) {
+
+			if ($min_children && $min_children > count($node->children))
 			{
-				if ($min_child && count($branch->children) < $min_child)
-				{
-					return true;
-				}
-
-				return (!$branch->is_online || $branch->is_navigation_excluded || $branch->pattern);
+				return true;
 			}
-		);
 
-		if ($template)
-		{
-			$subset->populate();
+			return (!$node->is_online || $node->is_navigation_excluded || $node->pattern);
 
-			return $engine($template, $subset->tree);
-		}
+		});
 
-		return new NavigationElement($subset);
+		$blueprint->populate();
+
+		$element = new NavigationElement($blueprint, 'ol', [
+
+			NavigationElement::CSS_CLASS_NAMES => $args['css-class-names']
+
+		]);
+
+		return $template ? $engine($template, $element) : $element;
 	}
 }
 

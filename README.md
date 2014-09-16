@@ -448,6 +448,54 @@ The following [Patron][] markups are defined by the module:
 
 
 
+### The `p:navigation` markup
+
+Navigation elements for the current page are rendered with the `p:navigation` markup.
+
+```html
+<p:navigation
+	css-class-names = string
+	depth = int
+	from-level = int
+	min-children = int
+	parent = int|string|Page>
+	<!-- Content: p:with-param*, template? -->
+</p:navigation>
+```
+
+The CSS class names to use by the navigation branch can be specified with the `css-class-names`
+parameter. The default is "'-constructor -slug -template'", which removes the constructor, slug,
+and template names. The maximum depth of the navigation is specified by the `depth` parameter.
+The starting level of the navigation is specified by the `from-level` parameter. Using the
+`min-children` parameter, navigation branches can be discarted if they don't include enough
+direct children. Finally, the `parent` parameter can be used to specify the parent of the
+navigation, which can be specified as a [Page][] instance, an identifier, or a path.
+
+```html
+<p:navigation />
+<p:navigation css-class-names="id slug" />
+<p:navigation parent="/blog" depth="1" />
+```
+
+The template is published with a [NavigationElement][] instance as _thisArg_.
+
+```html
+<p:navigation>
+	#{@blueprint.dump()=}
+
+	<ul class="nav">
+	<p:foreach in="@blueprint.tree">
+		<li class="#{css_class}"><a href="#{@url}">#{@label}</a></li>
+	</p>
+	</ul>
+</p:navigation>
+```
+
+
+
+
+
+
 ### The `p:navigation:leaf` markup
 
 Render a navigation leaf from the current page.
