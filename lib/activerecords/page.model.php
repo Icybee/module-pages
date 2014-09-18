@@ -12,7 +12,6 @@
 namespace Icybee\Modules\Pages;
 
 use ICanBoogie\ActiveRecord\Query;
-use ICanBoogie\Exception;
 use ICanBoogie\Routing\Pattern;
 
 class Model extends \Icybee\Modules\Nodes\Model
@@ -24,12 +23,12 @@ class Model extends \Icybee\Modules\Nodes\Model
 	{
 		if ($key && isset($properties[Page::PARENTID]) && $key == $properties[Page::PARENTID])
 		{
-			throw new Exception('A page connot be its own parent.');
+			throw new \Exception('A page connot be its own parent.');
 		}
 
 		if (empty($properties[Page::SITEID]))
 		{
-			throw new Exception('site_id is empty.');
+			throw new \Exception('site_id is empty.');
 		}
 
 		unset(self::$blueprint_cache[$properties[Page::SITEID]]);
