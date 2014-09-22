@@ -1,4 +1,3 @@
-
 window.addEvent('domready', function() {
 
 	$$('.group--contents-inherit > .control-group a[href="#edit"]').each(function(el) {

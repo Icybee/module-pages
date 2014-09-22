@@ -1,3 +1,7 @@
+.actionbar-actions--update-tree label:before {
+	content: "\f0e8"; /* sitemap */
+}
+
 .cell--title .indentation,
 .cell--title .handle {
 	width: 13px;

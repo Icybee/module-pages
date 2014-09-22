@@ -2,6 +2,8 @@
 
 return [
 
+	'button.Reset' => "Rétablir",
+
 	'pages' => [
 
 		'count' => [

@@ -14,6 +14,8 @@ namespace Icybee\Modules\Pages;
 use ICanBoogie\ActiveRecord\Query;
 
 use Icybee\ManageBlock\Options;
+use Brickrouge\Element;
+use Brickrouge\Button;
 
 class ManageBlock extends \Icybee\Modules\Nodes\ManageBlock
 {
@@ -74,17 +76,30 @@ class ManageBlock extends \Icybee\Modules\Nodes\ManageBlock
 
 	protected function render_jobs(array $jobs)
 	{
-		$html = parent::render_jobs($jobs);
+		return parent::render_jobs($jobs) .
 
-		return <<<EOT
-$html
+		new Element('div', [
 
-<div data-actionbar-context="update-tree">
-	<i class="icon-sitemap context-icon"></i><button class="btn" data-action="cancel">Annuler</button>
-	<button class="btn btn-primary" data-action="save">Enregistrer les modifications</button>
-</div>
+			Element::IS => 'ActionBarUpdateTree',
 
-EOT;
+			Element::CHILDREN => [
+
+				'label' => new Element('label', [
+
+					Element::INNER_HTML => $this->t("The page tree has been changed"),
+
+					'class' => 'btn-group-label'
+
+				]),
+
+				'save' => new Button("Save", [ 'class' => 'btn-primary' ]),
+				'reset' => new Button("Reset", [ 'data-dismiss' => 'changes' ])
+
+			],
+
+			'class' => 'actionbar-actions actionbar-actions--update-tree'
+
+		]);
 	}
 
 	protected $mode = 'tree';
