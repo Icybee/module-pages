@@ -104,6 +104,9 @@ return [
 	'This page uses the <q>:template</q> template, inherited from the parent page <q><a href="!url">!title</a></q>.'
 	=> 'Cette page utilise le gabarit <q>:template</q>, hérité de la page parente <q><a href="!url">!title</a></q>.',
 
+	"The page tree has been changed"
+	=> "L'arborescence a été modifiée",
+
 	"All records" => "Tous les enregistrements",
 
 	'Record detail' => "Détail d'un enregistrement",
