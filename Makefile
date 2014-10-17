@@ -7,18 +7,14 @@ MODULE_NAME = "Icybee/Modules/Pages"
 usage:
 	@echo "test:  Runs the test suite.\ndoc:   Creates the documentation.\nclean: Removes the documentation, the dependencies and the Composer files."
 
-vendor: composer.phar
-	@php composer.phar install --prefer-source --dev
+vendor:
+	@composer install --prefer-source --dev
 
-composer.phar:
-	@echo "Installing composer..."
-	@curl -s https://getcomposer.org/installer | php
-
-update: composer.phar
-	@php composer.phar update --prefer-source --dev
+update:
+	@composer update --prefer-source --dev
 
 autoload: vendor
-	@php composer.phar dump-autoload
+	@composer dump-autoload
 
 test: vendor
 	@phpunit
@@ -28,9 +24,9 @@ doc: vendor
 
 	@apigen \
 	--source ./ \
-	--destination docs/ --title $(PACKAGE_NAME) \
-	--exclude "*/tests/*" \
+	--destination docs/ --title $(MODULE_NAME) \
 	--exclude "*/composer/*" \
+	--exclude "*/tests/*" \
 	--template-config /usr/share/php/data/ApiGen/templates/bootstrap/config.neon
 
 clean:

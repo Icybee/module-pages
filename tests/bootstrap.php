@@ -29,5 +29,5 @@ $core = new \ICanBoogie\Core(\ICanBoogie\array_merge_recursive(\ICanBoogie\get_a
 
 ]));
 
-$core();
+$core->boot();
 $core->document = \Brickrouge\get_document();
