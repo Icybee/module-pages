@@ -3,14 +3,14 @@
 namespace Icybee\Modules\Pages;
 
 use ICanBoogie\ActiveRecord\Model;
-use ICanBoogie\Module;
+use ICanBoogie\Module\Descriptor;
 
 return [
 
-	Module::T_TITLE => 'Pages',
-	Module::T_CATEGORY => 'site',
-	Module::T_EXTENDS => 'nodes',
-	Module::T_MODELS => [
+	Descriptor::TITLE => 'Pages',
+	Descriptor::CATEGORY => 'site',
+	Descriptor::INHERITS => 'nodes',
+	Descriptor::MODELS => [
 
 		'primary' => [
 
@@ -52,9 +52,9 @@ return [
 
 	],
 
-	Module::T_NAMESPACE => __NAMESPACE__,
-	Module::T_REQUIRED => true,
-	Module::T_REQUIRES => [
+	Descriptor::NS => __NAMESPACE__,
+	Descriptor::REQUIRED => true,
+	Descriptor::REQUIRES => [
 
 		'editor' => '1.0'
 
