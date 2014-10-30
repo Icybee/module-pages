@@ -25,8 +25,6 @@ class CopyOperation extends \ICanBoogie\Operation
 
 	protected function process()
 	{
-		global $core;
-
 		$record = $this->record;
 		$key = $this->key;
 		$title = $record->title;
@@ -36,7 +34,7 @@ class CopyOperation extends \ICanBoogie\Operation
 		unset($record->created_at);
 		unset($record->updated_at);
 
-		$record->uid = $core->user_id;
+		$record->uid = $this->app->user_id;
 		$record->title .= ' (copie)';
 		$record->slug .= '-copie';
 

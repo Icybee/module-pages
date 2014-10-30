@@ -49,8 +49,6 @@ class TemplateEditorsOperation extends Operation
 	 */
 	protected function process()
 	{
-		global $core;
-
 		$request = $this->request;
 		$template = $request['template'];
 		$pageid = $request['pageid'];
@@ -61,7 +59,7 @@ class TemplateEditorsOperation extends Operation
 
 		$form = (string) new \Brickrouge\Form([ \Brickrouge\Form::RENDERER => 'Simple' ] + $contents_tags);
 
-		$this->response['assets'] = $core->document->assets;
+		$this->response['assets'] = $this->app->document->assets;
 
 		return $form;
 	}

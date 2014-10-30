@@ -29,9 +29,7 @@ class NavigationIncludeOperation extends Operation
 
 	public function __invoke(Request $request)
 	{
-		global $core;
-
-		$this->module = $core->modules['pages'];
+		$this->module = $this->app->modules['pages'];
 
 		return parent::__invoke($request);
 	}

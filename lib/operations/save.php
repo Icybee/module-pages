@@ -23,8 +23,6 @@ class SaveOperation extends \Icybee\Modules\Nodes\SaveOperation
 	 */
 	protected function lazy_get_properties()
 	{
-		global $core;
-
 		$properties = parent::lazy_get_properties() + [
 
 			Page::PARENTID => 0
@@ -35,7 +33,7 @@ class SaveOperation extends \Icybee\Modules\Nodes\SaveOperation
 		{
 			/* @var $site \Icybee\Modules\Sites\Site */
 
-			$site = $core->site;
+			$site = $this->app->site;
 			$siteid = $site->siteid;
 			$properties[Page::SITEID] = $siteid;
 			$properties[Page::LANGUAGE] = $site->language;
@@ -90,8 +88,6 @@ class SaveOperation extends \Icybee\Modules\Nodes\SaveOperation
 
 	protected function process()
 	{
-		global $core;
-
 		$record = null;
 		$oldurl = null;
 
@@ -131,7 +127,7 @@ class SaveOperation extends \Icybee\Modules\Nodes\SaveOperation
 				}
 
 				$editor_id = $editor_ids[$content_id];
-				$editor = $core->editors[$editor_id];
+				$editor = $this->app->editors[$editor_id];
 				$content = $editor->serialize($unserialized_content);
 
 				if (!$content)

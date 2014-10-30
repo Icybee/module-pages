@@ -74,13 +74,11 @@ class ImportOperation extends \Icybee\Modules\Nodes\ImportOperation
 
 	protected function import(array $data, Request $save)
 	{
-		global $core;
-
 		parent::import($data, $save);
 
 		//var_dump($this->keys_translations, $this->locationid, $data);
 
-		$update = $core->db->prepare('UPDATE {prefix}pages SET parentid = ?, locationid = ? WHERE nid = ?');
+		$update = $this->app->db->prepare('UPDATE {prefix}pages SET parentid = ?, locationid = ? WHERE nid = ?');
 
 		$original_nodes_with_parentid = $this->parentid;
 		$original_nodes_with_locationid = $this->locationid;
