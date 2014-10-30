@@ -24,11 +24,11 @@ use Icybee\Modules\Sites\Site;
  * @property Page $parent Parent page of the page.
  * @property \Icybee\Modules\Sites\Site $site The site the page belongs to.
  * @property-read bool $is_accessible Whether the page is accessible or not.
- * @property-read bool $is_active Wheter the page is active or not.
+ * @property-read bool $is_active Whether the page is active or not.
  * @property-read bool $is_home Whether the page is the home page of the site or not.
  * @property-read bool $is_trail Whether the page is in the navigation trail or not.
  * @property-read array[]Page $navigation_children Navigation children of the page.
- * @property-read int $descendents_count The number of descendents.
+ * @property-read int $descendents_count The number of descendants.
  */
 class Page extends \Icybee\Modules\Nodes\Node
 {
@@ -256,8 +256,6 @@ class Page extends \Icybee\Modules\Nodes\Node
 			if ($this->url_variables)
 			{
 				$url = Pattern::from($url_pattern)->format($this->url_variables);
-
-//				\ICanBoogie\log('URL %pattern rescued using URL variables', array('%pattern' => $pattern));
 			}
 			else
 			{
@@ -266,8 +264,6 @@ class Page extends \Icybee\Modules\Nodes\Node
 				if ($page && $page->url_variables)
 				{
 					$url = Pattern::from($url_pattern)->format($page->url_variables);
-
-// 					\ICanBoogie\log("URL pattern %pattern was resolved using current page's variables", array('%pattern' => $pattern));
 				}
 				else
 				{
@@ -284,7 +280,7 @@ class Page extends \Icybee\Modules\Nodes\Node
 	}
 
 	/**
-	 * Returns the absulte URL of the pages.
+	 * Returns the absolute URL of the pages.
 	 *
 	 * @return string The absolute URL of the page.
 	 */
@@ -393,7 +389,7 @@ class Page extends \Icybee\Modules\Nodes\Node
 	/**
 	 * Checks if the page record is in the active page trail.
 	 *
-	 * The global variable `page` must be defined in order to identifiy the active page.
+	 * The global variable `page` must be defined in order to identify the active page.
 	 *
 	 * @return bool true if the page is in the active page trail, false otherwise.
 	 */
@@ -419,7 +415,7 @@ class Page extends \Icybee\Modules\Nodes\Node
 	/**
 	 * Returns the location target for the page record.
 	 *
-	 * @return Icybee\Modules\Pages\Page|null The location target, or null if there is none.
+	 * @return Page|null The location target, or null if there is none.
 	 */
 	protected function get_location()
 	{
@@ -429,7 +425,7 @@ class Page extends \Icybee\Modules\Nodes\Node
 	/**
 	 * Returns the home page for the page record.
 	 *
-	 * @return Icybee\Modules\Pages\Page
+	 * @return Page
 	 */
 	protected function get_home()
 	{
@@ -439,7 +435,7 @@ class Page extends \Icybee\Modules\Nodes\Node
 	/**
 	 * Returns the parent of the page.
 	 *
-	 * @return Icybee\Modules\Pages\Page|null The parent page or null is the page has no parent.
+	 * @return Page|null The parent page or null is the page has no parent.
 	 */
 	protected function lazy_get_parent()
 	{
@@ -555,7 +551,7 @@ class Page extends \Icybee\Modules\Nodes\Node
 	 *
 	 * Keys of the array are the contentid, values are the contents objects.
 	 *
-	 * @return array[string]\Icybee\Modules\Pages\Pages\Content
+	 * @return array[string]Content
 	 */
 	protected function lazy_get_contents()
 	{
@@ -577,7 +573,7 @@ class Page extends \Icybee\Modules\Nodes\Node
 	 *
 	 * The body is the page's contents object with the 'body' identifier.
 	 *
-	 * @return \Icybee\Modules\Pages\Pages\Content
+	 * @return Content
 	 */
 	protected function lazy_get_body()
 	{

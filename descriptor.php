@@ -9,6 +9,7 @@ return [
 
 	Descriptor::TITLE => 'Pages',
 	Descriptor::CATEGORY => 'site',
+	Descriptor::ID => 'pages',
 	Descriptor::INHERITS => 'nodes',
 	Descriptor::MODELS => [
 
@@ -28,9 +29,7 @@ return [
 					'is_navigation_excluded' => [ 'boolean', 'indexed' => true ]
 
 				]
-
 			]
-
 		],
 
 		'contents' => [
@@ -45,11 +44,8 @@ return [
 					'editor' => [ 'varchar', 32 ]
 
 				]
-
 			]
-
 		]
-
 	],
 
 	Descriptor::NS => __NAMESPACE__,
@@ -59,5 +55,4 @@ return [
 		'editor' => '1.0'
 
 	]
-
 ];

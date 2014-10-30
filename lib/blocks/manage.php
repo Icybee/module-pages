@@ -160,8 +160,8 @@ class ManageBlock extends \Icybee\Modules\Nodes\ManageBlock
 	/**
 	 * Fetches the records according to the query and the display mode.
 	 *
-	 * The method is overrode if the dispay mode is `tree` in which case the records are fetched
-	 * accroding to their relashion and the _expand_ state of their parent.
+	 * The method is overrode if the display mode is `tree` in which case the records are fetched
+	 * according to their relation and the _expand_ state of their parent.
 	 */
 	protected function fetch_records(Query $query)
 	{

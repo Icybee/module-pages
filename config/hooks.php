@@ -40,7 +40,6 @@ return [
 				'no-wrapper' => false
 
 			]
-
 		],
 
 		'page:languages' => [
@@ -49,7 +48,6 @@ return [
 
 
 			]
-
 		],
 
 		'navigation' => [
@@ -63,7 +61,6 @@ return [
 				'parent' => 0
 
 			]
-
 		],
 
 		'navigation:leaf' => [
@@ -74,7 +71,6 @@ return [
 				'depth' => 2
 
 			]
-
 		],
 
 		'breadcrumb' => [
@@ -84,7 +80,6 @@ return [
 				'page' => [ 'expression' => true, 'required' => true, 'default' => 'this' ]
 
 			]
-
 		],
 
 		#
@@ -98,7 +93,6 @@ return [
 				'id' => [ 'required' => true ]
 
 			]
-
 		],
 
 		'page:title' => [
@@ -107,9 +101,6 @@ return [
 
 
 			]
-
 		]
-
 	]
-
 ];

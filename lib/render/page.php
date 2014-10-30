@@ -193,7 +193,7 @@ class RenderEvent extends \ICanBoogie\Event
 	 *
 	 * @throws \InvalidArgumentException If `$where` is not 'bottom', the only value currently
 	 * supported.
-	 * @throws \Exception If the position where to insert the fragement cannot be resolved.
+	 * @throws \Exception If the position where to insert the fragment cannot be resolved.
 	 */
 	public function inject($fragment, $selector, $where='bottom')
 	{

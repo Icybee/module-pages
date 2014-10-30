@@ -10,7 +10,7 @@ views. The module provides a request dispatcher to serve the pages it manages.
 
 ## Blueprint
 
-A blueprint is a simplified data structure representing the relashionship between pages. It
+A blueprint is a simplified data structure representing the relationship between pages. It
 provides child/parent relations, parent/children relations, an index, and a tree representation.
 The blueprint can be created from a [Query][] or can be obtained from the `pages` model.
 
@@ -28,9 +28,9 @@ The following properties are available:
 
 ### Obtaining a blueprint from a query
 
-The following example demonstrates how a blueprint can be obained from a [Query][] instance. Only
+The following example demonstrates how a blueprint can be obtained from a [Query][] instance. Only
 the `nid` and `parentid` properties are required to build the bulueprint, but you might want
-more than that to be usefull. In the example, the blueprint is created with the additional
+more than that to be useful. In the example, the blueprint is created with the additional
 properties `slug` and `pattern`:
 
 ```php
@@ -70,12 +70,12 @@ $blueprint = $core->models['pages']->blueprint($site_id = 1);
 
 ### Obtaining a subset of a blueprint
 
-A subset can be created from a blueprint, this is interesting when you whish to work
-with a particuliar branch, or only the nodes that have a maximum depth of 2, or maybe only the
+A subset can be created from a blueprint, this is interesting when you wish to work
+with a particular branch, or only the nodes that have a maximum depth of 2, or maybe only the
 online nodes.
 
 The following example demonstrates how a subset of a blueprint with only the branch of
-a particuliar branch can be obtained:
+a particular branch can be obtained:
 
 ```php
 <?php
@@ -219,7 +219,7 @@ of class [BeforePopulateEvent][] is fired before the navigation element is popul
 Third parties may use this event to alter the blueprint. For instance, using a subset instead of
 the complete blueprint.
 
-The following code demonstrates how the node with id "5" is discarted from the navigation:
+The following code demonstrates how the node with id "5" is discarded from the navigation:
 
 ```php
 <?php
@@ -467,7 +467,7 @@ The CSS class names to use by the navigation branch can be specified with the `c
 parameter. The default is "'-constructor -slug -template'", which removes the constructor, slug,
 and template names. The maximum depth of the navigation is specified by the `depth` parameter.
 The starting level of the navigation is specified by the `from-level` parameter. Using the
-`min-children` parameter, navigation branches can be discarted if they don't include enough
+`min-children` parameter, navigation branches can be discarded if they don't include enough
 direct children. Finally, the `parent` parameter can be used to specify the parent of the
 navigation, which can be specified as a [Page][] instance, an identifier, or a path.
 
@@ -548,17 +548,10 @@ The package requires PHP 5.4 or later.
 
 ## Installation
 
-The recommended way to install this package is through [Composer](http://getcomposer.org/).
-Create a `composer.json` file and run `php composer.phar install` command to install it:
+The recommended way to install this package is through [Composer](http://getcomposer.org/):
 
-```json
-{
-	"minimum-stability": "dev",
-	"require":
-	{
-		"icybee/module-pages": "2.x"
-	}
-}
+```
+$ composer require icybee/module-pages:~2.0
 ```
 
 
@@ -570,7 +563,7 @@ Create a `composer.json` file and run `php composer.phar install` command to ins
 The package is [available on GitHub](https://github.com/Icybee/module-pages), its repository can be
 cloned with the following command line:
 
-	$ git clone git://github.com/Icybee/module-pages.git pages
+	$ git clone https://github.com/Icybee/module-pages.git pages
 
 
 

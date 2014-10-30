@@ -35,8 +35,8 @@ class CopyOperation extends \ICanBoogie\Operation
 		unset($record->updated_at);
 
 		$record->uid = $this->app->user_id;
-		$record->title .= ' (copie)';
-		$record->slug .= '-copie';
+		$record->title .= ' (copy)';
+		$record->slug .= '-copy';
 
 		$contentsModel = $this->module->model('contents');
 		$contents = $contentsModel->where([ 'pageid' => $key ])->all;

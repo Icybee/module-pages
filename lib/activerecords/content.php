@@ -72,7 +72,7 @@ class Content extends \ICanBoogie\ActiveRecord
 	 * Renders the content as a string or an object.
 	 *
 	 * Exceptions thrown during the rendering are caught. The message of the exception is used
-	 * as rendered content and the exception is rethrown.
+	 * as rendered content and the exception is re-thrown.
 	 *
 	 * @throws Exception
 	 *

@@ -137,7 +137,7 @@ class Module extends \Icybee\Modules\Nodes\Module
 
 				#
 				# If the template is inherited, we remove the value in order to have a clean
-				# inheritence, easier to manage.
+				# inheritance, easier to manage.
 				#
 
 				Form::VALUES => [
@@ -371,7 +371,7 @@ class Module extends \Icybee\Modules\Nodes\Module
 	 * @param int $nid
 	 *
 	 * @return array An array composed of the template name, the description and a boolean
-	 * representing wheter or not the template is inherited for the specified page.
+	 * representing whether or not the template is inherited for the specified page.
 	 */
 	protected function resolve_template($nid, $request_template=null)
 	{

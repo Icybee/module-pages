@@ -15,7 +15,7 @@ use ICanBoogie\ActiveRecord\Query;
 use ICanBoogie\PropertyNotDefined;
 
 /**
- * A simplified data structure representing the relashionship between pages.
+ * A simplified data structure representing the relationship between pages.
  *
  * @property-read BlueprintNode[] $ordered_nodes Blueprint nodes ordered according to their
  * position and relation. See: {@link get_ordered_nodes()}.
@@ -141,7 +141,7 @@ class Blueprint implements \IteratorAggregate
 	public $model;
 
 	/**
-	 * The blueprint is usualy constructed by the {@link Model::blueprint()} method or the
+	 * The blueprint is usually constructed by the {@link Model::blueprint()} method or the
 	 * {@link subset()} method.
 	 *
 	 * @param Model $model
@@ -275,11 +275,11 @@ class Blueprint implements \IteratorAggregate
 	 * Create a subset of the blueprint.
 	 *
 	 * A filter can be specified to filter out the nodes of the subset. The function returns `true`
-	 * to discart a node. The callback function have the following signature:
+	 * to discard a node. The callback function have the following signature:
 	 *
 	 *     function(BlueprintNode $node)
 	 *
-	 * The following example demonstrate how offline nodes cen be filtered out.
+	 * The following example demonstrate how offline nodes can be filtered out.
 	 *
 	 * <pre>
 	 * <?php

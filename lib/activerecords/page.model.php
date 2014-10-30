@@ -23,7 +23,7 @@ class Model extends \Icybee\Modules\Nodes\Model
 	{
 		if ($key && isset($properties[Page::PARENTID]) && $key == $properties[Page::PARENTID])
 		{
-			throw new \Exception('A page connot be its own parent.');
+			throw new \Exception('A page cannot be its own parent.');
 		}
 
 		if (empty($properties[Page::SITEID]))
@@ -97,7 +97,7 @@ class Model extends \Icybee\Modules\Nodes\Model
 	/**
 	 * Returns the home page of the specified site.
 	 *
-	 * The record cache is used to retrieve or store the home page. Additionnaly the home page
+	 * The record cache is used to retrieve or store the home page. Additionally the home page
 	 * found is stored for each site.
 	 *
 	 * @param int $siteid Identifier of the site.
@@ -304,7 +304,7 @@ class Model extends \Icybee\Modules\Nodes\Model
 		$pages_by_ids[$try->nid]['url_part'] .= $extension;
 
 		#
-		# All page objects have been loaded, we need to set up some additionnal properties, link
+		# All page objects have been loaded, we need to set up some additional properties, link
 		# each page to its parent and propagate the online status.
 		#
 
