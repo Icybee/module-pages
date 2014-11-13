@@ -37,12 +37,14 @@ class PageController
 				return;
 			}
 
-			if ($page instanceof Response)
+			$response = $page instanceof Response ? $page : $this->render_page($page);
+
+			if ($request->is_head)
 			{
-				return $page;
+				return new Response(null, $response->status, $response->headers);
 			}
 
-			return $this->render_page($page);
+			return $response;
 		}
 		catch (\Exception $e) // TODO-20130812: This shouldn't be handled by the class, but by Icybee or the user.
 		{
@@ -83,7 +85,8 @@ class PageController
 
 		return new Response($html, 200, [
 
-			'Content-Type' => 'text/html; charset=utf-8'
+			'Content-Type' => 'text/html; charset=utf-8',
+			'Content-Length' => strlen($html)
 
 		]);
 	}
