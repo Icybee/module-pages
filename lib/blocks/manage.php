@@ -428,9 +428,7 @@ class IsNavigationExcluded extends BooleanColumn
 
 				]
 
-			],
-
-			'sortable' => false
+			]
 
 		]);
 	}
