@@ -143,8 +143,6 @@ class Model extends \Icybee\Modules\Nodes\Model
 	 */
 	public function find_by_path($path)
 	{
-		global $core;
-
 		$pos = strrpos($path, '.');
 		$extension = null;
 
@@ -165,7 +163,7 @@ class Model extends \Icybee\Modules\Nodes\Model
 		# matching site
 		#
 
-		$site = $core->site;
+		$site = $this->app->site;
 		$site_id = $site->siteid;
 		$site_path = $site->path;
 

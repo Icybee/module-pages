@@ -18,16 +18,23 @@ use ICanBoogie\HTTP\Request;
 use ICanBoogie\HTTP\Response;
 use ICanBoogie\HTTP\ServiceUnavailable;
 use ICanBoogie\I18n;
+use ICanBoogie\Routing\Controller;
 use ICanBoogie\Routing\Pattern;
 
 use Icybee\Modules\Sites\Site;
 
-class PageController
+class PageController extends Controller
 {
+	/**
+	 * We don't use a route.
+	 */
+	public function __construct()
+	{
+
+	}
+
 	public function __invoke(Request $request)
 	{
-		global $core;
-
 		try
 		{
 			$request->context->page = $page = $this->resolve_page($request);
@@ -55,7 +62,7 @@ class PageController
 			{
 				$request->context->page = $page = Page::from([
 
-					'siteid' => $core->site_id,
+					'siteid' => $this->app->site_id,
 					'title' => I18n\t($e->getCode(), [], [ 'scope' => 'exception' ]),
 					'body' => I18n\t($e->getMessage(), [], [ 'scope' => 'exception' ])
 
@@ -100,8 +107,6 @@ class PageController
 	 */
 	protected function resolve_page(Request $request)
 	{
-		global $core;
-
 		/* TODO-20130812: Move the following code section in the Sites module. */
 
 		$site = $request->context->site;
@@ -131,7 +136,7 @@ class PageController
 		/* /TODO */
 
 		$path = $request->path;
-		$page = $core->models['pages']->find_by_path($request->path);
+		$page = $this->models['pages']->find_by_path($request->path);
 
 		if (!$page)
 		{
@@ -173,7 +178,7 @@ class PageController
 			# page to indicate that the page is offline but displayed as a preview for the user.
 			#
 
-			if (!$core->user->has_ownership('pages', $page))
+			if (!$this->user->has_ownership('pages', $page))
 			{
 				throw new AuthenticationRequired
 				(

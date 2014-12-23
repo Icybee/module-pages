@@ -51,9 +51,7 @@ class NavigationBranchElement extends Element
 	 */
 	static public function markup_navigation_leaf(array $args, $patron, $template)
 	{
-		global $core;
-
-		$element = new static($core->request->context->page, [
+		$element = new static(\ICanBoogie\app()->request->context->page, [
 
 			self::CSS_CLASS_NAMES => $args['css-class-names'],
 			self::DEPTH => $args['depth']
@@ -114,8 +112,6 @@ class NavigationBranchElement extends Element
 	 */
 	protected function build_blueprint(Page $page, Page $start)
 	{
-		global $core;
-
 		$trail = [];
 		$p = $page;
 
@@ -128,7 +124,7 @@ class NavigationBranchElement extends Element
 
 		/* @var $blueprint Blueprint */
 
-		$blueprint = $core
+		$blueprint = $this->app
 		->models['pages']
 		->blueprint($this->page->siteid)
 		->subset($start->nid, $this[self::DEPTH], function(BlueprintNode $node) use($trail) {

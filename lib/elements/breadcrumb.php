@@ -89,11 +89,9 @@ class BreadcrumbElement extends Element
 	 */
 	static public function markup()
 	{
-		global $core;
-
 		return new static([
 
-			self::PAGE => $core->request->context->page
+			self::PAGE => \ICanBoogie\app()->request->context->page
 
 		]);
 	}

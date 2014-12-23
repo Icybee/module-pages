@@ -25,11 +25,9 @@ class PageRenderer
 
 	public function __invoke(Page $page)
 	{
-		global $core;
-
 		$template_pathname = $this->resolve_template_pathname($page->template);
 		$template = file_get_contents($template_pathname);
-		$document = $core->document;
+		$document = \ICanBoogie\app()->document;
 		$engine = $this->resolve_engine($template);
 		$engine->context['page'] = $page;
 		$engine->context['document'] = $document;
@@ -63,10 +61,8 @@ class PageRenderer
 
 	protected function resolve_template_pathname($name)
 	{
-		global $core;
-
 		$root = \ICanBoogie\DOCUMENT_ROOT;
-		$pathname = $core->site->resolve_path('templates/' . $name);
+		$pathname = \ICanBoogie\app()->site->resolve_path('templates/' . $name);
 
 		if (!$pathname)
 		{

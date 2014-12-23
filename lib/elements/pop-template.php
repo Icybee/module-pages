@@ -22,9 +22,7 @@ class PopTemplate extends Element
 
 	public function __toString()
 	{
-		global $core;
-
-		$list = $core->site->templates;
+		$list = $this->app->site->templates;
 
 		if (!$list)
 		{

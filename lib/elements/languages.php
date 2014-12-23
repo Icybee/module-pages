@@ -40,9 +40,7 @@ class LanguagesElement extends Element
 
 	protected function render_inner_html()
 	{
-		global $core;
-
-		$page = $core->request->context->page;
+		$page = $this->app->request->context->page;
 		$translations_by_language = $this->collect();
 
 		new LanguagesElement\CollectEvent($this, [ 'languages' => &$translations_by_language ]);
@@ -88,9 +86,8 @@ class LanguagesElement extends Element
 
 	protected function collect()
 	{
-		global $core;
-
-		$page = $core->request->context->page;
+		$app = $this->app,
+		$page = $app->request->context->page;
 		$source = $page->node ?: $page;
 		$translations = $source->translations;
 		$translations_by_language = [];
@@ -100,7 +97,7 @@ class LanguagesElement extends Element
 			$translations[$source->nid] = $source;
 			$translations_by_language = array_flip
 			(
-				$core->models['sites']->select('language')->where('status = 1')->order('weight, siteid')->all(\PDO::FETCH_COLUMN)
+				$app->models['sites']->select('language')->where('status = 1')->order('weight, siteid')->all(\PDO::FETCH_COLUMN)
 			);
 
 			if ($source instanceof Page)

@@ -1,5 +1,15 @@
 <?php
 
+/* @var $app \ICanBoogie\Core */
+
+/**
+ * @param $branches
+ * @param bool $depth
+ * @param bool $min_child
+ * @param int $level
+ *
+ * @return string|void
+ */
 $builder = function($branches, $depth=false, $min_child=false, $level=1) use(&$builder)
 {
 	$rc = '';
@@ -51,9 +61,9 @@ $builder = function($branches, $depth=false, $min_child=false, $level=1) use(&$b
 	return '<ol class="lv' . $level . '">' . $rc . '</ol>';
 };
 
-$model = $core->models['pages'];
+$model = $app->models['pages'];
 
-$blueprint = $model->blueprint($core->site_id);
+$blueprint = $model->blueprint($app->site_id);
 
 $subset = $blueprint->subset
 (

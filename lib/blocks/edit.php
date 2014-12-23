@@ -31,14 +31,14 @@ class EditBlock extends \Icybee\Modules\Nodes\EditBlock
 
 	protected function lazy_get_attributes()
 	{
-		global $core;
+		$app = $this->app;
 
 		return \ICanBoogie\array_merge_recursive(parent::lazy_get_attributes(), [
 
 			Form::HIDDENS => [
 
-				Page::SITEID => $core->site_id,
-				Page::LANGUAGE => $core->site->language
+				Page::SITEID => $app->site_id,
+				Page::LANGUAGE => $app->site->language
 
 			],
 
@@ -58,11 +58,9 @@ class EditBlock extends \Icybee\Modules\Nodes\EditBlock
 
 	protected function lazy_get_children()
 	{
-		global $core;
-
 		$values = $this->values;
 		$nid = $values[Node::NID];
-		$is_alone = !$this->module->model->select('nid')->where([ 'siteid' => $core->site_id ])->rc;
+		$is_alone = !$this->module->model->select('nid')->where([ 'siteid' => $this->app->site_id ])->rc;
 
 		list($contents_tags) = $this->module->get_contents_section($values[Node::NID], $values[Page::TEMPLATE]);
 

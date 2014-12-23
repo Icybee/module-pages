@@ -235,8 +235,6 @@ class Page extends \Icybee\Modules\Nodes\Node
 	 */
 	protected function get_url()
 	{
-		global $core;
-
 		if ($this->location)
 		{
 			return $this->location->url;
@@ -259,7 +257,7 @@ class Page extends \Icybee\Modules\Nodes\Node
 			}
 			else
 			{
-				$page = isset($core->request->context->page) ? $core->request->context->page : null;
+				$page = isset($this->app->request->context->page) ? $this->app->request->context->page : null;
 
 				if ($page && $page->url_variables)
 				{
@@ -347,9 +345,7 @@ class Page extends \Icybee\Modules\Nodes\Node
 	 */
 	protected function get_is_accessible()
 	{
-		global $core;
-
-		if ($core->user->is_guest && $this->site->status != Site::STATUS_OK)
+		if ($this->app->user->is_guest && $this->site->status != Site::STATUS_OK)
 		{
 			return false;
 		}
@@ -381,9 +377,7 @@ class Page extends \Icybee\Modules\Nodes\Node
 	 */
 	protected function get_is_active()
 	{
-		global $core;
-
-		return $core->request->context->page->nid == $this->nid;
+		return $this->app->request->context->page->nid == $this->nid;
 	}
 
 	/**
@@ -395,9 +389,7 @@ class Page extends \Icybee\Modules\Nodes\Node
 	 */
 	protected function get_is_trail()
 	{
-		global $core;
-
-		$node = $core->request->context->page; // TODO-20130327: use a get_active_page() helper?
+		$node = $this->app->request->context->page;
 
 		while ($node)
 		{
@@ -555,9 +547,7 @@ class Page extends \Icybee\Modules\Nodes\Node
 	 */
 	protected function lazy_get_contents()
 	{
-		global $core;
-
-		$entries = $core->models['pages/contents']->filter_by_pageid($this->nid);
+		$entries = $this->app->models['pages/contents']->filter_by_pageid($this->nid);
 		$contents = [];
 
 		foreach ($entries as $entry)

@@ -165,8 +165,6 @@ class ManageBlock extends \Icybee\Modules\Nodes\ManageBlock
 	 */
 	protected function fetch_records(Query $query)
 	{
-		global $core;
-
 		if ($this->mode !== 'tree')
 		{
 			return parent::fetch_records($query);
@@ -174,7 +172,7 @@ class ManageBlock extends \Icybee\Modules\Nodes\ManageBlock
 
 		$expanded = array_flip($this->options->expanded);
 
-		return $query->model->blueprint($core->site_id)->subset(null, null, function(BlueprintNode $node) use($expanded) {
+		return $query->model->blueprint($this->app->site_id)->subset(null, null, function(BlueprintNode $node) use($expanded) {
 
 			return !(!$node->parentid || isset($expanded[$node->parentid]));
 
@@ -344,8 +342,6 @@ class URLColumn extends \Icybee\Modules\Nodes\ManageBlock\URLColumn
 {
 	public function render_cell($record)
 	{
-		global $core;
-
 		$t = $this->manager->t;
 		$options = $this->manager->options;
 		$pattern = $record->url_pattern;
@@ -398,7 +394,7 @@ EOT;
 		}
 		else if (!Pattern::is_pattern($pattern))
 		{
-			$url = ($core->site_id == $record->siteid) ? $record->url : $record->absolute_url;
+			$url = (\ICanBoogie\app()->site_id == $record->siteid) ? $record->url : $record->absolute_url;
 
 			$title = $t('Go to the page: !url', [ '!url' => $url ]);
 

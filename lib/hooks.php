@@ -37,11 +37,11 @@ class Hooks
 		// to the Routing dispatcher.
 		$target['pages'] = function(Request $request)
 		{
-			global $core; // used in user-startup.php
+			$core = $app = \ICanBoogie\app();
 
 			require_once \ICanBoogie\DOCUMENT_ROOT . 'user-startup.php';
 
-			$controller = new PageController();
+			$controller = new PageController;
 			$response = $controller($request);
 
 			if (!$response)
@@ -69,9 +69,7 @@ class Hooks
 	 */
 	static public function on_file_move(File\MoveEvent $event, File $target)
 	{
-		global $core;
-
-		$core->models['pages/contents']->execute
+		\ICanBoogie\app()->models['pages/contents']->execute
 		(
 			'UPDATE {self} SET content = REPLACE(content, ?, ?)', [ $event->from, $event->to ]
 		);
@@ -89,11 +87,9 @@ class Hooks
 	 */
 	static public function on_page_move(Page\MoveEvent $event, Page $target)
 	{
-		global $core;
-
 		try
 		{
-			$model = $core->models['pages/contents'];
+			$model = \ICanBoogie\app()->models['pages/contents'];
 		}
 		catch (\Exception $e) { return; }
 
@@ -129,11 +125,9 @@ class Hooks
 	 */
 	static public function invalidate_cache()
 	{
-		global $core;
-
 		$cache = new FileCache([
 
-			FileCache::T_REPOSITORY => $core->config['repository.cache'] . '/pages'
+			FileCache::T_REPOSITORY => \ICanBoogie\app()->config['repository.cache'] . '/pages'
 
 		]);
 
@@ -145,13 +139,13 @@ class Hooks
 	 *
 	 * This getter is a shortcut for the `request->context->page` property.
 	 *
-	 * @param \ICanBoogie\Core $core
+	 * @param \ICanBoogie\Core $app
 	 *
 	 * @return Page
 	 */
-	static public function get_page(\ICanBoogie\Core $core)
+	static public function get_page(\ICanBoogie\Core $app)
 	{
-		return $core->request->context->page;
+		return $app->request->context->page;
 	}
 
 	/**
@@ -163,9 +157,7 @@ class Hooks
 	 */
 	static public function get_home(Site $site)
 	{
-		global $core;
-
-		return $core->models['pages']->find_home($site->siteid);
+		return \ICanBoogie\app()->models['pages']->find_home($site->siteid);
 	}
 
 	/**
@@ -188,9 +180,7 @@ class Hooks
 
 	static public function before_document_render_title(\Icybee\Document\BeforeRenderTitleEvent $event)
 	{
-		global $core;
-
-		$page = $core->request->context->page;
+		$page = \ICanBoogie\app()->request->context->page;
 
 		$event->separator = ' − ';
 		$event->title = $page->title . $event->separator . $page->site->title;
@@ -202,10 +192,8 @@ class Hooks
 
 	static public function markup_page_region(array $args, \Patron\Engine $patron, $template)
 	{
-		global $core;
-
 		$id = $args['id'];
-		$page = $core->request->context->page;
+		$page = \ICanBoogie\app()->request->context->page;
 		$element = new Element('div', [ 'id' => $id, 'class' => "region region-$id" ]);
 		$html = null;
 
@@ -230,9 +218,7 @@ class Hooks
 
 	static public function markup_page_title(array $args, $engine, $template)
 	{
-		global $core;
-
-		$page = $core->request->context->page;
+		$page = \ICanBoogie\app()->request->context->page;
 		$title = $page->title;
 		$html = \ICanBoogie\escape($title);
 
@@ -279,8 +265,6 @@ class Hooks
 	 */
 	static public function markup_page_content(array $args, \Patron\Engine $patron, $template)
 	{
-		global $core;
-
 		$render = $args['render'];
 
 		if ($render === 'none')
@@ -288,7 +272,7 @@ class Hooks
 			return;
 		}
 
-		$page = $core->request->context->page;
+		$page = \ICanBoogie\app()->request->context->page;
 		$contentid = $args['id'];
 		$contents = array_key_exists($contentid, $page->contents) ? $page->contents[$contentid] : null;
 
@@ -450,10 +434,9 @@ class Hooks
 	 */
 	static public function markup_navigation(array $args, \Patron\Engine $engine, $template)
 	{
-		global $core;
-
-		$page = $core->request->context->page;
-		$model = $core->models['pages'];
+		$app = \ICanBoogie\app();
+		$page = $app->request->context->page;
+		$model = $app->models['pages'];
 		$depth = $args['depth'];
 
 		if ($args['from-level'])

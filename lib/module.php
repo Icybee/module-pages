@@ -181,8 +181,6 @@ class Module extends \Icybee\Modules\Nodes\Module
 
 	protected function get_contents_section_elements($nid, $template)
 	{
-		global $core;
-
 		$info = self::get_template_info($template);
 
 		if (!$info)
@@ -195,8 +193,9 @@ class Module extends \Icybee\Modules\Nodes\Module
 		$elements = [];
 		$hiddens = [];
 
+		$app = $this->app;
 		$contents_model = $this->model('contents');
-		$context = $core->site->path;
+		$context = $app->site->path;
 
 		foreach ($editables as $editable)
 		{
@@ -251,7 +250,7 @@ class Module extends \Icybee\Modules\Nodes\Module
 
 					if (!$node)
 					{
-						$node = $core->site->home;
+						$node = $app->site->home;
 
 						if (isset($node->contents[$id]))
 						{
@@ -299,7 +298,7 @@ class Module extends \Icybee\Modules\Nodes\Module
 
 			if (isset($editable['editor']))
 			{
-				if (!isset($core->editors[$editor_id]))
+				if (!isset($app->editors[$editor_id]))
 				{
 					$elements["contents[$id]"] = new Alert
 					(
@@ -315,7 +314,7 @@ class Module extends \Icybee\Modules\Nodes\Module
 					continue;
 				}
 
-				$editor = $core->editors[$editor_id];
+				$editor = $app->editors[$editor_id];
 
 				$elements["contents[$id]"] = $editor->from([
 
@@ -356,7 +355,7 @@ class Module extends \Icybee\Modules\Nodes\Module
 					Element::DESCRIPTION => $editor_description,
 
 					'id' => 'editor-' . $id,
-					'value' => $editor_id ? $core->editors[$editor_id]->unserialize($value) : $value
+					'value' => $editor_id ? $app->editors[$editor_id]->unserialize($value) : $value
 
 				]);
 			}
@@ -375,10 +374,8 @@ class Module extends \Icybee\Modules\Nodes\Module
 	 */
 	protected function resolve_template($nid, $request_template=null)
 	{
-		global $core;
-
 		$inherited = false;
-		$is_alone = !$this->model->select('nid')->filter_by_siteid($core->site_id)->rc;
+		$is_alone = !$this->model->select('nid')->filter_by_siteid($this->app->site_id)->rc;
 
 		if ($is_alone)
 		{
@@ -493,9 +490,7 @@ class Module extends \Icybee\Modules\Nodes\Module
 
 	static public function get_template_info($name)
 	{
-		global $core;
-
-		$site = $core->site;
+		$site = \ICanBoogie\app()->site;
 		$path = $site->resolve_path('templates/' . $name);
 
 		if (!$path)
@@ -599,9 +594,7 @@ class Module extends \Icybee\Modules\Nodes\Module
 		# recurse on templates
 		#
 
-		global $core;
-
-		$site = $core->site;
+		$site = \ICanBoogie\app()->site;
 		$root = $_SERVER['DOCUMENT_ROOT'];
 
 		$call_template_collection = \Patron\HTMLParser::collectMarkup($tree, 'call-template');

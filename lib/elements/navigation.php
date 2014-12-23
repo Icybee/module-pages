@@ -231,7 +231,7 @@ class BeforePopulateEvent extends \ICanBoogie\Event
  *
  * use Icybee\Modules\Pages\NavigationElement;
  *
- * $core->events->attach(function(NavigationElement\PopulateEvent $event, NavigationElement $target) {
+ * $app->events->attach(function(NavigationElement\PopulateEvent $event, NavigationElement $target) {
  *
  *     foreach ($event->blueprint as $node)
  *     {

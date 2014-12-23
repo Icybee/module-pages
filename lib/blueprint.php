@@ -286,7 +286,7 @@ class Blueprint implements \IteratorAggregate
 	 *
 	 * use Icybee\Modules\Pages\BlueprintNode;
 	 *
-	 * $subset = $core->models['pages']
+	 * $subset = $app->models['pages']
 	 * ->blueprint($site_id = 1)
 	 * ->subset(null, null, function(BlueprintNode $node) {
 	 *
