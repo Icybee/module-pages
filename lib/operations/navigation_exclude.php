@@ -11,6 +11,11 @@
 
 namespace Icybee\Modules\Pages;
 
+/**
+ * @property Page $record
+ *
+ * @inheritdoc
+ */
 class NavigationExcludeOperation extends NavigationIncludeOperation
 {
 	protected function process()

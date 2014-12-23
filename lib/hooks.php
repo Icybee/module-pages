@@ -361,6 +361,8 @@ class Hooks
 	 * Adds a blank target to external href.
 	 *
 	 * @param string $html
+	 *
+	 * @return string
 	 */
 	static protected function handle_external_anchors($html)
 	{
@@ -430,7 +432,9 @@ class Hooks
 	 * @param \Patron\Engine $engine
 	 * @param mixed $template
 	 *
-	 * @return void|boolean|NavigationElement
+	 * @return bool|NavigationElement|void
+	 *
+	 * @throws \Exception
 	 */
 	static public function markup_navigation(array $args, \Patron\Engine $engine, $template)
 	{

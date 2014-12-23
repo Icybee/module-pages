@@ -85,7 +85,8 @@ class Content extends \ICanBoogie\ActiveRecord
 			return $this->rendered;
 		}
 
-		$editor = \ICanBoogie\Core::get()->editors[$this->editor];
+		$editor = $this->app->editors[$this->editor];
+
 		return $this->rendered = $editor->render($editor->unserialize($this->content));
 	}
 

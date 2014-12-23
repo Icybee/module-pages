@@ -16,11 +16,10 @@ use ICanBoogie\I18n;
 use Brickrouge\Alert;
 use Brickrouge\Element;
 use Brickrouge\Form;
-use Brickrouge\Text;
 
-use Icybee\Modules\Nodes\Node;
 use Icybee\Modules\Editor\EditorElement;
 use Icybee\Modules\Editor\MultiEditorElement;
+use Icybee\Modules\Views\ViewOptions;
 
 class Module extends \Icybee\Modules\Nodes\Module
 {
@@ -33,72 +32,10 @@ class Module extends \Icybee\Modules\Nodes\Module
 
 			'list' => [
 
-				'title' => 'Sitemap',
-				'class' => __NAMESPACE__ . '\ListView',
-				'assets' => [],
-				'renders' => \Icybee\Modules\Views\View::RENDERS_MANY
-
-			]
-
-		];
-	}
-
-	// FIXME-20110918: this should be an operation
-	protected function operation_query_delete(WdOperation $operation)
-	{
-		$entries = [];
-
-		foreach ($operation->params['entries'] as $id)
-		{
-			$record = $this->model[$id];
-
-			if (!$record)
-			{
-				continue;
-			}
-
-			$entries = array_merge(self::get_all_children_ids($record), $entries);
-		}
-
-		$entries = array_unique($entries);
-
-		$operation->params['entries'] = $entries;
-
-		return parent::operation_query_delete($operation);
-	}
-
-	private function get_all_children_ids($record)
-	{
-		$ids = [];
-
-		if ($record->children)
-		{
-			// FIXME-20100504: `children` only returns online children !
-
-			foreach ($record->children as $child)
-			{
-				$ids = array_merge(self::get_all_children_ids($child), $ids);
-			}
-		}
-
-		$ids[] = $record->nid;
-
-		return $ids;
-	}
-
-	// FIXME-20110918: this should be an operation
-	protected function operation_query_copy(WdOperation $operation)
-	{
-		$entries = $operation->params['entries'];
-
-		return [
-
-			'title' => 'Copy entries',
-			'message' => I18n\t('Are you sure you want to copy the :count selected entries ?', [ ':count' => count($entries) ]),
-			'confirm' => [ 'Don\'t copy', 'Copy' ],
-			'params' => [
-
-				'entries' => $entries
+				ViewOptions::TITLE => 'Sitemap',
+				ViewOptions::CLASSNAME => __NAMESPACE__ . '\ListView',
+				ViewOptions::ASSETS => [],
+				ViewOptions::RENDERS => ViewOptions::RENDERS_MANY
 
 			]
 
@@ -116,7 +53,7 @@ class Module extends \Icybee\Modules\Nodes\Module
 		}
 		else
 		{
-			$template_description = I18n\t("The <q>:template</q> template does not define any editable element.", array(':template' => $template));
+			$template_description = I18n\t("The <q>:template</q> template does not define any editable element.", [ ':template' => $template ]);
 		}
 
 		$elements = array_merge([
@@ -345,11 +282,12 @@ class Module extends \Icybee\Modules\Nodes\Module
 
 					MultiEditorElement::NOT_SWAPPABLE => isset($editable['editor']),
 					MultiEditorElement::SELECTOR_NAME => "editors[$id]",
-					MultiEditorElement::EDITOR_TAGS => array
-					(
+					MultiEditorElement::EDITOR_TAGS => [
+
 						EditorElement::STYLESHEETS => $styles,
 						EditorElement::CONFIG => $editor_config
-					),
+
+					],
 
 					Element::GROUP => $does_inherit ? 'contents.inherit' : 'contents',
 					Element::DESCRIPTION => $editor_description,
@@ -443,12 +381,8 @@ class Module extends \Icybee\Modules\Nodes\Module
 			$definer = $record;
 			$parent = $record->parent;
 
-//			\ICanBoogie\log('parent: \1 (\2 ?= \3)', [ $definer->title, $definer->template, $template ]);
-
 			while ($parent)
 			{
-//				\ICanBoogie\log('parent: \1, template: \2', [ $parent->title, $parent->template ]);
-
 				if ($parent->template == $request_template)
 				{
 					break;
@@ -457,20 +391,14 @@ class Module extends \Icybee\Modules\Nodes\Module
 				$parent = $parent->parent;
 			}
 
-//			\ICanBoogie\log('end parent: \1', [ $parent ? $parent->title : 'none' ]);
-
 			if ($parent && $parent->template == $request_template)
 			{
 				$definer = $parent;
 			}
-
-//			\ICanBoogie\log('definer: \1:\3 (\2), record: \4:\5', [ $definer->title,  $definer->template, $definer->nid, $record->title, $record->nid ]);
 		}
 
 		if ($definer && $definer != $record)
 		{
-//			\ICanBoogie\log("entry template: $template ($record->nid), from: $inherited->template ($inherited->nid: $inherited->title)");
-
 			$description .= ' ' . I18n\t
 			(
 				'This page uses the <q>:template</q> template, inherited from the parent page <q><a href="!url">!title</a></q>.', [

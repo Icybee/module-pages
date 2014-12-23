@@ -30,7 +30,7 @@ class TemplateEditorsOperation extends Operation
 	}
 
 	/**
-	 * Returns a sectionned form with the editors to use to edit the contents of a template.
+	 * Returns a sectioned form with the editors to use to edit the contents of a template.
 	 *
 	 * The function alters the operation object by adding the `template` property, which holds an
 	 * array with the following keys:
@@ -57,7 +57,7 @@ class TemplateEditorsOperation extends Operation
 
 		$this->response['template'] = $template_info;
 
-		$form = (string) new \Brickrouge\Form([ \Brickrouge\Form::RENDERER => 'Simple' ] + $contents_tags);
+		$form = (string) new \Brickrouge\Form([ \Brickrouge\Form::RENDERER => 'Group' ] + $contents_tags);
 
 		$this->response['assets'] = $this->app->document->assets;
 

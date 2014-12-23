@@ -22,7 +22,7 @@ class PageTest extends \PHPUnit_Framework_TestCase
 
 	/**
 	 * @dataProvider provide_test_readonly_properties
-	 * @expectedException ICanBoogie\PropertyNotWritable
+	 * @expectedException \ICanBoogie\PropertyNotWritable
 	 * @param string $property Property name.
 	 */
 	public function test_readonly_properties($property)
@@ -32,7 +32,7 @@ class PageTest extends \PHPUnit_Framework_TestCase
 
 	public function provide_test_readonly_properties()
 	{
-		$properties = 'children_count depth descendents_count description document_title'
+		$properties = 'children_count depth descendants_count description document_title'
 		. ' extension has_child home is_accessible is_active is_home is_trail location';
 
 		return array_map(function($v) { return (array) $v; }, explode(' ', $properties));

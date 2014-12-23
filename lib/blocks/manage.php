@@ -48,6 +48,8 @@ class ManageBlock extends \Icybee\Modules\Nodes\ManageBlock
 	 * - `title`: An instance of {@link ManageBlock\TitleColumn}.
 	 * - `url`: An instance of {@link ManageBlock\URLColumn}.
 	 * - `is_navigation_excluded`: An instance of {@link ManageBlock\IsNavigationExcluded}.
+	 *
+	 * @inheritdoc
 	 */
 	protected function get_available_columns()
 	{
@@ -64,6 +66,8 @@ class ManageBlock extends \Icybee\Modules\Nodes\ManageBlock
 	 * Adds the following jobs:
 	 *
 	 * - `copy`: Copy the selected nodes.
+	 *
+	 * @inheritdoc
 	 */
 	protected function get_available_jobs()
 	{
@@ -116,6 +120,8 @@ class ManageBlock extends \Icybee\Modules\Nodes\ManageBlock
 	 *
 	 * The methods adds the `expanded` option which is used to store expanded tree nodes. The
 	 * option is initialized with first level pages.
+	 *
+	 * @inheritdoc
 	 */
 	protected function update_options(Options $options, array $modifiers)
 	{
@@ -162,6 +168,8 @@ class ManageBlock extends \Icybee\Modules\Nodes\ManageBlock
 	 *
 	 * The method is overrode if the display mode is `tree` in which case the records are fetched
 	 * according to their relation and the _expand_ state of their parent.
+	 *
+	 * @inheritdoc
 	 */
 	protected function fetch_records(Query $query)
 	{
@@ -181,6 +189,8 @@ class ManageBlock extends \Icybee\Modules\Nodes\ManageBlock
 
 	/**
 	 * Replaces the limiter by a simple count if the records are displayed as a tree.
+	 *
+	 * @inheritdoc
 	 */
 	protected function render_controls()
 	{
@@ -316,7 +326,7 @@ class TitleColumn extends \Icybee\Modules\Nodes\ManageBlock\TitleColumn
 		{
 			$expanded = in_array($record->nid, $this->manager->options->expanded);
 
-			$rc .= ' <a class="treetoggle" href="?' . ($expanded ? 'collapse' : 'expand') . '=' . $record->nid . '">' . ($expanded ? '-' : "+{$record->descendents_count}") . '</a>';
+			$rc .= ' <a class="treetoggle" href="?' . ($expanded ? 'collapse' : 'expand') . '=' . $record->nid . '">' . ($expanded ? '-' : "+{$record->descendants_count}") . '</a>';
 		}
 
 		#
@@ -340,6 +350,11 @@ class TitleColumn extends \Icybee\Modules\Nodes\ManageBlock\TitleColumn
  */
 class URLColumn extends \Icybee\Modules\Nodes\ManageBlock\URLColumn
 {
+	/**
+	 * @param \Icybee\Modules\Pages\Page $record
+	 *
+	 * @inheritdoc
+	 */
 	public function render_cell($record)
 	{
 		$t = $this->manager->t;

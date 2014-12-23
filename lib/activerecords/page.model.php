@@ -18,6 +18,8 @@ class Model extends \Icybee\Modules\Nodes\Model
 {
 	/**
 	 * Before saving the record, we make sure that it is not its own parent.
+	 *
+	 * @inheritdoc
 	 */
 	public function save(array $properties, $key=null, array $options=[])
 	{
@@ -39,6 +41,8 @@ class Model extends \Icybee\Modules\Nodes\Model
 	/**
 	 * Before deleting the record, we make sure that it is not used as a parent page or as a
 	 * location target.
+	 *
+	 * @inheritdoc
 	 */
 	public function delete($key)
 	{
@@ -56,6 +60,8 @@ class Model extends \Icybee\Modules\Nodes\Model
 	 * Changes the order of the query with "weight, create".
 	 *
 	 * @param Query $query
+	 *
+	 * @param int $direction < 0 for descending, ascending otherwise.
 	 *
 	 * @return Query
 	 */
@@ -92,7 +98,7 @@ class Model extends \Icybee\Modules\Nodes\Model
 	 *
 	 * @var array
 	 */
-	private static $blueprint_cache = [];
+	static private $blueprint_cache = [];
 
 	/**
 	 * Returns the home page of the specified site.
@@ -132,7 +138,7 @@ class Model extends \Icybee\Modules\Nodes\Model
 		return $home;
 	}
 
-	private static $home_by_siteid = [];
+	static private $home_by_siteid = [];
 
 	/**
 	 * Finds a page using its path.

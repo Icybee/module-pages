@@ -44,7 +44,7 @@ class NavigationBranchElement extends Element
 	 * branch. It defaults to 2.
 	 *
 	 * @param array $args
-	 * @param \Patorn\Engine $patron
+	 * @param \Patron\Engine $patron
 	 * @param mixed $template
 	 *
 	 * @return NavigationBranchElement|string
@@ -103,10 +103,10 @@ class NavigationBranchElement extends Element
 	}
 
 	/**
-	 * Bluid the {@link Blueprint} instance for the branch.
+	 * Build the {@link Blueprint} instance for the branch.
 	 *
 	 * @param Page $page
-	 * @param int $start_id
+	 * @param Page $start
 	 *
 	 * @return Blueprint
 	 */
@@ -155,7 +155,6 @@ class NavigationBranchElement extends Element
 	 */
 	protected function get_start()
 	{
-		$page = $this->page;
 		$parent = $this->page;
 
 		while ($parent->parent)

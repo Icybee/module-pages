@@ -22,13 +22,19 @@ use Icybee\Modules\Sites\Site;
  * implemented using the class' Prototype.
  *
  * @property Page $parent Parent page of the page.
+ * @property Page $location The page this page redirects to.
  * @property \Icybee\Modules\Sites\Site $site The site the page belongs to.
  * @property-read bool $is_accessible Whether the page is accessible or not.
  * @property-read bool $is_active Whether the page is active or not.
  * @property-read bool $is_home Whether the page is the home page of the site or not.
  * @property-read bool $is_trail Whether the page is in the navigation trail or not.
+ * @property-read bool $has_child `true` if the page has children, `false` otherwise.
+ * @property-read int $depth The depth of the page in the hierarchy.
  * @property-read array[]Page $navigation_children Navigation children of the page.
- * @property-read int $descendents_count The number of descendants.
+ * @property-read int $descendants_count The number of descendants.
+ * @property-read string $url_pattern The URL pattern of the page.
+ * @property-read string $url The URL of the page.
+ * @property-read string $absolute_url The absolute URL of the page.
  */
 class Page extends \Icybee\Modules\Nodes\Node
 {
@@ -158,11 +164,6 @@ class Page extends \Icybee\Modules\Nodes\Node
 	 */
 	public $node;
 
-	/**
-	 * @var bool true if the page is cachable, false otherwise.
-	 */
-	public $cachable = true;
-
 	public function __construct($model='pages')
 	{
 		if (empty($this->label))
@@ -213,7 +214,8 @@ class Page extends \Icybee\Modules\Nodes\Node
 	{
 		return $this->model
 		->where('is_online = 1 AND nid != ? AND parentid = ? AND siteid = ? AND weight <= ?', $this->nid, $this->parentid, $this->siteid, $this->weight)
-		->order('weight desc, created_at desc')->one;
+		->order('weight desc, created_at desc')
+		->one;
 	}
 
 	/**
@@ -249,32 +251,24 @@ class Page extends \Icybee\Modules\Nodes\Node
 
 		$url = null;
 
-		if (Pattern::is_pattern($url_pattern))
+		if (!Pattern::is_pattern($url_pattern))
 		{
-			if ($this->url_variables)
-			{
-				$url = Pattern::from($url_pattern)->format($this->url_variables);
-			}
-			else
-			{
-				$page = isset($this->app->request->context->page) ? $this->app->request->context->page : null;
-
-				if ($page && $page->url_variables)
-				{
-					$url = Pattern::from($url_pattern)->format($page->url_variables);
-				}
-				else
-				{
-					$url = '#url-pattern-could-not-be-resolved';
-				}
-			}
-		}
-		else
-		{
-			$url = $url_pattern;
+			return $url_pattern;
 		}
 
-		return $url;
+		if ($this->url_variables)
+		{
+			return (string) Pattern::from($url_pattern)->format($this->url_variables);
+		}
+
+		$page = isset($this->app->request->context->page) ? $this->app->request->context->page : null;
+
+		if (!$page)
+		{
+			return '#url-pattern-could-not-be-resolved';
+		}
+
+		return (string) Pattern::from($url_pattern)->format($page->url_variables);
 	}
 
 	/**
@@ -291,6 +285,7 @@ class Page extends \Icybee\Modules\Nodes\Node
 
 	public function translation($language=null)
 	{
+		/* @var $translation Page */
 		$translation = parent::translation($language);
 
 		if ($translation->nid != $this->nid && isset($this->url_variables))
@@ -521,13 +516,13 @@ class Page extends \Icybee\Modules\Nodes\Node
 	}
 
 	/**
-	 * Returns the number of descendent.
+	 * Returns the number of descendant.
 	 *
 	 * @return int
 	 */
-	protected function get_descendents_count()
+	protected function get_descendants_count()
 	{
-		return $this->model->blueprint($this->siteid)->index[$this->nid]->descendents_count;
+		return $this->model->blueprint($this->siteid)->index[$this->nid]->descendants_count;
 	}
 
 	/**

@@ -25,9 +25,11 @@ class PageRenderer
 
 	public function __invoke(Page $page)
 	{
+		$core = $app = \ICanBoogie\app();
+		$document = $app->document;
+
 		$template_pathname = $this->resolve_template_pathname($page->template);
 		$template = file_get_contents($template_pathname);
-		$document = \ICanBoogie\app()->document;
 		$engine = $this->resolve_engine($template);
 		$engine->context['page'] = $page;
 		$engine->context['document'] = $document;
@@ -124,6 +126,7 @@ class BeforeRenderEvent extends \ICanBoogie\Event
 	 *
 	 * @param PageRenderer $target
 	 * @param Page $page
+	 * @param Document $document
 	 * @param mixed $context
 	 */
 	public function __construct(PageRenderer $target, Page $page, Document $document, &$context)
@@ -168,8 +171,9 @@ class RenderEvent extends \ICanBoogie\Event
 	 * The event is constructed with the type `render`.
 	 *
 	 * @param PageRenderer $target
-	 * @param Page $page The page being rendered.
 	 * @param string $html Reference to the rendered HTML.
+	 * @param Page $page The page being rendered.
+	 * @param Document $document
 	 */
 	public function __construct(PageRenderer $target, &$html, Page $page, Document $document)
 	{

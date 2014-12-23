@@ -103,7 +103,11 @@ class PageController extends Controller
 	 *
 	 * @param Request $request
 	 *
-	 * @return Page|Response
+	 * @return Response|Page
+	 *
+	 * @throws AuthenticationRequired
+	 * @throws NotFound
+	 * @throws ServiceUnavailable
 	 */
 	protected function resolve_page(Request $request)
 	{
@@ -120,17 +124,9 @@ class PageController extends Controller
 
 		switch ($status)
 		{
-			case Site::STATUS_UNAUTHORIZED: throw new AuthenticationRequired();
-			case Site::STATUS_NOT_FOUND: throw new NotFound
-			(
-				\ICanBoogie\format("The requested URL does not exists: %uri", [
-
-					'uri' => $request->uri
-
-				])
-			);
-
-			case Site::STATUS_UNAVAILABLE: throw new ServiceUnavailable();
+			case Site::STATUS_UNAUTHORIZED: throw new AuthenticationRequired;
+			case Site::STATUS_NOT_FOUND: throw new NotFound;
+			case Site::STATUS_UNAVAILABLE: throw new ServiceUnavailable;
 		}
 
 		/* /TODO */

@@ -50,13 +50,6 @@ class LanguagesElement extends Element
 			throw new ElementIsEmpty;
 		}
 
-		/*
-		if ($template)
-		{
-			return $patron($template, $translations_by_language);
-		}
-		*/
-
 		$page_language = $page->language;
 		$links = [];
 
@@ -86,7 +79,7 @@ class LanguagesElement extends Element
 
 	protected function collect()
 	{
-		$app = $this->app,
+		$app = $this->app;
 		$page = $app->request->context->page;
 		$source = $page->node ?: $page;
 		$translations = $source->translations;
@@ -183,14 +176,14 @@ class AlterEvent extends \ICanBoogie\Event
 	/**
 	 * Reference to the links array.
 	 *
-	 * @var array[string]\Brickrouge\Element
+	 * @var \Brickrouge\Element[string]
 	 */
 	public $links;
 
 	/**
 	 * Reference to the language records.
 	 *
-	 * @var array[string]\ICanBoogie\ActiveRecord
+	 * @var \ICanBoogie\ActiveRecord[string]
 	 */
 	public $languages;
 

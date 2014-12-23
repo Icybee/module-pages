@@ -72,18 +72,10 @@ class BreadcrumbElement extends Element
 {
 	const PAGE = '#breadcrumb-page';
 	const DIVIDER = '#breadcrumb-divider';
-
 	const DEFAULT_DIVIDER = '›';
 
 	/**
-	 * Returns the breadcrumb for the current page.
-	 *
-	 * The breadcrumb is build and rendered using the #{@link \Brickrouge\Element\Breadcrumb}
-	 * element.
-	 *
-	 * @param array $args
-	 * @param \Patron\Engine $patron
-	 * @param array|string $template
+	 * Returns the breadcrumb element for the current page.
 	 *
 	 * @return string
 	 */
@@ -96,11 +88,11 @@ class BreadcrumbElement extends Element
 		]);
 	}
 
-	public function __construct($tags)
+	public function __construct(array $attributes=[])
 	{
-		parent::__construct('ol', $tags + [
+		parent::__construct('ol', $attributes + [
 
-			self::DIVIDER => self::DEFAULT_DIVIDER,
+			self::DIVIDER => static::DEFAULT_DIVIDER,
 
 			'class' => 'breadcrumb'
 
@@ -109,13 +101,13 @@ class BreadcrumbElement extends Element
 
 	protected function render_inner_html()
 	{
-		$page = $node = $this[self::PAGE];
+		$page = $p = $this[self::PAGE];
 		$slices = [];
 
-		while ($node)
+		while ($p)
 		{
-			$url = $node->url;
-			$label = $node->label;
+			$url = $p->url;
+			$label = $p->label;
 			$label = \ICanBoogie\shorten($label, 48);
 			$label = \Brickrouge\escape($label);
 
@@ -123,18 +115,18 @@ class BreadcrumbElement extends Element
 
 				'url' => $url,
 				'label' => $label,
-				'class' => $node->css_class('-type -slug -template -constructor -node-id -node-constructor'),
-				'page' => $node
+				'class' => $p->css_class('-type -slug -template -constructor -node-id -node-constructor'),
+				'page' => $p
 
 			];
 
-			if (!$node->parent && !$node->is_home)
+			if (!$p->parent && !$p->is_home)
 			{
-				$node = $node->home;
+				$p = $p->home;
 			}
 			else
 			{
-				$node = $node->parent;
+				$p = $p->parent;
 			}
 		}
 

@@ -14,6 +14,11 @@ namespace Icybee\Modules\Pages;
 use ICanBoogie\Event;
 use ICanBoogie\Routing\Pattern;
 
+/**
+ * @property Page $record
+ *
+ * @inheritdoc
+ */
 class SaveOperation extends \Icybee\Modules\Nodes\SaveOperation
 {
 	/**

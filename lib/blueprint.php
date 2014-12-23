@@ -12,6 +12,7 @@
 namespace Icybee\Modules\Pages;
 
 use ICanBoogie\ActiveRecord\Query;
+use ICanBoogie\GetterTrait;
 use ICanBoogie\PropertyNotDefined;
 
 /**
@@ -26,6 +27,8 @@ use ICanBoogie\PropertyNotDefined;
  */
 class Blueprint implements \IteratorAggregate
 {
+	use GetterTrait;
+
 	/**
 	 * Creates a {@link Blueprint} instance from an {@link ActiveRecord\Query}.
 	 *
@@ -78,7 +81,7 @@ class Blueprint implements \IteratorAggregate
 	 * Set the depth of the nodes of the specified branch.
 	 *
 	 * @param array $branch
-	 * @param number $depth Starting depth.
+	 * @param int $depth Starting depth.
 	 */
 	static private function set_depth(array $branch, $depth=0)
 	{
@@ -98,7 +101,7 @@ class Blueprint implements \IteratorAggregate
 	/**
 	 * The child/parent relation.
 	 *
-	 * An array where each key/value is the identifier of a node and the idenfier of its parent,
+	 * An array where each key/value is the identifier of a node and the identifier of its parent,
 	 * or zero if the node has no parent.
 	 *
 	 * @var array[int]int
@@ -159,36 +162,16 @@ class Blueprint implements \IteratorAggregate
 		$this->model = $model;
 	}
 
-	/**
-	 * Support for the {@link $ordered_records} property.
-	 *
-	 * @param string $property
-	 *
-	 * @throws PropertyNotDefined in attempt to get a property that is not defined or supported.
-	 *
-	 * @return mixed
-	 */
-	public function __get($property)
-	{
-		switch ($property)
-		{
-			case 'ordered_nodes';
-
-				return $this->get_ordered_nodes();
-
-			case 'ordered_records':
-
-				return $this->get_ordered_records();
-		}
-
-		throw new PropertyNotDefined([ $property, $this ]);
-	}
-
 	public function getIterator()
 	{
 		return new \ArrayIterator($this->index);
 	}
 
+	/**
+	 * Return ordered nodes.
+	 *
+	 * @return array
+	 */
 	protected function get_ordered_nodes()
 	{
 		$nodes = [];
@@ -216,7 +199,7 @@ class Blueprint implements \IteratorAggregate
 	 *
 	 * Note: The blueprint is populated with records if needed.
 	 *
-	 * @return array[int]ActiveRecord
+	 * @return Page[]
 	 */
 	protected function get_ordered_records()
 	{
@@ -336,10 +319,10 @@ class Blueprint implements \IteratorAggregate
 					continue;
 				}
 
-				$parentid = $node->parentid;
+				$parent_id = $node->parentid;
 
-				$relation[$nid] = $parentid;
-				$children[$parentid][] = $nid;
+				$relation[$nid] = $parent_id;
+				$children[$parent_id][] = $nid;
 				$pages[$nid] = $node;
 				$index[$nid] = $node;
 			}
@@ -357,7 +340,7 @@ class Blueprint implements \IteratorAggregate
 	 *
 	 * The method adds the `record` property to the blueprint nodes.
 	 *
-	 * @return array[int]\Icybee\Modules\Pages\Page
+	 * @return Page[]
 	 */
 	public function populate()
 	{
@@ -381,9 +364,10 @@ class Blueprint implements \IteratorAggregate
  * A node of the blueprint.
  *
  * @property-read int $children_count The number of children.
- * @property-read array[int]ActiveRecord $descendents The descendents ordered according to their
+ * @property-read array[int]ActiveRecord $descendants The descendants ordered according to their
  * position and relation.
- * @property-read int $descendents_count The number of descendents.
+ * @property-read int $descendants_count The number of descendants.
+ * @property Page $record.
  *
  * @see Blueprint
  */
@@ -428,49 +412,51 @@ class BlueprintNode
 	 * Inaccessible properties are obtained from the record.
 	 *
 	 * @param string $property
+	 *
+	 * @return mixed
 	 */
 	public function __get($property)
 	{
 		switch ($property)
 		{
 			case 'children_count': return count($this->children);
-			case 'descendents': return $this->get_descendents();
-			case 'descendents_count': return $this->get_descendents_count();
+			case 'descendants': return $this->get_descendants();
+			case 'descendants_count': return $this->get_descendants_count();
 		}
 
 		return $this->record->$property;
 	}
 
 	/**
-	 * Return the descendent nodes of the node.
+	 * Return the descendant nodes of the node.
 	 *
 	 * @return int
 	 */
-	protected function get_descendents()
+	protected function get_descendants()
 	{
-		$descendents = [];
+		$descendants = [];
 
 		foreach ($this->children as $nid => $child)
 		{
-			$descendents[$nid] = $child;
-			$descendents += $child->descendents;
+			$descendants[$nid] = $child;
+			$descendants += $child->descendants;
 		}
 
-		return $descendents;
+		return $descendants;
 	}
 
 	/**
-	 * Return the number of descendents.
+	 * Return the number of descendants.
 	 *
 	 * @return int
 	 */
-	protected function get_descendents_count()
+	protected function get_descendants_count()
 	{
 		$n = 0;
 
 		foreach ($this->children as $child)
 		{
-			$n += 1 + $child->descendents_count;
+			$n += 1 + $child->descendants_count;
 		}
 
 		return $n;

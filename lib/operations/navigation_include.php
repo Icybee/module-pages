@@ -14,6 +14,11 @@ namespace Icybee\Modules\Pages;
 use ICanBoogie\HTTP\Request;
 use ICanBoogie\Operation;
 
+/**
+ * @property Page $record
+ *
+ * @inheritdoc
+ */
 class NavigationIncludeOperation extends Operation
 {
 	protected function get_controls()
