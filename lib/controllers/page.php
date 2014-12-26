@@ -18,64 +18,54 @@ use ICanBoogie\HTTP\Request;
 use ICanBoogie\HTTP\Response;
 use ICanBoogie\HTTP\ServiceUnavailable;
 use ICanBoogie\I18n;
-use ICanBoogie\Routing\Controller;
+use ICanBoogie\Object;
 use ICanBoogie\Routing\Pattern;
 
 use Icybee\Modules\Sites\Site;
 
-class PageController extends Controller
+/**
+ * Class PageController
+ *
+ * @package Icybee\Modules\Pages
+ *
+ * @property-read Model $model
+ * @property-read \Icybee\Modules\Users\User $user
+ */
+class PageController extends Object
 {
 	/**
-	 * We don't use a route.
+	 * @return Model
 	 */
-	public function __construct()
+	protected function get_model()
 	{
+		return $this->app->models['pages'];
+	}
 
+	/**
+	 * @return \Icybee\Modules\Users\User
+	 */
+	protected function get_user()
+	{
+		return $this->app->user;
 	}
 
 	public function __invoke(Request $request)
 	{
-		try
+		$request->context->page = $page = $this->resolve_page($request);
+
+		if (!$page)
 		{
-			$request->context->page = $page = $this->resolve_page($request);
-
-			if (!$page)
-			{
-				return;
-			}
-
-			$response = $page instanceof Response ? $page : $this->render_page($page);
-
-			if ($request->is_head)
-			{
-				return new Response(null, $response->status, $response->headers);
-			}
-
-			return $response;
+			return;
 		}
-		catch (\Exception $e) // TODO-20130812: This shouldn't be handled by the class, but by Icybee or the user.
+
+		$response = $page instanceof Response ? $page : $this->render_page($page);
+
+		if ($request->is_head)
 		{
-			$code = $e->getCode();
-			$pathname = \ICanBoogie\DOCUMENT_ROOT . "protected/all/templates/$code.html";
-
-			if (file_exists($pathname))
-			{
-				$request->context->page = $page = Page::from([
-
-					'siteid' => $this->app->site_id,
-					'title' => I18n\t($e->getCode(), [], [ 'scope' => 'exception' ]),
-					'body' => I18n\t($e->getMessage(), [], [ 'scope' => 'exception' ])
-
-				]);
-
-				$template = file_get_contents($pathname);
-				$engine = $this->resolve_engine($template);
-
-				return new Response($engine($template, $page, [ 'file' => $pathname ]), $code);
-			}
-
-			throw $e;
+			return new Response(null, $response->status, $response->headers);
 		}
+
+		return $response;
 	}
 
 	/**
@@ -111,28 +101,10 @@ class PageController extends Controller
 	 */
 	protected function resolve_page(Request $request)
 	{
-		/* TODO-20130812: Move the following code section in the Sites module. */
-
-		$site = $request->context->site;
-
-		if (!$site->siteid)
-		{
-			throw new NotFound('Unable to find matching website.');
-		}
-
-		$status = $site->status;
-
-		switch ($status)
-		{
-			case Site::STATUS_UNAUTHORIZED: throw new AuthenticationRequired;
-			case Site::STATUS_NOT_FOUND: throw new NotFound;
-			case Site::STATUS_UNAVAILABLE: throw new ServiceUnavailable;
-		}
-
-		/* /TODO */
+		$this->assert_site_status($request->context->site);
 
 		$path = $request->path;
-		$page = $this->models['pages']->find_by_path($request->path);
+		$page = $this->model->find_by_path($request->path);
 
 		if (!$page)
 		{
@@ -166,28 +138,25 @@ class PageController extends Controller
 			]);
 		}
 
+		#
+		# Offline pages are displayed if the user has ownership, otherwise an HTTP exception
+		# with code 401 (Authentication) is thrown. We add the "✎" marker to the title of the
+		# page to indicate that the page is offline but displayed as a preview for the user.
+		#
+
 		if (!$page->is_online || $page->site->status != Site::STATUS_OK)
 		{
-			#
-			# Offline pages are displayed if the user has ownership, otherwise an HTTP exception
-			# with code 401 (Authentication) is thrown. We add the "✎" marker to the title of the
-			# page to indicate that the page is offline but displayed as a preview for the user.
-			#
-
 			if (!$this->user->has_ownership('pages', $page))
 			{
-				throw new AuthenticationRequired
-				(
-					\ICanBoogie\format('The requested URL %url requires authentication.', [
-
-						'url' => $path
-
-					])
-				);
+				throw new AuthenticationRequired;
 			}
 
 			$page->title .= ' ✎';
 		}
+
+		#
+		# Update the request with variables extracted from its URI.
+		#
 
 		if (isset($page->url_variables))
 		{
@@ -198,8 +167,20 @@ class PageController extends Controller
 		return $page;
 	}
 
-	protected function resolve_engine($template)
+	private function assert_site_status(Site $site)
 	{
-		return new \Patron\Engine;
+		if (!$site->siteid)
+		{
+			throw new NotFound('Unable to find matching website.');
+		}
+
+		$status = $site->status;
+
+		switch ($status)
+		{
+			case Site::STATUS_UNAUTHORIZED: throw new AuthenticationRequired;
+			case Site::STATUS_NOT_FOUND: throw new NotFound;
+			case Site::STATUS_UNAVAILABLE: throw new ServiceUnavailable;
+		}
 	}
 }
