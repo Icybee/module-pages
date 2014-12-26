@@ -37,10 +37,6 @@ class Hooks
 		// to the Routing dispatcher.
 		$target['pages'] = function(Request $request)
 		{
-			$core = $app = \ICanBoogie\app();
-
-			require_once \ICanBoogie\DOCUMENT_ROOT . 'user-startup.php';
-
 			$controller = new PageController;
 			$response = $controller($request);
 
