@@ -121,7 +121,7 @@ class Model extends \Icybee\Modules\Nodes\Model
 
 		if ($home)
 		{
-			$stored = $this->retrieve($home->nid);
+			$stored = $this->activerecord_cache->retrieve($home->nid);
 
 			if ($stored)
 			{
@@ -129,7 +129,7 @@ class Model extends \Icybee\Modules\Nodes\Model
 			}
 			else
 			{
-				$this->store($home);
+				$this->activerecord_cache->store($home);
 			}
 		}
 
@@ -196,9 +196,9 @@ class Model extends \Icybee\Modules\Nodes\Model
 				return;
 			}
 
-			if (!$this->retrieve($page->nid))
+			if (!$this->activerecord_cache->retrieve($page->nid))
 			{
-				$this->store($page);
+				$this->activerecord_cache->store($page);
 			}
 
 			return $page;
