@@ -11,6 +11,7 @@
 
 namespace Icybee\Modules\Pages;
 
+use ICanBoogie\Accessor\AccessorTrait;
 use ICanBoogie\HTTP\Request;
 
 use Icybee\Modules\Pages\PageRenderer\BeforeRenderEvent;
@@ -21,7 +22,7 @@ use Icybee\Modules\Pages\PageRenderer\RenderEvent;
  */
 class PageRenderer
 {
-	use \ICanBoogie\GetterTrait;
+	use AccessorTrait;
 
 	public function __invoke(Page $page)
 	{

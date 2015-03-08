@@ -11,9 +11,8 @@
 
 namespace Icybee\Modules\Pages;
 
+use ICanBoogie\Accessor\AccessorTrait;
 use ICanBoogie\ActiveRecord\Query;
-use ICanBoogie\GetterTrait;
-use ICanBoogie\PropertyNotDefined;
 
 /**
  * A simplified data structure representing the relationship between pages.
@@ -27,7 +26,7 @@ use ICanBoogie\PropertyNotDefined;
  */
 class Blueprint implements \IteratorAggregate
 {
-	use GetterTrait;
+	use AccessorTrait;
 
 	/**
 	 * Creates a {@link Blueprint} instance from an {@link ActiveRecord\Query}.

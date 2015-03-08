@@ -19,7 +19,7 @@
 	"require": {
 		"php": ">=5.4.0",
 		"icanboogie/module-installer": "~1.2",
-		"icanboogie/activerecord": "~2.1",
+		"icanboogie/activerecord": "~2.2",
 		"icybee/module-nodes": "~2.0"
 	},
 	"require-dev": {
