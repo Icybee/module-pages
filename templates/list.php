@@ -1,6 +1,7 @@
 <?php
 
 /* @var $app \ICanBoogie\Core */
+/* @var $this \Icybee\Modules\Pages\Blueprint */
 
 /**
  * @param $branches
@@ -61,17 +62,11 @@ $builder = function($branches, $depth=false, $min_child=false, $level=1) use(&$b
 	return '<ol class="lv' . $level . '">' . $rc . '</ol>';
 };
 
-$model = $app->models['pages'];
+$subset = $this->subset(function($branch){
 
-$blueprint = $model->blueprint($app->site_id);
+	return ($branch->pattern || !$branch->is_online);
 
-$subset = $blueprint->subset
-(
-	null, null, function($branch)
-	{
-		return ($branch->pattern || !$branch->is_online);
-	}
-);
+});
 
 $subset->populate();
 

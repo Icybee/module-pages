@@ -312,6 +312,8 @@ class Model extends \Icybee\Modules\Nodes\Model
 		# each page to its parent and propagate the online status.
 		#
 
+		/* @var $parent Page */
+
 		$parent = null;
 		$pages = $this->find(array_keys($pages_by_ids));
 

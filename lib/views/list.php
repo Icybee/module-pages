@@ -11,7 +11,12 @@
 
 namespace Icybee\Modules\Pages;
 
-class ListView extends \Icybee\Modules\Views\View
-{
+use Icybee\Modules\Views\View;
 
+class ListView extends View
+{
+	protected function resolve_bind()
+	{
+		return $this->module->model->blueprint($this->app->site_id);
+	}
 }

@@ -81,7 +81,7 @@ class PageRenderer
 
 	protected function resolve_engine($template)
 	{
-		return new \Patron\Engine;
+		return \Patron\get_patron();
 	}
 }
 
