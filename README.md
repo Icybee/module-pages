@@ -36,7 +36,7 @@ properties `slug` and `pattern`:
 ```php
 <?php
 
-$query = $core->models['pages']
+$query = $app->models['pages']
 ->select('nid, parentid, slug, pattern')
 ->filter_by_siteid($site_id = 1)
 ->ordered;
@@ -61,7 +61,7 @@ use a clone.
 ```php
 <?php
 
-$blueprint = $core->models['pages']->blueprint($site_id = 1);
+$blueprint = $app->models['pages']->blueprint($site_id = 1);
 ```
 
 
@@ -80,7 +80,7 @@ a particular branch can be obtained:
 ```php
 <?php
 
-$subset = $core->models['pages']->blueprint($site_id = 1)->subset(123);
+$subset = $app->models['pages']->blueprint($site_id = 1)->subset(123);
 ```
 
 The following example demonstrates how a subset of a blueprint with nodes that have
@@ -89,7 +89,7 @@ a maximum depth of 2 can be obtained:
 ```php
 <?php
 
-$subset = $core->models['pages']->blueprint($site_id = 1)->subset(null, 2);
+$subset = $app->models['pages']->blueprint($site_id = 1)->subset(null, 2);
 ```
 
 The following example demonstrates how a subset of a blueprint with only the online
@@ -100,7 +100,7 @@ nodes can be obtained using a closure:
 
 use Icybee\Modules\Pages\BlueprintNode;
 
-$subset = $core->models['pages']
+$subset = $app->models['pages']
 ->blueprint($site_id = 1)
 ->subset(null, null, function(BlueprintNode $node) {
 
@@ -227,7 +227,7 @@ The following code demonstrates how the node with id "5" is discarded from the n
 use Icybee\Modules\Pages\BluePrintNode;
 use Icybee\Modules\Pages\NavigationElement;
 
-$core->events->attach(function(NavigationElement\BeforePopulateEvent $event, NavigationElement $target) {
+$app->events->attach(function(NavigationElement\BeforePopulateEvent $event, NavigationElement $target) {
 
 	$event->blueprint = $event->blueprint->subset(function(BluePrintNode $node) {
 
@@ -258,7 +258,7 @@ navigation links:
 
 use Icybee\Modules\Pages\NavigationElement;
 
-$core->events->attach(function(NavigationElement\PopulateEvent $event, NavigationElement $target) {
+$app->events->attach(function(NavigationElement\PopulateEvent $event, NavigationElement $target) {
 
 	foreach ($event->blueprint as $node)
 	{
@@ -340,7 +340,7 @@ context, or the assets of the document.
 
 use Icybee\Modules\Pages\PageRenderer;
 
-$core->events->attach(function(PageRenderer\BeforeRenderEvent $event, PageRenderer $target) {
+$app->events->attach(function(PageRenderer\BeforeRenderEvent $event, PageRenderer $target) {
 
 	$event->context['my_variable'] = "My value";
 
@@ -364,7 +364,7 @@ after the page was rendered. Third parties may use this event to alter the HTML 
 
 use Icybee\Modules\Pages\PageRenderer;
 
-$core->events->attach(function(PageRenderer\RenderEvent $event, PageRenderer $target) {
+$app->events->attach(function(PageRenderer\RenderEvent $event, PageRenderer $target) {
 
 	$event->html .= "<!-- My awesome comment -->";
 
@@ -416,7 +416,7 @@ page of the instance:
 ```php
 <?php
 
-echo "Home page URL: " . $core->site->home->url;
+echo "Home page URL: " . $app->site->home->url;
 ```
 
 
@@ -426,7 +426,7 @@ echo "Home page URL: " . $core->site->home->url;
 ### `ICanBoogie\Core::get_page`
 
 The `page` getter is added to instances of `ICanBoogie\Core`. It returns the page currently being
-displayed. The getter is a shortcut to `$core->request->context->page`.
+displayed. The getter is a shortcut to `$app->request->context->page`.
 
 
 

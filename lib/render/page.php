@@ -26,7 +26,7 @@ class PageRenderer
 
 	public function __invoke(Page $page)
 	{
-		$core = $app = \ICanBoogie\app();
+		$app = \ICanBoogie\app();
 		$document = $app->document;
 
 		$template_pathname = $this->resolve_template_pathname($page->template);
