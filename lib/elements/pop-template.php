@@ -15,24 +15,69 @@ use Brickrouge\Element;
 
 class PopTemplate extends Element
 {
-	public function __construct(array $attributes=[])
+	public function __construct(array $attributes = [])
 	{
 		parent::__construct('select', $attributes);
 	}
 
-	public function __toString()
+	public function render()
 	{
-		$list = $this->app->site->templates;
+		$names = $this->collect_template_names();
 
-		if (!$list)
+		if (!$names)
 		{
 			return '<p class="warn">There is no template available.</p>';
 		}
 
-		$options = array_combine($list, $list);
+		$this[self::OPTIONS] = [ null => '<auto>' ] + array_combine($names, $names);
 
-		$this[self::OPTIONS] = [ null => '<auto>' ] + $options;
+		return parent::render();
+	}
 
-		return parent::__toString();
+	private function collect_template_names()
+	{
+		$names = [];
+
+		foreach (array_keys($this->collect_all_templates()) as $basename)
+		{
+			$names[] = basename($basename, '.patron');
+		}
+
+		return $names;
+	}
+
+	private function collect_all_templates()
+	{
+		$templates = [];
+		$paths = \ICanBoogie\get_autoconfig()['app-paths'];
+
+		foreach ($paths as $path)
+		{
+			$path .= 'templates';
+
+			if (!file_exists($path))
+			{
+				continue;
+			}
+
+			$templates = array_merge($templates, $this->collect_templates($path));
+		}
+
+		return $templates;
+	}
+
+	private function collect_templates($path)
+	{
+		$templates = [];
+		$di = new \RegexIterator(new \DirectoryIterator($path), '#\.(html|xml)(\.patron)?$#');
+
+		foreach ($di as $file)
+		{
+			$pathname = $file->getPathname();
+			$name = basename($pathname);
+			$templates[$name] = $pathname;
+		}
+
+		return $templates;
 	}
 }

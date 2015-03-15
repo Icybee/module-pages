@@ -17,6 +17,7 @@ use Brickrouge\Alert;
 use Brickrouge\Element;
 use Brickrouge\Form;
 
+use ICanBoogie\Render\TemplateNotFound;
 use Icybee\Modules\Editor\EditorElement;
 use Icybee\Modules\Editor\MultiEditorElement;
 use Icybee\Modules\Views\ViewOptions;
@@ -418,23 +419,26 @@ class Module extends \Icybee\Modules\Nodes\Module
 
 	static public function get_template_info($name)
 	{
-		$site = \ICanBoogie\app()->site;
-		$path = $site->resolve_path('templates/' . $name);
+		$renderer = new PageRenderer;
 
-		if (!$path)
+		try
 		{
-			\ICanBoogie\log_error('Uknown template file %name', [ '%name' => $name ]);
+			$path = $renderer->resolve_template_pathname($name);
+		}
+		catch (TemplateNotFound $e)
+		{
+			\ICanBoogie\log_error('Unknown template file %name', [ '%name' => $name ]);
 
 			return [];
 		}
 
-		$html = file_get_contents(\ICanBoogie\DOCUMENT_ROOT . $path);
+		$html = file_get_contents($path); // This is assuming that the template engine is Patron
 		$parser = new \Patron\HTMLParser();
 
-		return self::get_template_info_callback($html, $parser);
+		return self::get_template_info_callback($html, $parser, $renderer);
 	}
 
-	static protected function get_template_info_callback($html, $parser)
+	static protected function get_template_info_callback($html, $parser, PageRenderer $renderer)
 	{
 		$styles = [];
 		$contents = [];
@@ -526,24 +530,27 @@ class Module extends \Icybee\Modules\Nodes\Module
 		$root = $_SERVER['DOCUMENT_ROOT'];
 
 		$call_template_collection = \Patron\HTMLParser::collectMarkup($tree, 'call-template');
+		$template_resolver = $renderer->template_resolver;
+		$template_extensions = $renderer->template_extensions;
 
 		foreach ($call_template_collection as $node)
 		{
 			$template_name = $node['args']['name'];
-
-			$file = $template_name . '.html';
-			$path = $site->resolve_path('templates/partials/' . $file);
+			$tried = [];
+			$path = $template_resolver->resolve('_' . $template_name, $template_extensions, $tried);
 
 			if (!$path)
 			{
-				\ICanBoogie\log_error('Partial template %name not found', [ '%name' => $file ]);
+				$e = new TemplateNotFound(\ICanBoogie\format("Partial template not found: %name", [ 'name' => $template_name ]), $tried);
+
+				\ICanBoogie\log_error($e->getMessage());
 
 				continue;
 			}
 
-			$template = file_get_contents($root . $path);
+			$template = file_get_contents($path);
 
-			list($partial_contents, $partial_styles) = self::get_template_info_callback($template, $parser);
+			list($partial_contents, $partial_styles) = self::get_template_info_callback($template, $parser, $renderer);
 
 			$contents = array_merge($contents, $partial_contents);
 
