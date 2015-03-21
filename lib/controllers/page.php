@@ -82,8 +82,7 @@ class PageController extends Object
 
 		return new Response($html, 200, [
 
-			'Content-Type' => 'text/html; charset=utf-8',
-			'Content-Length' => strlen($html)
+			'Content-Type' => 'text/html; charset=utf-8'
 
 		]);
 	}
