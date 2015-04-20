@@ -43,8 +43,7 @@ return [
 
 		'location' => 'Redirect from this page to another page.',
 
-		'parentid' => "Pages can be organized hierarchically to form a tree. There is no limit to
-		the depth of this tree.",
+		'parentid' => "Organize pages hierarchically to form a tree.",
 
 		'pattern' => "The pattern is used to distribute the URL parameters to create a semantic
 		URL.",

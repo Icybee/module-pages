@@ -58,8 +58,7 @@ return [
 
 		'location' => 'Redirection depuis cette page vers une autre page.',
 
-		'parentid' => "Les pages peuvent être organisées hiérarchiquement pour former une
-		arborescence. Il n'y a pas de limites à la profondeur de cette arborescence.",
+		'parentid' => "Organisez les pages hiérarchiquement pour former une arborescence.",
 
 		'pattern' => "Le motif permet de distribuer les paramètres d'une URL pour créer une URL
 		sémantique.",

@@ -526,9 +526,6 @@ class Module extends \Icybee\Modules\Nodes\Module
 		# recurse on templates
 		#
 
-		$site = \ICanBoogie\app()->site;
-		$root = $_SERVER['DOCUMENT_ROOT'];
-
 		$call_template_collection = \Patron\HTMLParser::collectMarkup($tree, 'call-template');
 		$template_resolver = $renderer->template_resolver;
 		$template_extensions = $renderer->template_extensions;
@@ -542,6 +539,37 @@ class Module extends \Icybee\Modules\Nodes\Module
 			if (!$path)
 			{
 				$e = new TemplateNotFound(\ICanBoogie\format("Partial template not found: %name", [ 'name' => $template_name ]), $tried);
+
+				\ICanBoogie\log_error($e->getMessage());
+
+				continue;
+			}
+
+			$template = file_get_contents($path);
+
+			list($partial_contents, $partial_styles) = self::get_template_info_callback($template, $parser, $renderer);
+
+			$contents = array_merge($contents, $partial_contents);
+
+			if ($partial_styles)
+			{
+				$styles = array_merge($styles, $partial_styles);
+			}
+		}
+
+		#
+		# and decorators
+		#
+
+		foreach (\Patron\HTMLParser::collectMarkup($tree, 'decorate') as $node)
+		{
+			$partial_name = $node['args']['with'];
+			$tried = [];
+			$path = $template_resolver->resolve('@' . $partial_name, $template_extensions, $tried);
+
+			if (!$path)
+			{
+				$e = new TemplateNotFound(\ICanBoogie\format("Partial template not found: %name", [ 'name' => $partial_name ]), $tried);
 
 				\ICanBoogie\log_error($e->getMessage());
 

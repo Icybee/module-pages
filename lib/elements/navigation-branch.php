@@ -13,6 +13,7 @@ namespace Icybee\Modules\Pages;
 
 use Brickrouge\Element;
 use Brickrouge\ElementIsEmpty;
+use ICanBoogie\Routing\Pattern;
 
 /**
  * Render a navigation branch.
@@ -129,7 +130,7 @@ class NavigationBranchElement extends Element
 		->blueprint($this->page->siteid)
 		->subset($start->nid, $this[self::DEPTH], function(BlueprintNode $node) use($trail) {
 
-			if (!$node->is_online || $node->is_navigation_excluded)
+			if (!$node->is_online || $node->is_navigation_excluded || Pattern::is_pattern($node->pattern))
 			{
 				return true;
 			}

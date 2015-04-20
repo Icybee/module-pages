@@ -117,6 +117,7 @@ class PageRenderer
 	 */
 	public function resolve_template_pathname($name)
 	{
+		$tried = [];
 		$template_pathname = $this->template_resolver->resolve($name, $this->template_extensions, $tried);
 
 		if (!$template_pathname)
