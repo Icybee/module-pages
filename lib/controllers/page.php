@@ -26,8 +26,6 @@ use Icybee\Modules\Sites\Site;
 /**
  * Class PageController
  *
- * @package Icybee\Modules\Pages
- *
  * @property-read Model $model
  * @property-read \Icybee\Modules\Users\User $user
  */
@@ -55,7 +53,7 @@ class PageController extends Object
 
 		if (!$page)
 		{
-			return;
+			return null;
 		}
 
 		$response = $page instanceof Response ? $page : $this->render_page($page);
@@ -73,7 +71,7 @@ class PageController extends Object
 	 *
 	 * @param Page $page
 	 *
-	 * @return \ICanBoogie\HTTP\Response
+	 * @return Response
 	 */
 	protected function render_page(Page $page)
 	{
@@ -107,7 +105,7 @@ class PageController extends Object
 
 		if (!$page)
 		{
-			return;
+			return null;
 		}
 
 		if ($page->location)
@@ -166,11 +164,20 @@ class PageController extends Object
 		return $page;
 	}
 
+	/**
+	 * Asserts that the site status is right to display a page.
+	 *
+	 * @param Site $site
+	 *
+	 * @throws AuthenticationRequired
+	 * @throws NotFound
+	 * @throws ServiceUnavailable
+	 */
 	private function assert_site_status(Site $site)
 	{
 		if (!$site->siteid)
 		{
-			throw new NotFound('Unable to find matching website.');
+			throw new NotFound("Unable to find matching website.");
 		}
 
 		$status = $site->status;

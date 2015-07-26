@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-$_SERVER['DOCUMENT_ROOT'] = __DIR__ . '/sandbox';
+namespace ICanBoogie;
 
 require __DIR__ . '/../vendor/autoload.php';
 
@@ -17,7 +17,7 @@ require __DIR__ . '/../vendor/autoload.php';
 # Create the _core_ instance used for the tests.
 #
 
-$app = new \ICanBoogie\Core(\ICanBoogie\array_merge_recursive(\ICanBoogie\get_autoconfig(), [
+$app = new Core(array_merge_recursive(get_autoconfig(), [
 
 	'module-path' => [
 

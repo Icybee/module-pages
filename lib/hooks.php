@@ -12,11 +12,9 @@
 namespace Icybee\Modules\Pages;
 
 use ICanBoogie\ActiveRecord;
-use ICanBoogie\Event;
 use ICanBoogie\FileCache;
-use ICanBoogie\HTTP\Dispatcher;
+use ICanBoogie\HTTP\RequestDispatcher;
 use ICanBoogie\HTTP\Request;
-use ICanBoogie\HTTP\Response;
 
 use Brickrouge\Element;
 
@@ -28,32 +26,12 @@ class Hooks
 	/**
 	 * Adds the `pages` dispatcher, which serves pages managed by the module.
 	 *
-	 * @param Dispatcher\AlterEvent $event
-	 * @param Dispatcher $target
+	 * @param RequestDispatcher\AlterEvent $event
+	 * @param RequestDispatcher $target
 	 */
-	static public function on_http_dispatcher_alter(Dispatcher\AlterEvent $event, Dispatcher $target)
+	static public function on_http_dispatcher_alter(RequestDispatcher\AlterEvent $event, RequestDispatcher $target)
 	{
-		// TODO-20130812: This should be either moved to a Dispatcher class, or used as an event hook
-		// to the Routing dispatcher.
-		$target['pages'] = function(Request $request)
-		{
-			$controller = new PageController;
-			$response = $controller($request);
-
-			if (!$response)
-			{
-				return;
-			}
-
-			if (!($response instanceof Response))
-			{
-				$response = new Response($response);
-			}
-
-			$response->cache_control = 'private, no-cache, no-store, must-revalidate';
-
-			return $response;
-		};
+		$event->insert('page', PageDispatcher::class);
 	}
 
 	/**

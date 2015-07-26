@@ -18,17 +18,14 @@ return [
 			Model::EXTENDING => 'nodes',
 			Model::SCHEMA => [
 
-				'fields' => [
+				'parentid' => 'foreign',
+				'locationid' => 'foreign',
+				'label' => [ 'varchar', 80 ],
+				'pattern' => 'varchar',
+				'weight' => [ 'integer', 'unsigned' => true ],
+				'template' => [ 'varchar', 32 ],
+				'is_navigation_excluded' => [ 'boolean', 'indexed' => true ]
 
-					'parentid' => 'foreign',
-					'locationid' => 'foreign',
-					'label' => [ 'varchar', 80 ],
-					'pattern' => 'varchar',
-					'weight' => [ 'integer', 'unsigned' => true ],
-					'template' => [ 'varchar', 32 ],
-					'is_navigation_excluded' => [ 'boolean', 'indexed' => true ]
-
-				]
 			]
 		],
 
@@ -36,23 +33,16 @@ return [
 
 			Model::SCHEMA => [
 
-				'fields' => [
+				'pageid' => [ 'foreign', 'primary' => true ],
+				'contentid' => [ 'varchar', 64, 'primary' => true ],
+				'content' => [ 'text', 'long' ],
+				'editor' => [ 'varchar', 32 ]
 
-					'pageid' => [ 'foreign', 'primary' => true ],
-					'contentid' => [ 'varchar', 64, 'primary' => true ],
-					'content' => [ 'text', 'long' ],
-					'editor' => [ 'varchar', 32 ]
-
-				]
 			]
 		]
 	],
 
 	Descriptor::NS => __NAMESPACE__,
 	Descriptor::REQUIRED => true,
-	Descriptor::REQUIRES => [
-
-		'editor' => '1.0'
-
-	]
+	Descriptor::REQUIRES => [ 'editor' ]
 ];

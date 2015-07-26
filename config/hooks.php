@@ -2,28 +2,31 @@
 
 namespace Icybee\Modules\Pages;
 
-$hooks = __NAMESPACE__ . '\Hooks::';
+$hooks = Hooks::class . '::';
+
+use ICanBoogie\HTTP\RequestDispatcher;
+use Icybee\Modules;
 
 return [
 
 	'events' => [
 
 		'Brickrouge\Document::render_title:before' => $hooks . 'before_document_render_title',
-		'ICanBoogie\HTTP\Dispatcher::alter' => $hooks . 'on_http_dispatcher_alter',
+		RequestDispatcher::class . '::alter' => $hooks . 'on_http_dispatcher_alter',
 		'ICanBoogie\SaveOperation::process' => $hooks . 'invalidate_cache',
 		'ICanBoogie\DeleteOperation::process' => $hooks . 'invalidate_cache',
-		'Icybee\Modules\Files\File::move' => $hooks . 'on_file_move',
-		'Icybee\Modules\Pages\Page::move' => $hooks . 'on_page_move',
-		'Icybee\Modules\Nodes\OnlineOperation::process' => $hooks . 'invalidate_cache',
-		'Icybee\Modules\Nodes\OfflineOperation::process' => $hooks . 'invalidate_cache'
+		Modules\Files\File::class . '::move' => $hooks . 'on_file_move',
+		Modules\Pages\Page::class . '::move' => $hooks . 'on_page_move',
+		Modules\Nodes\OnlineOperation::class . '::process' => $hooks . 'invalidate_cache',
+		Modules\Nodes\OfflineOperation::class . '::process' => $hooks . 'invalidate_cache'
 
 	],
 
 	'prototypes' => [
 
-		'Icybee\Modules\Sites\Site::lazy_get_home' => $hooks . 'get_home',
+		Modules\Sites\Site::class . '::lazy_get_home' => $hooks . 'get_home',
 		'ICanBoogie\Core::get_page' => $hooks . 'get_page',
-		__NAMESPACE__ . '\Page::render' => $hooks . 'render_page'
+		Page::class . '::render' => $hooks . 'render_page'
 
 	],
 
@@ -44,8 +47,7 @@ return [
 
 		'page:languages' => [
 
-			__NAMESPACE__ . '\LanguagesElement::markup', [
-
+			LanguagesElement::class . '::markup', [
 
 			]
 		],
@@ -65,7 +67,7 @@ return [
 
 		'navigation:leaf' => [
 
-			__NAMESPACE__ . '\NavigationBranchElement::markup_navigation_leaf', [
+			NavigationBranchElement::class . '::markup_navigation_leaf', [
 
 				'css-class-names' => 'active trail id',
 				'depth' => 2
@@ -75,7 +77,7 @@ return [
 
 		'breadcrumb' => [
 
-			__NAMESPACE__ . '\BreadcrumbElement::markup', [
+			BreadcrumbElement::class . '::markup', [
 
 				'page' => [ 'expression' => true, 'required' => true, 'default' => 'this' ]
 
