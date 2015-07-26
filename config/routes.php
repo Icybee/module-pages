@@ -2,14 +2,16 @@
 
 namespace Icybee\Modules\Pages;
 
+use ICanBoogie\HTTP\Request;
 use ICanBoogie\Operation;
+use Icybee\Routing\RouteMaker as Make;
 
 return [
 
 	'api:pages:is-navigation-excluded:set' => [
 
 		'pattern' => '/api/pages/<' . Operation::KEY . ':\d+>/is-navigation-excluded',
-		'controller' => __NAMESPACE__ . '\NavigationExcludeOperation',
+		'controller' => NavigationExcludeOperation::class,
 		'via' => 'PUT'
 
 	],
@@ -17,7 +19,7 @@ return [
 	'api:pages:is-navigation-excluded:unset' => [
 
 		'pattern' => '/api/pages/<' . Operation::KEY . ':\d+>/is-navigation-excluded',
-		'controller' => __NAMESPACE__ . '\NavigationIncludeOperation',
+		'controller' => NavigationIncludeOperation::class,
 		'via' => 'DELETE'
 
 	],
@@ -27,14 +29,15 @@ return [
 		'pattern' => '/admin/site',
 		'location' => '/admin/pages'
 
-	],
+	]
 
-	'admin:pages/export' => [
+] + Make::admin('pages', Routing\PagesAdminController::class, [
 
-		'pattern' => '/admin/pages/export',
-		'title' => 'Export',
-		'block' => 'export'
+	'only' => [ 'index', 'create', 'edit', 'export' ],
+	'actions' => [
+
+		'export' => [ '/{name}/export', Request::METHOD_ANY ]
 
 	]
 
-];
+]);
