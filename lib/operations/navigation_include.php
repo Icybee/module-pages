@@ -11,8 +11,10 @@
 
 namespace Icybee\Modules\Pages;
 
+use ICanBoogie\Errors;
 use ICanBoogie\HTTP\Request;
 use ICanBoogie\Operation;
+use Icybee\Binding\ObjectBindings;
 
 /**
  * @property Page $record
@@ -21,6 +23,8 @@ use ICanBoogie\Operation;
  */
 class NavigationIncludeOperation extends Operation
 {
+	use ObjectBindings;
+
 	protected function get_controls()
 	{
 		return [
@@ -39,7 +43,7 @@ class NavigationIncludeOperation extends Operation
 		return parent::__invoke($request);
 	}
 
-	protected function validate(\ICanboogie\Errors $errors)
+	protected function validate(Errors $errors)
 	{
 		return true;
 	}

@@ -77,7 +77,7 @@ class Model extends \Icybee\Modules\Nodes\Model
 	 *
 	 * @param int $site_id Identifier of the website.
 	 *
-	 * @return array[int]object
+	 * @return Blueprint
 	 */
 	public function blueprint($site_id)
 	{
@@ -96,7 +96,7 @@ class Model extends \Icybee\Modules\Nodes\Model
 	/**
 	 * Holds the cached blueprint for each website.
 	 *
-	 * @var array
+	 * @var Blueprint[]
 	 */
 	static private $blueprint_cache = [];
 

@@ -11,8 +11,18 @@
 
 namespace Icybee\Modules\Pages;
 
-class CopyOperation extends \ICanBoogie\Operation
+use ICanBoogie\Errors;
+use ICanBoogie\Operation;
+
+use Icybee\Binding\ObjectBindings;
+
+/**
+ * @property Page $record
+ */
+class CopyOperation extends Operation
 {
+	use ObjectBindings;
+
 	protected function get_controls()
 	{
 		return [
@@ -21,6 +31,14 @@ class CopyOperation extends \ICanBoogie\Operation
 			self::CONTROL_RECORD => true
 
 		] + parent::get_controls();
+	}
+
+	/**
+	 * @inheritdoc
+	 */
+	protected function validate(Errors $errors)
+	{
+		return true;
 	}
 
 	protected function process()
@@ -47,7 +65,7 @@ class CopyOperation extends \ICanBoogie\Operation
 		{
 			\ICanBoogie\log_error('Unable to copy page %title (#:nid)', [ 'title' => $title, 'nid' => $key ]);
 
-			return;
+			return null;
 		}
 
 		$this->response->message = $this->format('Page %title was copied to %copy', [

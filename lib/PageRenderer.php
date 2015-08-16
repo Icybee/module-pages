@@ -19,13 +19,13 @@ use ICanBoogie\Render\TemplateResolver;
 
 use Brickrouge\Document;
 
+use Icybee\Binding\ObjectBindings;
 use Icybee\Modules\Pages\PageRenderer\BeforeRenderEvent;
 use Icybee\Modules\Pages\PageRenderer\RenderEvent;
 
 /**
  * Render a {@link Page} instance into an HTML string.
  *
- * @property-read \ICanBoogie\Core $app
  * @property-read Document $document
  * @property-read TemplateResolver $template_resolver
  * @property-read EngineCollection $template_engines
@@ -34,6 +34,7 @@ use Icybee\Modules\Pages\PageRenderer\RenderEvent;
 class PageRenderer
 {
 	use AccessorTrait;
+	use ObjectBindings;
 
 	protected function lazy_get_app()
 	{

@@ -11,7 +11,7 @@
 
 namespace Icybee\Modules\Pages;
 
-use ICanBoogie\AuthenticationRequired;
+use ICanBoogie\HTTP\AuthenticationRequired;
 use ICanBoogie\HTTP\NotFound;
 use ICanBoogie\HTTP\RedirectResponse;
 use ICanBoogie\HTTP\Request;
@@ -21,6 +21,7 @@ use ICanBoogie\I18n;
 use ICanBoogie\Object;
 use ICanBoogie\Routing\Pattern;
 
+use Icybee\Binding\ControllerBindings;
 use Icybee\Modules\Sites\Site;
 
 /**
@@ -31,6 +32,8 @@ use Icybee\Modules\Sites\Site;
  */
 class PageController extends Object
 {
+	use ControllerBindings;
+
 	/**
 	 * @return Model
 	 */
@@ -143,7 +146,7 @@ class PageController extends Object
 
 		if (!$page->is_online || $page->site->status != Site::STATUS_OK)
 		{
-			if (!$this->user->has_ownership('pages', $page))
+			if (!$this->user->has_ownership($page))
 			{
 				throw new AuthenticationRequired;
 			}

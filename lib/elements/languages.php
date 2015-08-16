@@ -16,9 +16,12 @@ use ICanBoogie\Event;
 
 use Brickrouge\Element;
 use Brickrouge\ElementIsEmpty;
+use Icybee\Binding\ObjectBindings;
 
 class LanguagesElement extends Element
 {
+	use ObjectBindings;
+
 	static public function markup(array $args, \Patron\Engine $patron, $template)
 	{
 		if ($template)

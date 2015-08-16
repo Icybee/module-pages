@@ -22,6 +22,9 @@ use Icybee\Modules\Editor\EditorElement;
 use Icybee\Modules\Editor\MultiEditorElement;
 use Icybee\Modules\Views\ViewOptions;
 
+/**
+ * @property-read \ICanBoogie\Core|\Icybee\Binding\CoreBindings $app
+ */
 class Module extends \Icybee\Modules\Nodes\Module
 {
 	/**
@@ -50,11 +53,11 @@ class Module extends \Icybee\Modules\Nodes\Module
 
 		if ($elements)
 		{
-			$template_description .= ' ' . I18n\t("The following elements are editable:");
+			$template_description .= ' ' . $this->app->translate("The following elements are editable:");
 		}
 		else
 		{
-			$template_description = I18n\t("The <q>:template</q> template does not define any editable element.", [ ':template' => $template ]);
+			$template_description = $this->app->translate("The <q>:template</q> template does not define any editable element.", [ ':template' => $template ]);
 		}
 
 		$elements = array_merge([
@@ -139,7 +142,7 @@ class Module extends \Icybee\Modules\Nodes\Module
 		{
 			$id = $editable['id'];
 			$title = $editable['title'];
-			$title = I18n\t($id, [], [ 'scope' => [ 'content', 'title' ], 'default' => $title ]);
+			$title = $app->translate($id, [], [ 'scope' => [ 'content', 'title' ], 'default' => $title ]);
 
 			$does_inherit = !empty($editable['inherit']);
 
@@ -205,7 +208,7 @@ class Module extends \Icybee\Modules\Nodes\Module
 							Form::LABEL => $title,
 							Element::GROUP => 'contents.inherit',
 							Element::INNER_HTML => '',
-							Element::DESCRIPTION => I18n\t
+							Element::DESCRIPTION => $app->translate
 							(
 								'This content is currently inherited from the <q><a href="!url">!title</a></q> parent page. <a href="#edit" class="btn">Edit the content</a>', array
 								(
@@ -220,7 +223,7 @@ class Module extends \Icybee\Modules\Nodes\Module
 					}
 					else
 					{
-						$editor_description .= I18n\t('No parent page define this content.');
+						$editor_description .= $app->translate('No parent page define this content.');
 					}
 				}
 			}
@@ -240,7 +243,7 @@ class Module extends \Icybee\Modules\Nodes\Module
 				{
 					$elements["contents[$id]"] = new Alert
 					(
-						I18n\t('Éditeur inconnu : %editor', [ '%editor' => $editable['editor'] ]), [
+						$app->translate('Éditeur inconnu : %editor', [ '%editor' => $editable['editor'] ]), [
 
 							Form::LABEL => $title,
 							Element::GROUP => $does_inherit ? 'contents.inherit' : 'contents',
@@ -315,13 +318,16 @@ class Module extends \Icybee\Modules\Nodes\Module
 	{
 		$inherited = false;
 		$is_alone = !$this->model->select('nid')->filter_by_siteid($this->app->site_id)->rc;
+		$template = null;
 
 		if ($is_alone)
 		{
 			$template = 'home.html';
 		}
 
-		$description = I18n\t("The template defines a page model of which some elements are editable.");
+		$app = $this->app;
+
+		$description = $app->translate("The template defines a page model of which some elements are editable.");
 
 		if (!$nid)
 		{
@@ -340,6 +346,8 @@ class Module extends \Icybee\Modules\Nodes\Module
 
 			return [ $template, $description, $template == 'page.html' ];
 		}
+
+		/* @var $record Page */
 
 		$record = $this->model[$nid];
 		$definer = null;
@@ -400,12 +408,12 @@ class Module extends \Icybee\Modules\Nodes\Module
 
 		if ($definer && $definer != $record)
 		{
-			$description .= ' ' . I18n\t
+			$description .= ' ' . $app->translate
 			(
 				'This page uses the <q>:template</q> template, inherited from the parent page <q><a href="!url">!title</a></q>.', [
 
 					'template' => $template,
-					'url' => \ICanBoogie\Routing\contextualize("/admin/{$this->id}/{$definer->nid}/edit"),
+					'url' => $this->app->url_for("admin:{$this->id}:edit", $definer),
 					'title' => $definer->title
 
 				]

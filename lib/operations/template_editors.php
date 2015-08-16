@@ -12,9 +12,12 @@
 namespace Icybee\Modules\Pages;
 
 use ICanBoogie\Operation;
+use Icybee\Binding\ObjectBindings;
 
 class TemplateEditorsOperation extends Operation
 {
+	use ObjectBindings;
+
 	protected function get_controls()
 	{
 		return [

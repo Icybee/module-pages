@@ -130,6 +130,8 @@ class NavigationBranchElement extends Element
 		->blueprint($this->page->siteid)
 		->subset($start->nid, $this[self::DEPTH], function(BlueprintNode $node) use($trail) {
 
+			/* @var $node BlueprintNode|Page */
+
 			if (!$node->is_online || $node->is_navigation_excluded || Pattern::is_pattern($node->pattern))
 			{
 				return true;

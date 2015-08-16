@@ -19,6 +19,7 @@ use ICanBoogie\HTTP\Request;
 use Brickrouge\Element;
 
 use Icybee\Modules\Files\File;
+use Icybee\Modules\Nodes\Node;
 use Icybee\Modules\Sites\Site;
 
 class Hooks
@@ -470,6 +471,8 @@ class Hooks
 		->blueprint($page->siteid)
 		->subset($parentid, $depth === null ? null : $depth - 1, function(BlueprintNode $node) use($min_children) {
 
+			/* @var $node BlueprintNode|Node */
+
 			if ($min_children && $min_children > count($node->children))
 			{
 				return true;
@@ -542,7 +545,7 @@ class RenderRegionEvent extends \ICanBoogie\Event
 	/**
 	 * The region element.
 	 *
-	 * @var Element
+	 * @var \Brickrouge\Element
 	 */
 	public $element;
 

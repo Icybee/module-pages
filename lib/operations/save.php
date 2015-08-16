@@ -13,6 +13,7 @@ namespace Icybee\Modules\Pages;
 
 use ICanBoogie\Event;
 use ICanBoogie\Routing\Pattern;
+use Icybee\Binding\ObjectBindings;
 
 /**
  * @property Page $record
@@ -21,6 +22,8 @@ use ICanBoogie\Routing\Pattern;
  */
 class SaveOperation extends \Icybee\Modules\Nodes\SaveOperation
 {
+	use ObjectBindings;
+
 	/**
 	 * For new records, the values for the {@link Page::SITEID} and {@link Page::LANGUAGE}
 	 * properties are obtained from the current site. If the weight of the page is not defined

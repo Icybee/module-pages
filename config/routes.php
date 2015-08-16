@@ -33,7 +33,8 @@ return [
 
 ] + Make::admin('pages', Routing\PagesAdminController::class, [
 
-	'only' => [ 'index', 'create', 'edit', 'export' ],
+	'id_name' => 'nid',
+	'only' => [ 'index', 'create', 'edit', 'confirm-delete', 'export' ],
 	'actions' => [
 
 		'export' => [ '/{name}/export', Request::METHOD_ANY ]

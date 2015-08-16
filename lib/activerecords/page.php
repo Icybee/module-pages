@@ -13,31 +13,48 @@ namespace Icybee\Modules\Pages;
 
 use ICanBoogie\Routing\Pattern;
 
+use Icybee\Binding\ObjectBindings;
+use Icybee\Modules\Nodes\Node;
 use Icybee\Modules\Sites\Site;
 
 /**
  * Representation of a page.
  *
- * @method string render() render() Renders the instance into a string. The method needs to be
- * implemented using the class' Prototype.
+ * @method string render() Renders the instance into a string. This is a prototype method.
  *
- * @property Page $parent Parent page of the page.
- * @property Page $location The page this page redirects to.
- * @property \Icybee\Modules\Sites\Site $site The site the page belongs to.
+ * @property-read Model $model
+ * @property Page $next
+ * @property Page $previous
+ *
+ * @property-read string $absolute_url The absolute URL of the page.
+ * @property string $body
+ * @property Page[] $children
+ * @property-read int $children_count
+ * @property Content[] $contents
+ * @property-read int $depth The depth of the page in the hierarchy.
+ * @property-read int $descendants_count The number of descendants.
+ * @property-read string $description
+ * @property-read string $document_title
+ * @property-read string $extension
+ * @property-read bool $has_child `true` if the page has children, `false` otherwise.
+ * @property-read Page $home
  * @property-read bool $is_accessible Whether the page is accessible or not.
  * @property-read bool $is_active Whether the page is active or not.
  * @property-read bool $is_home Whether the page is the home page of the site or not.
  * @property-read bool $is_trail Whether the page is in the navigation trail or not.
- * @property-read bool $has_child `true` if the page has children, `false` otherwise.
- * @property-read int $depth The depth of the page in the hierarchy.
- * @property-read array[]Page $navigation_children Navigation children of the page.
- * @property-read int $descendants_count The number of descendants.
- * @property-read string $url_pattern The URL pattern of the page.
+ * @property-read Page $location The page this page redirects to.
+ * @property Page[] $navigation_children Navigation children of the page.
+ * @property Page $parent Parent page of the page.
+ * @property-read string $template
  * @property-read string $url The URL of the page.
- * @property-read string $absolute_url The absolute URL of the page.
+ * @property-read string $url_pattern The URL pattern of the page.
  */
-class Page extends \Icybee\Modules\Nodes\Node
+class Page extends Node
 {
+	use ObjectBindings;
+
+	const MODEL_ID = 'pages';
+
 	const PARENTID = 'parentid';
 	const LOCATIONID = 'locationid';
 	const PATTERN = 'pattern';
@@ -161,10 +178,11 @@ class Page extends \Icybee\Modules\Nodes\Node
 	/**
 	 * @var Node Node object currently acting as the body of the page.
 	 * @todo-20130327: use request's context instead
+	 * @deprecated
 	 */
 	public $node;
 
-	public function __construct($model='pages')
+	public function __construct($model = self::MODEL_ID)
 	{
 		if (empty($this->label))
 		{
@@ -268,6 +286,8 @@ class Page extends \Icybee\Modules\Nodes\Node
 			return '#url-pattern-could-not-be-resolved';
 		}
 
+		/* @var $page Page */
+
 		return (string) Pattern::from($url_pattern)->format($page->url_variables);
 	}
 
@@ -276,7 +296,7 @@ class Page extends \Icybee\Modules\Nodes\Node
 	 *
 	 * @return string The absolute URL of the page.
 	 */
-	protected function lazy_get_absolute_url()
+	protected function get_absolute_url()
 	{
 		$site = $this->site;
 
@@ -464,7 +484,7 @@ class Page extends \Icybee\Modules\Nodes\Node
 	/**
 	 * Returns the page's children that are online and part of the navigation.
 	 *
-	 * @return array[int]Page
+	 * @return Page[]
 	 */
 	protected function lazy_get_navigation_children()
 	{
@@ -538,11 +558,11 @@ class Page extends \Icybee\Modules\Nodes\Node
 	 *
 	 * Keys of the array are the contentid, values are the contents objects.
 	 *
-	 * @return array[string]Content
+	 * @return Content[]
 	 */
 	protected function lazy_get_contents()
 	{
-		$entries = $this->app->models['pages/contents']->filter_by_pageid($this->nid);
+		$entries = $this->model->models['pages/contents']->filter_by_pageid($this->nid);
 		$contents = [];
 
 		foreach ($entries as $entry)
