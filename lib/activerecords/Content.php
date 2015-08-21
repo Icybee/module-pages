@@ -11,12 +11,14 @@
 
 namespace Icybee\Modules\Pages;
 
+use ICanBoogie\ActiveRecord;
+
 /**
  * A content of a page.
  *
  * @property-read mixed $rendered The rendered version of the content.
  */
-class Content extends \ICanBoogie\ActiveRecord
+class Content extends ActiveRecord
 {
 	/**
 	 * The identifier of the page the content belongs to.

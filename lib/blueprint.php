@@ -138,21 +138,21 @@ class Blueprint implements \IteratorAggregate
 	/**
 	 * Model associated with the blueprint.
 	 *
-	 * @var \ICanBoogie\ActiveRecord\Model
+	 * @var PageModel
 	 */
 	public $model;
 
 	/**
-	 * The blueprint is usually constructed by the {@link Model::blueprint()} method or the
+	 * The blueprint is usually constructed by the {@link PageModel::blueprint()} method or the
 	 * {@link subset()} method.
 	 *
-	 * @param Model $model
+	 * @param PageModel $model
 	 * @param array $relation The child/parent relations.
 	 * @param array $children The parent/children relations.
 	 * @param array $index Pages index.
 	 * @param array $tree Pages nested as a tree.
 	 */
-	protected function __construct(Model $model, array $relation, array $children, array $index, array $tree)
+	protected function __construct(PageModel $model, array $relation, array $children, array $index, array $tree)
 	{
 		$this->relation = $relation;
 		$this->children = $children;

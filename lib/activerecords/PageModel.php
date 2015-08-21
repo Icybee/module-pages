@@ -14,7 +14,9 @@ namespace Icybee\Modules\Pages;
 use ICanBoogie\ActiveRecord\Query;
 use ICanBoogie\Routing\Pattern;
 
-class Model extends \Icybee\Modules\Nodes\Model
+use Icybee\Modules\Nodes\NodeModel;
+
+class PageModel extends NodeModel
 {
 	/**
 	 * Before saving the record, we make sure that it is not its own parent.

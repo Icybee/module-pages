@@ -56,8 +56,8 @@ class CopyOperation extends Operation
 		$record->title .= ' (copy)';
 		$record->slug .= '-copy';
 
-		$contentsModel = $this->module->model('contents');
-		$contents = $contentsModel->where([ 'pageid' => $key ])->all;
+		$contentModel = $this->module->model('contents');
+		$contents = $contentModel->where([ 'pageid' => $key ])->all;
 
 		$nid = $this->module->model->save((array) $record);
 
@@ -80,7 +80,7 @@ class CopyOperation extends Operation
 			$record->pageid = $nid;
 			$record = (array) $record;
 
-			$contentsModel->insert($record, [
+			$contentModel->insert($record, [
 
 				'on duplicate' => $record
 

@@ -27,7 +27,7 @@ use Icybee\Modules\Sites\Site;
 /**
  * Class PageController
  *
- * @property-read Model $model
+ * @property-read PageModel $model
  * @property-read \Icybee\Modules\Users\User $user
  */
 class PageController extends Object
@@ -35,7 +35,7 @@ class PageController extends Object
 	use ControllerBindings;
 
 	/**
-	 * @return Model
+	 * @return PageModel
 	 */
 	protected function get_model()
 	{

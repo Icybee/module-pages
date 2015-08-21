@@ -22,7 +22,7 @@ use Icybee\Modules\Sites\Site;
  *
  * @method string render() Renders the instance into a string. This is a prototype method.
  *
- * @property-read Model $model
+ * @property-read PageModel $model
  * @property Page $next
  * @property Page $previous
  *
