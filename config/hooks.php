@@ -22,14 +22,6 @@ return [
 
 	],
 
-	'prototypes' => [
-
-		Modules\Sites\Site::class . '::lazy_get_home' => $hooks . 'get_home',
-		'ICanBoogie\Core::get_page' => $hooks . 'get_page',
-		Page::class . '::render' => $hooks . 'render_page'
-
-	],
-
 	'patron.markups' => [
 
 		'page:content' => [
