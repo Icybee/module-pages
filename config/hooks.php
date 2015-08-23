@@ -9,19 +9,6 @@ use Icybee\Modules;
 
 return [
 
-	'events' => [
-
-		'Brickrouge\Document::render_title:before' => $hooks . 'before_document_render_title',
-		RequestDispatcher::class . '::alter' => $hooks . 'on_http_dispatcher_alter',
-		'ICanBoogie\SaveOperation::process' => $hooks . 'invalidate_cache',
-		'ICanBoogie\DeleteOperation::process' => $hooks . 'invalidate_cache',
-		Modules\Files\File::class . '::move' => $hooks . 'on_file_move',
-		Modules\Pages\Page::class . '::move' => $hooks . 'on_page_move',
-		Modules\Nodes\OnlineOperation::class . '::process' => $hooks . 'invalidate_cache',
-		Modules\Nodes\OfflineOperation::class . '::process' => $hooks . 'invalidate_cache'
-
-	],
-
 	'patron.markups' => [
 
 		'page:content' => [
