@@ -11,10 +11,13 @@
 
 namespace Icybee\Modules\Pages;
 
+use ICanBoogie\Errors;
+use ICanBoogie\Operation;
+
 /**
  * Updates the order and relation of the specified records.
  */
-class UpdateTreeOperation extends \ICanBoogie\Operation
+class UpdateTreeOperation extends Operation
 {
 	protected function get_controls()
 	{
@@ -25,7 +28,7 @@ class UpdateTreeOperation extends \ICanBoogie\Operation
 		] + parent::get_controls();
 	}
 
-	protected function validate(\ICanboogie\Errors $errors)
+	protected function validate(Errors $errors)
 	{
 		$order = $this->request['order'];
 		$relation = $this->request['relation'];

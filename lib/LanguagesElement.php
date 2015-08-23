@@ -12,17 +12,19 @@
 namespace Icybee\Modules\Pages;
 
 use ICanBoogie\ActiveRecord;
-use ICanBoogie\Event;
 
 use Brickrouge\Element;
 use Brickrouge\ElementIsEmpty;
+
+use Patron\Engine as Patron;
+
 use Icybee\Binding\ObjectBindings;
 
 class LanguagesElement extends Element
 {
 	use ObjectBindings;
 
-	static public function markup(array $args, \Patron\Engine $patron, $template)
+	static public function markup(array $args, Patron $patron, $template)
 	{
 		if ($template)
 		{
@@ -32,7 +34,7 @@ class LanguagesElement extends Element
 		return new static();
 	}
 
-	public function __construct(array $attributes=[])
+	public function __construct(array $attributes = [])
 	{
 		parent::__construct('div', [
 
@@ -142,69 +144,5 @@ class LanguagesElement extends Element
 		}
 
 		return $translations_by_language;
-	}
-}
-
-namespace Icybee\Modules\Pages\LanguagesElement;
-
-/**
- * Event class for the `Icybee\Modules\Pages\LanguagesElement::collect` event.
- */
-class CollectEvent extends \ICanBoogie\Event
-{
-	/**
-	 * Reference to the languages.
-	 *
-	 * @var array[string]\ICanBoogie\ActiveRecord
-	 */
-	public $languages;
-
-	/**
-	 * The event is constructed with the `render:before` event.
-	 *
-	 * @param \Icybee\Modules\Pages\LanguagesElement $target
-	 * @param array $payload
-	 */
-	public function __construct(\Icybee\Modules\Pages\LanguagesElement $target, array $payload)
-	{
-		parent::__construct($target, 'collect', $payload);
-	}
-}
-
-/**
- * Event class for the `Icybee\Modules\Pages\LanguagesElement::alter` event.
- */
-class AlterEvent extends \ICanBoogie\Event
-{
-	/**
-	 * Reference to the links array.
-	 *
-	 * @var \Brickrouge\Element[string]
-	 */
-	public $links;
-
-	/**
-	 * Reference to the language records.
-	 *
-	 * @var \ICanBoogie\ActiveRecord[string]
-	 */
-	public $languages;
-
-	/**
-	 * The current page.
-	 *
-	 * @var \Icybee\Modules\Pages\Page
-	 */
-	public $page;
-
-	/**
-	 * The event is constructed with the `alter` event.
-	 *
-	 * @param \Icybee\Modules\Pages\LanguagesElement $target
-	 * @param array $payload
-	 */
-	public function __construct(\Icybee\Modules\Pages\LanguagesElement $target, array $payload)
-	{
-		parent::__construct($target, 'alter', $payload);
 	}
 }

@@ -11,7 +11,6 @@
 
 namespace Icybee\Modules\Pages;
 
-use ICanBoogie\Event;
 use Brickrouge\Element;
 
 /**
@@ -177,78 +176,5 @@ class BreadcrumbElement extends Element
 		]);
 
 		return $html;
-	}
-}
-
-namespace Icybee\Modules\Pages\BreadcrumbElement;
-
-/**
- * Event class for the `Icybee\Modules\Pages\BreadcrumbElement::render_inner_html:before`
- * event.
- */
-class BeforeRenderInnerHTMLEvent extends \ICanBoogie\Event
-{
-	/**
-	 * Reference to the slices array.
-	 *
-	 * @var array
-	 */
-	public $slices;
-
-	/**
-	 * Reference to the divider.
-	 *
-	 * @var string
-	 */
-	public $divider;
-
-	/**
-	 * The page for which the breadcrumb is computed.
-	 *
-	 * @var \Icybee\Modules\Pages\Page.
-	 */
-	public $page;
-
-	/**
-	 * The event is constructed with the type `render_inner_html:before`.
-	 *
-	 * @param \Icybee\Modules\Pages\BreadcrumbElement $target
-	 * @param array $payload
-	 */
-	public function __construct(\Icybee\Modules\Pages\BreadcrumbElement $target, array $payload)
-	{
-		parent::__construct($target, 'render_inner_html:before', $payload);
-	}
-}
-
-/**
- * Event class for the `Icybee\Modules\Pages\BreadcrumbElement::render_inner_html`
- * event.
- */
-class RenderInnerHTMLEvent extends \ICanBoogie\Event
-{
-	/**
-	 * Reference to the inner HTML.
-	 *
-	 * @var string
-	 */
-	public $html;
-
-	/**
-	 * The page for which the breadcrumb is computed.
-	 *
-	 * @var \Icybee\Modules\Pages\Page.
-	 */
-	public $page;
-
-	/**
-	 * The event is constructed with the type `render_inner_html`.
-	 *
-	 * @param \Icybee\Modules\Pages\BreadcrumbElement $target
-	 * @param array $payload
-	 */
-	public function __construct(\Icybee\Modules\Pages\BreadcrumbElement $target, array $payload)
-	{
-		parent::__construct($target, 'render_inner_html', $payload);
 	}
 }

@@ -20,11 +20,11 @@ class PopPage extends Element
 
 	public function render()
 	{
+		/* @var $model PageModel */
+
 		$app = $this->app;
-
-		/* @var $blueprint Blueprint */
-
-		$blueprint = $app->models['pages']->blueprint($app->site_id);
+		$model = $app->models['pages'];
+		$blueprint = $model->blueprint($app->site_id);
 		$blueprint->populate();
 
 		$options = [];

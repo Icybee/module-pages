@@ -17,18 +17,19 @@ use ICanBoogie\HTTP\RedirectResponse;
 use ICanBoogie\HTTP\Request;
 use ICanBoogie\HTTP\Response;
 use ICanBoogie\HTTP\ServiceUnavailable;
-use ICanBoogie\I18n;
+use ICanBoogie\HTTP\Status;
 use ICanBoogie\Object;
 use ICanBoogie\Routing\Pattern;
 
 use Icybee\Binding\ControllerBindings;
 use Icybee\Modules\Sites\Site;
+use Icybee\Modules\Users\User;
 
 /**
- * Class PageController
+ * Page controller.
  *
  * @property-read PageModel $model
- * @property-read \Icybee\Modules\Users\User $user
+ * @property-read User $user
  */
 class PageController extends Object
 {
@@ -43,7 +44,7 @@ class PageController extends Object
 	}
 
 	/**
-	 * @return \Icybee\Modules\Users\User
+	 * @return User
 	 */
 	protected function get_user()
 	{
@@ -81,7 +82,7 @@ class PageController extends Object
 		$renderer = new PageRenderer;
 		$html = $renderer($page);
 
-		return new Response($html, 200, [
+		return new Response($html, Status::OK, [
 
 			'Content-Type' => 'text/html; charset=utf-8'
 

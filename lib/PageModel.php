@@ -16,6 +16,9 @@ use ICanBoogie\Routing\Pattern;
 
 use Icybee\Modules\Nodes\NodeModel;
 
+/**
+ * @method Page offsetGet($offset)
+ */
 class PageModel extends NodeModel
 {
 	/**
@@ -23,7 +26,7 @@ class PageModel extends NodeModel
 	 *
 	 * @inheritdoc
 	 */
-	public function save(array $properties, $key=null, array $options=[])
+	public function save(array $properties, $key = null, array $options = [])
 	{
 		if ($key && isset($properties[Page::PARENTID]) && $key == $properties[Page::PARENTID])
 		{
@@ -179,7 +182,7 @@ class PageModel extends NodeModel
 		{
 			if (strpos($path, $site_path) !== 0)
 			{
-				return;
+				return null;
 			}
 
 			$path = substr($path, strlen($site_path));
@@ -195,7 +198,7 @@ class PageModel extends NodeModel
 
 			if (!$page)
 			{
-				return;
+				return null;
 			}
 
 			if (!$this->activerecord_cache->retrieve($page->nid))
@@ -218,6 +221,8 @@ class PageModel extends NodeModel
 		->ordered;
 
 		$tries = Blueprint::from($query)->tree;
+
+		/* @var $try Page */
 
 		$try = null;
 		$pages_by_ids = [];
@@ -288,7 +293,7 @@ class PageModel extends NodeModel
 
 			if (!$try)
 			{
-				return;
+				return null;
 			}
 
 			#

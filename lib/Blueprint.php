@@ -29,7 +29,7 @@ class Blueprint implements \IteratorAggregate
 	use AccessorTrait;
 
 	/**
-	 * Creates a {@link Blueprint} instance from an {@link ActiveRecord\Query}.
+	 * Creates a {@link Blueprint} instance from an {@link Query}.
 	 *
 	 * @param Query $query
 	 *
@@ -37,7 +37,7 @@ class Blueprint implements \IteratorAggregate
 	 */
 	static public function from(Query $query)
 	{
-		$query->mode(\PDO::FETCH_CLASS, __NAMESPACE__ . '\BluePrintNode');
+		$query->mode(\PDO::FETCH_CLASS, BlueprintNode::class);
 
 		$relation = [];
 		$children = [];
@@ -73,7 +73,11 @@ class Blueprint implements \IteratorAggregate
 
 		self::set_depth($tree);
 
-		return new static($query->model, $relation, $children, $index, $tree);
+		/* @var $model PageModel */
+
+		$model = $query->model;
+
+		return new static($model, $relation, $children, $index, $tree);
 	}
 
 	/**
@@ -103,7 +107,7 @@ class Blueprint implements \IteratorAggregate
 	 * An array where each key/value is the identifier of a node and the identifier of its parent,
 	 * or zero if the node has no parent.
 	 *
-	 * @var array[int]int
+	 * @var array
 	 */
 	public $relation;
 
@@ -114,7 +118,7 @@ class Blueprint implements \IteratorAggregate
 	 * identifiers of its children. Each key/value pair of the children value is made of the
 	 * child identifier.
 	 *
-	 * @var array[int]array
+	 * @var array
 	 */
 	public $children;
 
@@ -124,14 +128,14 @@ class Blueprint implements \IteratorAggregate
 	 * Blueprint nodes are instances of the {@link BlueprintNode} class. The key of the index is
 	 * the identifier of the node, while the value is the node instance.
 	 *
-	 * @var array[int]BlueprintNode
+	 * @var BlueprintNode[int]
 	 */
 	public $index;
 
 	/**
 	 * Pages nested as a tree.
 	 *
-	 * @var array[int]BlueprintNode
+	 * @var BlueprintNode[int]
 	 */
 	public $tree;
 
@@ -284,7 +288,7 @@ class Blueprint implements \IteratorAggregate
 	 *
 	 * @return Blueprint
 	 */
-	public function subset($nid_or_filter=null, $depth=null, $filter=null)
+	public function subset($nid_or_filter = null, $depth = null, $filter = null)
 	{
 		$relation = [];
 		$children = [];
@@ -356,121 +360,5 @@ class Blueprint implements \IteratorAggregate
 		}
 
 		return $records;
-	}
-}
-
-/**
- * A node of the blueprint.
- *
- * @property-read int $children_count The number of children.
- * @property-read array[int]ActiveRecord $descendants The descendants ordered according to their
- * position and relation.
- * @property-read int $descendants_count The number of descendants.
- * @property Page $record.
- *
- * @see Blueprint
- */
-class BlueprintNode
-{
-	/**
-	 * The identifier of the page.
-	 *
-	 * @var int
-	 */
-	public $nid;
-
-	/**
-	 * Depth of the node is the tree.
-	 *
-	 * @var int
-	 */
-	public $depth;
-
-	/**
-	 * The identifier of the parent of the page.
-	 *
-	 * @var int
-	 */
-	public $parentid;
-
-	/**
-	 * Blueprint node of the parent of the page.
-	 *
-	 * @var BlueprintNode
-	 */
-	public $parent;
-
-	/**
-	 * The children of the node.
-	 *
-	 * @var array[int]BlueprintNode
-	 */
-	public $children;
-
-	/**
-	 * Inaccessible properties are obtained from the record.
-	 *
-	 * @param string $property
-	 *
-	 * @return mixed
-	 */
-	public function __get($property)
-	{
-		switch ($property)
-		{
-			case 'children_count': return count($this->children);
-			case 'descendants': return $this->get_descendants();
-			case 'descendants_count': return $this->get_descendants_count();
-		}
-
-		return $this->record->$property;
-	}
-
-	/**
-	 * Return the descendant nodes of the node.
-	 *
-	 * @return int
-	 */
-	protected function get_descendants()
-	{
-		$descendants = [];
-
-		foreach ($this->children as $nid => $child)
-		{
-			$descendants[$nid] = $child;
-			$descendants += $child->descendants;
-		}
-
-		return $descendants;
-	}
-
-	/**
-	 * Return the number of descendants.
-	 *
-	 * @return int
-	 */
-	protected function get_descendants_count()
-	{
-		$n = 0;
-
-		foreach ($this->children as $child)
-		{
-			$n += 1 + $child->descendants_count;
-		}
-
-		return $n;
-	}
-
-	/**
-	 * Forwards calls to the record.
-	 *
-	 * @param string $method
-	 * @param array $arguments
-	 *
-	 * @return mixed
-	 */
-	public function __call($method, $arguments)
-	{
-		return call_user_func_array($this->record, $method, $arguments);
 	}
 }

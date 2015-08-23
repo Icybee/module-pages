@@ -22,8 +22,12 @@ use Icybee\Modules\Editor\EditorElement;
 use Icybee\Modules\Editor\MultiEditorElement;
 use Icybee\Modules\Views\ViewOptions;
 
+use Patron\HTMLParser;
+use Patron\Engine as Patron;
+
 /**
  * @property-read \ICanBoogie\Core|\Icybee\Binding\CoreBindings $app
+ * @property-read PageModel $model
  */
 class Module extends \Icybee\Modules\Nodes\Module
 {
@@ -37,7 +41,7 @@ class Module extends \Icybee\Modules\Nodes\Module
 			'list' => [
 
 				ViewOptions::TITLE => 'Sitemap',
-				ViewOptions::CLASSNAME => __NAMESPACE__ . '\ListView',
+				ViewOptions::CLASSNAME => ListView::class,
 				ViewOptions::ASSETS => [],
 				ViewOptions::RENDERS => ViewOptions::RENDERS_MANY
 
@@ -46,7 +50,7 @@ class Module extends \Icybee\Modules\Nodes\Module
 		];
 	}
 
-	public function get_contents_section($nid, $template=null)
+	public function get_contents_section($nid, $template = null)
 	{
 		list($template, $template_description, $is_inherited) = $this->resolve_template($nid, $template);
 		list($elements, $hiddens) = $this->get_contents_section_elements($nid, $template);
@@ -310,11 +314,12 @@ class Module extends \Icybee\Modules\Nodes\Module
 	 * Returns the template to use for a specified page.
 	 *
 	 * @param int $nid
+	 * @param string $request_template
 	 *
 	 * @return array An array composed of the template name, the description and a boolean
 	 * representing whether or not the template is inherited for the specified page.
 	 */
-	protected function resolve_template($nid, $request_template=null)
+	protected function resolve_template($nid, $request_template = null)
 	{
 		$inherited = false;
 		$is_alone = !$this->model->select('nid')->filter_by_siteid($this->app->site_id)->rc;
@@ -441,12 +446,12 @@ class Module extends \Icybee\Modules\Nodes\Module
 		}
 
 		$html = file_get_contents($path); // This is assuming that the template engine is Patron
-		$parser = new \Patron\HTMLParser();
+		$parser = new HTMLParser;
 
 		return self::get_template_info_callback($html, $parser, $renderer);
 	}
 
-	static protected function get_template_info_callback($html, $parser, PageRenderer $renderer)
+	static protected function get_template_info_callback($html, HTMLParser $parser, PageRenderer $renderer)
 	{
 		$styles = [];
 		$contents = [];
@@ -482,13 +487,13 @@ class Module extends \Icybee\Modules\Nodes\Module
 		#
 		#
 
-		$tree = $parser->parse($html, \Patron\Engine::PREFIX);
+		$tree = $parser->parse($html, Patron::PREFIX);
 
 		#
 		# contents
 		#
 
-		$contents_collection = \Patron\HTMLParser::collectMarkup($tree, 'page:content');
+		$contents_collection = HTMLParser::collectMarkup($tree, 'page:content');
 
 		foreach ($contents_collection as $node)
 		{
@@ -534,7 +539,7 @@ class Module extends \Icybee\Modules\Nodes\Module
 		# recurse on templates
 		#
 
-		$call_template_collection = \Patron\HTMLParser::collectMarkup($tree, 'call-template');
+		$call_template_collection = HTMLParser::collectMarkup($tree, 'call-template');
 		$template_resolver = $renderer->template_resolver;
 		$template_extensions = $renderer->template_extensions;
 
@@ -569,7 +574,7 @@ class Module extends \Icybee\Modules\Nodes\Module
 		# and decorators
 		#
 
-		foreach (\Patron\HTMLParser::collectMarkup($tree, 'decorate') as $node)
+		foreach (HTMLParser::collectMarkup($tree, 'decorate') as $node)
 		{
 			$partial_name = $node['args']['with'];
 			$tried = [];

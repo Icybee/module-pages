@@ -156,7 +156,7 @@ nodes or records. They are ordered according to their weight and relation.
 ```php
 <?php
 
-$blueprint->ordered_nodes;	// an array of BluePrintNodes instances
+$blueprint->ordered_nodes;	// an array of BlueprintNodes instances
 $blueprint->ordered_records; // an array of Page instances
 ```
 
@@ -224,12 +224,12 @@ The following code demonstrates how the node with id "5" is discarded from the n
 ```php
 <?php
 
-use Icybee\Modules\Pages\BluePrintNode;
+use Icybee\Modules\Pages\BlueprintNode;
 use Icybee\Modules\Pages\NavigationElement;
 
 $app->events->attach(function(NavigationElement\BeforePopulateEvent $event, NavigationElement $target) {
 
-	$event->blueprint = $event->blueprint->subset(function(BluePrintNode $node) {
+	$event->blueprint = $event->blueprint->subset(function(BlueprintNode $node) {
 
 		return $node->nid == 5;
 

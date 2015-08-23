@@ -104,6 +104,8 @@ class NavigationElement extends Element
 
 		foreach ($blueprint as $node)
 		{
+			/* @var $record Page */
+
 			$record = $node->record;
 
 			$node->renderables = [
@@ -150,6 +152,8 @@ class NavigationElement extends Element
 	{
 		$render_node = function(BlueprintNode $node, $depth=1) use(&$render_node) {
 
+			/* @var $item_decorator Element */
+
 			$renderables = $node->renderables;
 			$item_decorator = $renderables['item_decorator'];
 			$item_decorator->adopt($renderables['link']);
@@ -165,6 +169,8 @@ class NavigationElement extends Element
 			{
 				$children[] = $render_node($child, $depth + 1);
 			}
+
+			/* @var $menu Element */
 
 			$menu = $renderables['menu'];
 			$menu->adopt($children);
@@ -183,88 +189,5 @@ class NavigationElement extends Element
 		}
 
 		return $children;
-	}
-}
-
-/*
- * Events
- */
-
-namespace Icybee\Modules\Pages\NavigationElement;
-
-use Icybee\Modules\Pages\Blueprint;
-use Icybee\Modules\Pages\NavigationElement;
-
-/**
- * Event class for the `Icybee\Modules\Pages\NavigationElement::populate:before` event.
- *
- * Third parties may use this event to create a subset of the blueprint.
- */
-class BeforePopulateEvent extends \ICanBoogie\Event
-{
-	/**
-	 * Reference to the blueprint.
-	 *
-	 * @var Blueprint
-	 */
-	public $blueprint;
-
-	public function __construct(NavigationElement $target, Blueprint &$blueprint)
-	{
-		$this->blueprint = &$blueprint;
-
-		parent::__construct($target, 'populate:before');
-	}
-}
-
-/**
- * Event class for the `Icybee\Modules\Pages\NavigationElement::populate` event.
- *
- * Third parties may use this event to alter the renderable elements of the navigation. For
- * instance, one can replace links, classes or titles.
- *
- * The following example demonstrates how to alter the `href` and `target` attributes of
- * navigation links:
- *
- * <pre>
- * <?php
- *
- * use Icybee\Modules\Pages\NavigationElement;
- *
- * $app->events->attach(function(NavigationElement\PopulateEvent $event, NavigationElement $target) {
- *
- *     foreach ($event->blueprint as $node)
- *     {
- *         $link = $node->renderables['link'];
- *
- *         $link['href'] = '#';
- *         $link['target'] = '_blank';
- *     }
- *
- * });
- * </pre>
- */
-class PopulateEvent extends \ICanBoogie\Event
-{
-	/**
-	 * Reference to the children array.
-	 *
-	 * @var array
-	 */
-	public $children;
-
-	/**
-	 * Reference to the blueprint.
-	 *
-	 * @var Blueprint
-	 */
-	public $blueprint;
-
-	public function __construct(NavigationElement $target, array &$children, Blueprint &$blueprint)
-	{
-		$this->children = &$children;
-		$this->blueprint = &$blueprint;
-
-		parent::__construct($target, 'populate');
 	}
 }

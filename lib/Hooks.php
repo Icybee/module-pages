@@ -12,14 +12,17 @@
 namespace Icybee\Modules\Pages;
 
 use ICanBoogie\ActiveRecord;
+use ICanBoogie\Core;
 use ICanBoogie\FileCache;
 use ICanBoogie\HTTP\RequestDispatcher;
 use ICanBoogie\HTTP\Request;
 
 use Brickrouge\Element;
 
+use Patron\Engine as Patron;
+
+use Icybee\Document;
 use Icybee\Modules\Files\File;
-use Icybee\Modules\Nodes\Node;
 use Icybee\Modules\Sites\Site;
 
 class Hooks
@@ -44,7 +47,7 @@ class Hooks
 	 */
 	static public function on_file_move(File\MoveEvent $event, File $target)
 	{
-		\ICanBoogie\app()->models['pages/contents']->execute
+		self::app()->models['pages/contents']->execute
 		(
 			'UPDATE {self} SET content = REPLACE(content, ?, ?)', [ $event->from, $event->to ]
 		);
@@ -64,7 +67,7 @@ class Hooks
 	{
 		try
 		{
-			$model = \ICanBoogie\app()->models['pages/contents'];
+			$model = self::app()->models['pages/contents'];
 		}
 		catch (\Exception $e) { return; }
 
@@ -102,7 +105,7 @@ class Hooks
 	{
 		$cache = new FileCache([
 
-			FileCache::T_REPOSITORY => \ICanBoogie\app()->config['repository.cache'] . '/pages'
+			FileCache::T_REPOSITORY => self::app()->config['repository.cache'] . '/pages'
 
 		]);
 
@@ -114,11 +117,11 @@ class Hooks
 	 *
 	 * This getter is a shortcut for the `request->context->page` property.
 	 *
-	 * @param \ICanBoogie\Core $app
+	 * @param Core $app
 	 *
 	 * @return Page
 	 */
-	static public function get_page(\ICanBoogie\Core $app)
+	static public function get_page(Core $app)
 	{
 		return $app->request->context->page;
 	}
@@ -132,7 +135,7 @@ class Hooks
 	 */
 	static public function get_home(Site $site)
 	{
-		return \ICanBoogie\app()->models['pages']->find_home($site->siteid);
+		return self::app()->models['pages']->find_home($site->siteid);
 	}
 
 	/**
@@ -153,22 +156,21 @@ class Hooks
 	 * Events
 	 */
 
-	static public function before_document_render_title(\Icybee\Document\BeforeRenderTitleEvent $event)
+	static public function before_document_render_title(Document\BeforeRenderTitleEvent $event, Document $target)
 	{
-		$page = \ICanBoogie\app()->request->context->page;
+		$page = self::get_request_page();
 
-		$event->separator = ' − ';
-		$event->title = $page->title . $event->separator . $page->site->title;
+		$event->title = $page->title . ' − ' . $page->site->title;
 	}
 
 	/*
 	 * Markups
 	 */
 
-	static public function markup_page_region(array $args, \Patron\Engine $patron, $template)
+	static public function markup_page_region(array $args, Patron $patron, $template)
 	{
 		$id = $args['id'];
-		$page = \ICanBoogie\app()->request->context->page;
+		$page = self::get_request_page();
 		$element = new Element('div', [ 'id' => $id, 'class' => "region region-$id" ]);
 		$html = null;
 
@@ -183,7 +185,7 @@ class Hooks
 
 		if (!$html)
 		{
-			return;
+			return null;
 		}
 
 		$element[Element::INNER_HTML] = $html;
@@ -191,9 +193,9 @@ class Hooks
 		return $element;
 	}
 
-	static public function markup_page_title(array $args, $engine, $template)
+	static public function markup_page_title(array $args, Patron $engine, $template)
 	{
-		$page = \ICanBoogie\app()->request->context->page;
+		$page = self::get_request_page();
 		$title = $page->title;
 		$html = \ICanBoogie\escape($title);
 
@@ -238,18 +240,20 @@ class Hooks
 	 *
 	 * @return mixed
 	 */
-	static public function markup_page_content(array $args, \Patron\Engine $patron, $template)
+	static public function markup_page_content(array $args, Patron $patron, $template)
 	{
 		$render = $args['render'];
 
 		if ($render === 'none')
 		{
-			return;
+			return null;
 		}
 
-		$page = \ICanBoogie\app()->request->context->page;
+		$page = self::get_request_page();
 		$contentid = $args['id'];
-		$contents = array_key_exists($contentid, $page->contents) ? $page->contents[$contentid] : null;
+		$contents = array_key_exists($contentid, $page->contents)
+			? $page->contents[$contentid]
+			: null;
 
 		if (!$contents && !empty($args['inherit']))
 		{
@@ -302,7 +306,7 @@ class Hooks
 
 		if (!$rendered)
 		{
-			return;
+			return null;
 		}
 
 		$element = new Element('div', [
@@ -318,7 +322,7 @@ class Hooks
 
 		if (!$rc)
 		{
-			return;
+			return null;
 		}
 
 		if (preg_match('#\.html$#', $page->template) && empty($args['no-wrapper']))
@@ -404,17 +408,19 @@ class Hooks
 	 * instance, an identifier, or a path.
 	 *
 	 * @param array $args
-	 * @param \Patron\Engine $engine
+	 * @param Patron $engine
 	 * @param mixed $template
 	 *
 	 * @return bool|NavigationElement|void
 	 *
 	 * @throws \Exception
 	 */
-	static public function markup_navigation(array $args, \Patron\Engine $engine, $template)
+	static public function markup_navigation(array $args, Patron $engine, $template)
 	{
-		$app = \ICanBoogie\app();
-		$page = $app->request->context->page;
+		/* @var $model PageModel */
+
+		$app = self::app();
+		$page = self::get_request_page();
 		$model = $app->models['pages'];
 		$depth = $args['depth'];
 
@@ -430,7 +436,7 @@ class Hooks
 
 			if ($node->depth < $from_level)
 			{
-				return;
+				return null;
 			}
 
 			while ($node->depth > $from_level)
@@ -471,7 +477,7 @@ class Hooks
 		->blueprint($page->siteid)
 		->subset($parentid, $depth === null ? null : $depth - 1, function(BlueprintNode $node) use($min_children) {
 
-			/* @var $node BlueprintNode|Node */
+			/* @var $node BlueprintNode|Page */
 
 			if ($min_children && $min_children > count($node->children))
 			{
@@ -492,78 +498,24 @@ class Hooks
 
 		return $template ? $engine($template, $element) : $element;
 	}
-}
 
-namespace Icybee\Modules\Pages\Page;
-
-use Icybee\Modules\Pages\Page;
-
-class RenderTitleEvent extends \ICanBoogie\Event
-{
-	/**
-	 * Title of the page.
-	 *
-	 * @var string
+	/*
+	 * Support
 	 */
-	public $title;
 
 	/**
-	 * Reference to the rendered title of the page.
-	 *
-	 * @var string
+	 * @return \ICanBoogie\Core|\Icybee\Binding\CoreBindings
 	 */
-	public $html;
-
-	/**
-	 * The event is constructed with the type `render_title`.
-	 *
-	 * @param Page $target
-	 * @param array $payload
-	 */
-	public function __construct(Page $target, array $payload)
+	static private function app()
 	{
-		parent::__construct($target, 'render_title', $payload);
+		return \ICanBoogie\app();
 	}
-}
-
-class RenderRegionEvent extends \ICanBoogie\Event
-{
-	/**
-	 * Identifier of the region.
-	 *
-	 * @var string
-	 */
-	public $id;
 
 	/**
-	 * Page where the region is rendered.
-	 *
-	 * @var Page
+	 * @return Page
 	 */
-	public $page;
-
-	/**
-	 * The region element.
-	 *
-	 * @var \Brickrouge\Element
-	 */
-	public $element;
-
-	/**
-	 * Reference to the rendered HTML of the region.
-	 *
-	 * @var string
-	 */
-	public $html;
-
-	/**
-	 * The event is constructed with the type `render_region`.
-	 *
-	 * @param Page $target
-	 * @param array $payload
-	 */
-	public function __construct(Page $target, array $payload)
+	static private function get_request_page()
 	{
-		parent::__construct($target, 'render_region', $payload);
+		return self::app()->request->context->page;
 	}
 }

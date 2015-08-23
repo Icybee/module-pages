@@ -31,7 +31,9 @@
 		"icybee/bluetihi": "^0.0.3"
 	},
 	"autoload": {
-		"classmap": [ "lib" ]
+		"psr-4": {
+			"Icybee\\Modules\\Pages\\": "lib"
+		}
 	},
 	"scripts": {
 		"post-autoload-dump": "ICanBoogie\\Autoconfig\\Hooks::on_autoload_dump"

@@ -13,21 +13,23 @@ namespace Icybee\Modules\Pages;
 
 use ICanBoogie\ActiveRecord\Query;
 
-use Icybee\ManageBlock\Options;
-use Brickrouge\Element;
 use Brickrouge\Button;
+use Brickrouge\Document;
+use Brickrouge\Element;
+
+use Icybee\ManageBlock\Options;
 
 class ManageBlock extends \Icybee\Modules\Nodes\ManageBlock
 {
-	static protected function add_assets(\Brickrouge\Document $document)
+	static protected function add_assets(Document $document)
 	{
 		parent::add_assets($document);
 
-		$document->css->add('manage.css');
-		$document->js->add('manage.js');
+		$document->css->add('ManageBlock.css');
+		$document->js->add('ManageBlock.js');
 	}
 
-	public function __construct(Module $module, array $attributes=[])
+	public function __construct(Module $module, array $attributes = [])
 	{
 		parent::__construct($module, $attributes + [
 
@@ -47,7 +49,7 @@ class ManageBlock extends \Icybee\Modules\Nodes\ManageBlock
 	 *
 	 * - `title`: An instance of {@link ManageBlock\TitleColumn}.
 	 * - `url`: An instance of {@link ManageBlock\URLColumn}.
-	 * - `is_navigation_excluded`: An instance of {@link ManageBlock\IsNavigationExcluded}.
+	 * - `is_navigation_excluded`: An instance of {@link ManageBlock\IsNavigationExcludedColumn}.
 	 *
 	 * @inheritdoc
 	 */
@@ -55,9 +57,9 @@ class ManageBlock extends \Icybee\Modules\Nodes\ManageBlock
 	{
 		return array_merge(parent::get_available_columns(), [
 
-			'title' => __CLASS__ . '\TitleColumn',
-			'url' => __CLASS__ . '\URLColumn',
-			'is_navigation_excluded' => __CLASS__ . '\IsNavigationExcluded'
+			'title' => ManageBlock\TitleColumn::class,
+			'url' => ManageBlock\URLColumn::class,
+			'is_navigation_excluded' => ManageBlock\IsNavigationExcludedColumn::class
 
 		]);
 	}
@@ -178,9 +180,12 @@ class ManageBlock extends \Icybee\Modules\Nodes\ManageBlock
 			return parent::fetch_records($query);
 		}
 
-		$expanded = array_flip($this->options->expanded);
+		/* @var $model PageModel */
 
-		return $query->model->blueprint($this->app->site_id)->subset(null, null, function(BlueprintNode $node) use($expanded) {
+		$expanded = array_flip($this->options->expanded);
+		$model = $query->model;
+
+		return $model->blueprint($this->app->site_id)->subset(null, null, function(BlueprintNode $node) use($expanded) {
 
 			return !(!$node->parentid || isset($expanded[$node->parentid]));
 
@@ -252,206 +257,5 @@ EOT;
 		}
 
 		return $rendered_rows;
-	}
-}
-
-namespace Icybee\Modules\Pages\ManageBlock;
-
-use ICanBoogie\Routing\Pattern;
-
-use Brickrouge\Element;
-use Brickrouge\Text;
-
-use Icybee\ManageBlock\Column;
-use Icybee\ManageBlock\BooleanColumn;
-use Icybee\Modules\Nodes\ManageBlock\EditDecorator;
-
-class TitleColumn extends \Icybee\Modules\Nodes\ManageBlock\TitleColumn
-{
-	public function render_cell($record)
-	{
-		$rc = '';
-
-		if ($this->manager->mode == 'tree')
-		{
-			$rc .= str_repeat('<div class="indentation">&nbsp;</div>', $record->depth);
-			$rc .= '<div class="handle"><i class="icon-move"></i></div>';
-
-			if (0)
-			{
-				$rc .= new Text([
-
-					Element::LABEL => 'w',
-					Element::LABEL_POSITION => 'before',
-					'name' => 'weights[' . $record->nid . ']',
-					'value' => $record->weight,
-					'size' => 3,
-					'style' => 'border: none; background: transparent; color: green'
-
-				]);
-
-				$rc .= '&nbsp;';
-
-				$rc .= new Text([
-
-					Element::LABEL => 'p',
-					Element::LABEL_POSITION => 'before',
-					'name' => 'parents[' . $record->nid . ']',
-					'value' => $record->parentid,
-					'size' => 3,
-					'style' => 'border: none; background: transparent; color: green'
-
-				]);
-			}
-			else
-			{
-				$rc .= new Element('input', [
-
-					'name' => 'parents[' . $record->nid . ']',
-					'type' => 'hidden',
-					'value' => $record->parentid
-
-				]);
-			}
-		}
-
-		$rc .= new EditDecorator($record->label, $record);
-
-		if (0)
-		{
-			$rc .= ' <small style="color: green">:' . $record->nid . '</small>';
-		}
-
-		if ($this->manager->mode == 'tree' && $record->has_child)
-		{
-			$expanded = in_array($record->nid, $this->manager->options->expanded);
-
-			$rc .= ' <a class="treetoggle" href="?' . ($expanded ? 'collapse' : 'expand') . '=' . $record->nid . '">' . ($expanded ? '-' : "+{$record->descendants_count}") . '</a>';
-		}
-
-		#
-		# updated_at
-		#
-
-		$now = time();
-		$updated_at = strtotime($record->updated_at);
-
-		if ($now - $updated_at < 7200)
-		{
-			$rc .= ' <sup style="vertical-align: text-top; color: red;">Récemment modifié</sup>';
-		}
-
-		return $rc;
-	}
-}
-
-/**
- * Representation of the `url` column.
- */
-class URLColumn extends \Icybee\Modules\Nodes\ManageBlock\URLColumn
-{
-	/**
-	 * @param \Icybee\Modules\Pages\Page $record
-	 *
-	 * @inheritdoc
-	 */
-	public function render_cell($record)
-	{
-		$t = $this->manager->t;
-		$options = $this->manager->options;
-		$pattern = $record->url_pattern;
-
-		if ($options->search || $options->filters)
-		{
-			if (Pattern::is_pattern($pattern))
-			{
-				return;
-			}
-
-			$url = $record->url;
-
-			// DIRTY-20100507
-
-			if ($record->location)
-			{
-				$location = $record->location;
-				$title = $t('This page is redirected to: !title (!url)', [
-
-					'!title' => $location->title,
-					'!url' => $location->url
-
-				]);
-
-				return <<<EOT
-<span class="small">
-<i class="icon-mail-forward" title="$title"></i>
-<a href="$url">$url</a>
-</span>
-EOT;
-			}
-
-			return <<<EOT
-<span class="small"><a href="$url">$url</a></span>
-EOT;
-		}
-
-		$rc = '';
-		$location = $record->location;
-
-		if ($location)
-		{
-			$rc .= '<span class="icon-mail-forward" title="' . $t('This page is redirected to: !title (!url)', [
-
-				'!title' => $location->title,
-				'!url' => $location->url
-
-			]) . '"></span>';
-		}
-		else if (!Pattern::is_pattern($pattern))
-		{
-			$url = (\ICanBoogie\app()->site_id == $record->siteid) ? $record->url : $record->absolute_url;
-
-			$title = $t('Go to the page: !url', [ '!url' => $url ]);
-
-			$rc .= '<a href="' . $url . '" title="' . $title . '" target="_blank"><i class="icon-external-link"></i></a>';
-		}
-
-		return $rc;
-	}
-}
-
-/**
- * Representation of the `is_navigation_excluded` column.
- */
-class IsNavigationExcluded extends BooleanColumn
-{
-	public function __construct(\Icybee\ManageBlock $manager, $id, array $options=[])
-	{
-		parent::__construct($manager, $id, $options + [
-
-			'title' => null,
-			'filters' => [
-
-				'options' => [
-
-					'=1' => 'Excluded from navigation',
-					'=0' => 'Included in navigation'
-
-				]
-
-			]
-
-		]);
-	}
-
-	public function render_cell($record)
-	{
-		return new Element('i', [
-
-			'class' => 'icon-sitemap trigger ' . ($record->is_navigation_excluded ? 'on' : ''),
-			'data-nid' => $record->nid,
-			'title' => "Inclure ou exclure la page du menu de navigation principal"
-
-		]);
 	}
 }

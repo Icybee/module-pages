@@ -13,6 +13,8 @@ namespace Icybee\Modules\Pages;
 
 use ICanBoogie\ActiveRecord;
 
+use Icybee\Binding\ObjectBindings;
+
 /**
  * A content of a page.
  *
@@ -20,6 +22,8 @@ use ICanBoogie\ActiveRecord;
  */
 class Content extends ActiveRecord
 {
+	use ObjectBindings;
+
 	/**
 	 * The identifier of the page the content belongs to.
 	 *

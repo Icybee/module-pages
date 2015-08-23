@@ -19,7 +19,10 @@ class ExportOperation extends \Icybee\Modules\Nodes\ExportOperation
 
 		$keys = array_keys($records);
 
-		$contents = $this->module->model('contents')->where([ 'pageid' => $keys ])->all(\PDO::FETCH_OBJ);
+		$contents = $this->module
+			->model('contents')
+			->filter_by_pageid($keys)
+			->all(\PDO::FETCH_OBJ);
 
 		foreach ($contents as $content)
 		{

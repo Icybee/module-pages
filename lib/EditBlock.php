@@ -19,6 +19,9 @@ use Brickrouge\Element;
 use Brickrouge\Form;
 use Brickrouge\Text;
 
+/**
+ * @property Module $module
+ */
 class EditBlock extends \Icybee\Modules\Nodes\EditBlock
 {
 	static protected function add_assets(Document $document)

@@ -11,11 +11,14 @@
 
 namespace Icybee\Modules\Pages;
 
-use ICanBoogie\Event;
+use ICanBoogie\ActiveRecord\Query;
+use ICanBoogie\Errors;
 use ICanBoogie\Routing\Pattern;
+
 use Icybee\Binding\ObjectBindings;
 
 /**
+ * @property Module $module
  * @property Page $record
  *
  * @inheritdoc
@@ -70,8 +73,10 @@ class SaveOperation extends \Icybee\Modules\Nodes\SaveOperation
 
 	/**
 	 * For each defined content we check that the corresponding editor is also defined.
+	 *
+	 * @inheritdoc
 	 */
-	protected function validate(\ICanBoogie\Errors $errors)
+	protected function validate(Errors $errors)
 	{
 		$contents = $this->request['contents'];
 		$editors = $this->request['editors'];
@@ -117,10 +122,10 @@ class SaveOperation extends \Icybee\Modules\Nodes\SaveOperation
 		# update contents
 		#
 
-		/* var $contents_model ContentModel */
+		/* @var $content_model ContentModel */
 
 		$preserve = [];
-		$contents_model = $this->module->model('contents');
+		$content_model = $this->module->model('contents');
 
 		$contents = $this->request['contents'];
 		$editor_ids = $this->request['editors'];
@@ -152,7 +157,7 @@ class SaveOperation extends \Icybee\Modules\Nodes\SaveOperation
 
 				];
 
-				$contents_model->insert([
+				$content_model->insert([
 
 					'pageid' => $nid,
 					'contentid' => $content_id
@@ -169,7 +174,9 @@ class SaveOperation extends \Icybee\Modules\Nodes\SaveOperation
 		# we delete possible remaining content for the page
 		#
 
-		$arr = $contents_model->filter_by_pageid($nid);
+		/* @var $arr Query */
+
+		$arr = $content_model->filter_by_pageid($nid);
 
 		if ($preserve)
 		{
@@ -190,42 +197,5 @@ class SaveOperation extends \Icybee\Modules\Nodes\SaveOperation
 		}
 
 		return $rc;
-	}
-}
-
-namespace Icybee\Modules\Pages\Page;
-
-/**
- * Event class for the `Icybee\Modules\Pages\Page::move` event.
- */
-class MoveEvent extends \ICanBoogie\Event
-{
-	/**
-	 * Previous path.
-	 *
-	 * @var string
-	 */
-	public $from;
-
-	/**
-	 * New path.
-	 *
-	 * @var string
-	 */
-	public $to;
-
-	/**
-	 * The event is constructed with the type `move`.
-	 *
-	 * @param \Icybee\Modules\Pages\Page $target
-	 * @param string $from Previous path.
-	 * @param string $to New path.
-	 */
-	public function __construct(\Icybee\Modules\Pages\Page $target, $from, $to)
-	{
-		$this->from = $from;
-		$this->to = $to;
-
-		parent::__construct($target, 'move');
 	}
 }

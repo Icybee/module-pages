@@ -27,7 +27,7 @@ use Icybee\Modules\Sites\Site;
  * @property Page $previous
  *
  * @property-read string $absolute_url The absolute URL of the page.
- * @property string $body
+ * @property Content $body
  * @property Page[] $children
  * @property-read int $children_count
  * @property Content[] $contents

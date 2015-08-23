@@ -11,9 +11,14 @@
 
 namespace Icybee\Modules\Pages;
 
+use Brickrouge\Form;
+use ICanBoogie\Errors;
 use ICanBoogie\Operation;
 use Icybee\Binding\ObjectBindings;
 
+/**
+ * @property Module $module
+ */
 class TemplateEditorsOperation extends Operation
 {
 	use ObjectBindings;
@@ -27,7 +32,7 @@ class TemplateEditorsOperation extends Operation
 		] + parent::get_controls();
 	}
 
-	protected function validate(\ICanboogie\Errors $errors)
+	protected function validate(Errors $errors)
 	{
 		return true;
 	}
@@ -60,7 +65,7 @@ class TemplateEditorsOperation extends Operation
 
 		$this->response['template'] = $template_info;
 
-		$form = (string) new \Brickrouge\Form([ \Brickrouge\Form::RENDERER => 'Group' ] + $contents_tags);
+		$form = (string) new Form([ Form::RENDERER => 'Group' ] + $contents_tags);
 
 		$this->response['assets'] = $this->app->document->assets;
 

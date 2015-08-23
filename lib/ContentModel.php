@@ -11,13 +11,16 @@
 
 namespace Icybee\Modules\Pages;
 
+use ICanBoogie\ActiveRecord\Model;
+use ICanBoogie\ActiveRecord\Query;
+
 /**
  * Representation of a page content.
  *
- * @method \ICanBoogie\ActiveRecord\Query filter_by_pageid() filter_by_pageid(int $pageid)
+ * @method Query filter_by_pageid() filter_by_pageid(int $pageid)
  * Filter contents according to the identifier of a page.
  */
-class ContentModel extends \ICanBoogie\ActiveRecord\Model
+class ContentModel extends Model
 {
 
 }

@@ -14,6 +14,7 @@ namespace Icybee\Modules\Pages;
 use Brickrouge\Element;
 use Brickrouge\ElementIsEmpty;
 use ICanBoogie\Routing\Pattern;
+use Icybee\Modules\Nodes\Node;
 
 /**
  * Render a navigation branch.
@@ -123,10 +124,11 @@ class NavigationBranchElement extends Element
 			$p = $p->parent;
 		}
 
-		/* @var $blueprint Blueprint */
+		/* @var $page_model PageModel */
 
-		$blueprint = $this->app
-		->models['pages']
+		$page_model = $this->app->models['pages'];
+
+		$blueprint = $page_model
 		->blueprint($this->page->siteid)
 		->subset($start->nid, $this[self::DEPTH], function(BlueprintNode $node) use($trail) {
 
@@ -219,6 +221,7 @@ EOT;
 
 		foreach ($children as $node)
 		{
+			/* @var $child Page */
 			$child = $pages[$node->nid];
 			$css_class = $child->css_class($css_class_names);
 			$url = \Brickrouge\escape($child->url);

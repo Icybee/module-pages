@@ -36,7 +36,7 @@ class PageRenderer
 	use AccessorTrait;
 	use ObjectBindings;
 
-	protected function lazy_get_app()
+	protected function get_app()
 	{
 		return \ICanBoogie\app();
 	}
