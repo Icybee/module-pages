@@ -18,7 +18,7 @@ use ICanBoogie\HTTP\Request;
 use ICanBoogie\HTTP\Response;
 use ICanBoogie\HTTP\ServiceUnavailable;
 use ICanBoogie\HTTP\Status;
-use ICanBoogie\Object;
+use ICanBoogie\Prototyped;
 use ICanBoogie\Routing\Pattern;
 
 use Icybee\Binding\ControllerBindings;
@@ -31,7 +31,7 @@ use Icybee\Modules\Users\User;
  * @property-read PageModel $model
  * @property-read User $user
  */
-class PageController extends Object
+class PageController extends Prototyped
 {
 	use ControllerBindings;
 
