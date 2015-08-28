@@ -20,7 +20,6 @@ use Brickrouge\Form;
 use ICanBoogie\Render\TemplateNotFound;
 use Icybee\Modules\Editor\EditorElement;
 use Icybee\Modules\Editor\MultiEditorElement;
-use Icybee\Modules\Views\ViewOptions;
 
 use Patron\HTMLParser;
 use Patron\Engine as Patron;
@@ -31,25 +30,6 @@ use Patron\Engine as Patron;
  */
 class Module extends \Icybee\Modules\Nodes\Module
 {
-	/**
-	 * Only the "list" view is available and it is used to create the sitemap.
-	 */
-	protected function lazy_get_views()
-	{
-		return [
-
-			'list' => [
-
-				ViewOptions::TITLE => 'Sitemap',
-				ViewOptions::CLASSNAME => ListView::class,
-				ViewOptions::ASSETS => [],
-				ViewOptions::RENDERS => ViewOptions::RENDERS_MANY
-
-			]
-
-		];
-	}
-
 	public function get_contents_section($nid, $template = null)
 	{
 		list($template, $template_description, $is_inherited) = $this->resolve_template($nid, $template);
@@ -547,7 +527,7 @@ class Module extends \Icybee\Modules\Nodes\Module
 		{
 			$template_name = $node['args']['name'];
 			$tried = [];
-			$path = $template_resolver->resolve('_' . $template_name, $template_extensions, $tried);
+			$path = $template_resolver->resolve('pages/_' . $template_name, $template_extensions, $tried);
 
 			if (!$path)
 			{
@@ -578,7 +558,7 @@ class Module extends \Icybee\Modules\Nodes\Module
 		{
 			$partial_name = $node['args']['with'];
 			$tried = [];
-			$path = $template_resolver->resolve('@' . $partial_name, $template_extensions, $tried);
+			$path = $template_resolver->resolve('pages/@' . $partial_name, $template_extensions, $tried);
 
 			if (!$path)
 			{

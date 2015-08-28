@@ -133,7 +133,7 @@ class Page extends Node
 	{
 		$extension = pathinfo($this->template, PATHINFO_EXTENSION);
 
-		return $extension ? '.' . $extension : null;
+		return $extension ? '.' . $extension : '.html';
 	}
 
 	/**

@@ -70,13 +70,15 @@ class PageRenderer
 	 */
 	public function __invoke(Page $page)
 	{
-		$template_pathname = $this->resolve_template_pathname($page->template);
+		$tried = [];
+		$template_pathname = $this->resolve_template_pathname($page->template, $tried);
 		$engine = $this->resolve_engine($template_pathname);
 		$document = $this->document;
 		$context = [
 
 			'page' => $page,
-			'document' => $document
+			'document' => $document,
+			'tried_templates' => $tried
 
 		];
 
@@ -111,15 +113,19 @@ class PageRenderer
 	 * Resolves the template pathname.
 	 *
 	 * @param string $name
+	 * @param array $tried Tried templates
 	 *
 	 * @return string
-	 *
 	 * @throw TemplateNotFound if the template cannot be resolved
 	 */
-	public function resolve_template_pathname($name)
+	public function resolve_template_pathname($name, array &$tried = [])
 	{
-		$tried = [];
-		$template_pathname = $this->template_resolver->resolve($name, $this->template_extensions, $tried);
+		if (pathinfo($name, PATHINFO_EXTENSION) === 'html')
+		{
+			$name = substr($name, 0, -5);
+		}
+
+		$template_pathname = $this->template_resolver->resolve("pages/$name", $this->template_extensions, $tried);
 
 		if (!$template_pathname)
 		{

@@ -13,8 +13,13 @@ namespace Icybee\Modules\Pages;
 
 use Brickrouge\Element;
 
+use ICanBoogie\Binding\ObjectBindings;
+use ICanBoogie\Render\TemplateName;
+
 class PopTemplate extends Element
 {
+	use ObjectBindings;
+
 	public function __construct(array $attributes = [])
 	{
 		parent::__construct('select', $attributes);
@@ -53,7 +58,7 @@ class PopTemplate extends Element
 
 		foreach ($paths as $path)
 		{
-			$path .= 'templates';
+			$path .= 'templates/pages';
 
 			if (!file_exists($path))
 			{
@@ -69,7 +74,17 @@ class PopTemplate extends Element
 	private function collect_templates($path)
 	{
 		$templates = [];
-		$di = new \RegexIterator(new \DirectoryIterator($path), '#\.(html|xml)(\.patron)?$#');
+		$extensions = $this->get_extensions();
+		$extensions = array_map(function($extension) {
+
+			return '\\' . $extension;
+
+		}, $extensions);
+
+		$pattern = implode('|', $extensions);
+
+		$di = new \DirectoryIterator($path);
+		$di = new \RegexIterator($di, '#^[^\\' . TemplateName::TEMPLATE_PREFIX_LAYOUT . '\\' . TemplateName::TEMPLATE_PREFIX_PARTIAL . '].+(' . $pattern . ')$#');
 
 		foreach ($di as $file)
 		{
@@ -79,5 +94,14 @@ class PopTemplate extends Element
 		}
 
 		return $templates;
+	}
+
+	private function get_extensions()
+	{
+		/* @var \ICanBoogie\Binding\Render\CoreBindings $app */
+
+		$app = $this->app;
+
+		return $app->template_engines->extensions;
 	}
 }
