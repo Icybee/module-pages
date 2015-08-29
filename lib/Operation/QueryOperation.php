@@ -11,7 +11,7 @@
 
 namespace Icybee\Modules\Pages;
 
-class QueryOperationOperation extends \Icybee\Modules\Nodes\QueryOperationOperation
+class QueryOperationOperation extends \Icybee\Modules\Nodes\Operation\QueryOperationOperation
 {
 
 }

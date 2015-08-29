@@ -9,11 +9,11 @@
  * file that was distributed with this source code.
  */
 
-namespace Icybee\Modules\Pages;
+namespace Icybee\Modules\Pages\Operation;
 
 use ICanBoogie\Errors;
 
-class DeleteOperation extends \Icybee\Modules\Nodes\DeleteOperation
+class DeleteOperation extends \Icybee\Modules\Nodes\Operation\DeleteOperation
 {
 	protected function validate(Errors $errors)
 	{

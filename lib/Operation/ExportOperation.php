@@ -9,9 +9,9 @@
  * file that was distributed with this source code.
  */
 
-namespace Icybee\Modules\Pages;
+namespace Icybee\Modules\Pages\Operation;
 
-class ExportOperation extends \Icybee\Modules\Nodes\ExportOperation
+class ExportOperation extends \Icybee\Modules\Nodes\Operation\ExportOperation
 {
 	protected function process()
 	{

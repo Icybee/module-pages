@@ -9,12 +9,14 @@
  * file that was distributed with this source code.
  */
 
-namespace Icybee\Modules\Pages;
+namespace Icybee\Modules\Pages\Operation;
 
 use Brickrouge\Form;
 use ICanBoogie\Errors;
 use ICanBoogie\Operation;
+
 use Icybee\Binding\ObjectBindings;
+use Icybee\Modules\Files\Module;
 
 /**
  * @property Module $module

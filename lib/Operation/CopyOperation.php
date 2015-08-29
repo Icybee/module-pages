@@ -9,12 +9,14 @@
  * file that was distributed with this source code.
  */
 
-namespace Icybee\Modules\Pages;
+namespace Icybee\Modules\Pages\Operation;
 
 use ICanBoogie\Errors;
 use ICanBoogie\Operation;
 
 use Icybee\Binding\ObjectBindings;
+use Icybee\Modules\Pages\Module;
+use Icybee\Modules\Pages\Page;
 
 /**
  * @property Page $record

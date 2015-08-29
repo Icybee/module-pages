@@ -9,10 +9,11 @@
  * file that was distributed with this source code.
  */
 
-namespace Icybee\Modules\Pages;
+namespace Icybee\Modules\Pages\Operation;
 
 use ICanBoogie\Errors;
 use ICanBoogie\Operation;
+use Icybee\Modules\Files\Module;
 
 /**
  * Updates the order and relation of the specified records.

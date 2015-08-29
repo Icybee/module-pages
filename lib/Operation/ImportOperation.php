@@ -13,7 +13,7 @@ namespace Icybee\Modules\Pages;
 
 use ICanBoogie\HTTP\Request;
 
-class ImportOperation extends \Icybee\Modules\Nodes\ImportOperation
+class ImportOperation extends \Icybee\Modules\Nodes\Operation\ImportOperation
 {
 	private $parentid = [];
 	private $locationid = [];

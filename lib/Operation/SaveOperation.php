@@ -9,13 +9,16 @@
  * file that was distributed with this source code.
  */
 
-namespace Icybee\Modules\Pages;
+namespace Icybee\Modules\Pages\Operation;
 
 use ICanBoogie\ActiveRecord\Query;
 use ICanBoogie\Errors;
 use ICanBoogie\Routing\Pattern;
 
 use Icybee\Binding\ObjectBindings;
+use Icybee\Modules\Files\Module;
+use Icybee\Modules\Pages\ContentModel;
+use Icybee\Modules\Pages\Page;
 
 /**
  * @property Module $module
@@ -23,7 +26,7 @@ use Icybee\Binding\ObjectBindings;
  *
  * @inheritdoc
  */
-class SaveOperation extends \Icybee\Modules\Nodes\SaveOperation
+class SaveOperation extends \Icybee\Modules\Nodes\Operation\SaveOperation
 {
 	use ObjectBindings;
 
