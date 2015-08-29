@@ -1,7 +1,7 @@
 # customization
 
 PACKAGE_NAME = icybee/module-pages
-PACKAGE_VERSION = 2.1.0
+PACKAGE_VERSION = 3.0.0
 
 # do not edit the following lines
 

@@ -23,7 +23,7 @@
 		"php": ">=5.5.0",
 		"icanboogie/module-installer": "^1.2.3",
 		"icanboogie/bind-render": "^0.4.0",
-		"icybee/module-nodes": "^2.1.0"
+		"icybee/module-nodes": "^3.0.0"
 	},
 	"require-dev": {
 		"brickrouge/brickrouge": "^2.1.0",
