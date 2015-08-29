@@ -2,6 +2,7 @@
 
 PACKAGE_NAME = icybee/module-pages
 PACKAGE_VERSION = 3.0.0
+COMPOSER_ENV = COMPOSER_ROOT_VERSION=$(PACKAGE_VERSION)
 
 # do not edit the following lines
 
@@ -9,13 +10,13 @@ usage:
 	@echo "test:  Runs the test suite.\ndoc:   Creates the documentation.\nclean: Removes the documentation, the dependencies and the Composer files."
 
 vendor:
-	@composer install
+	@$(COMPOSER_ENV) composer install
 
 update:
-	@composer update
+	@$(COMPOSER_ENV) composer update
 
 autoload: vendor
-	@composer dump-autoload
+	@$(COMPOSER_ENV) composer dump-autoload
 
 test: vendor
 	@phpunit
