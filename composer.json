@@ -28,6 +28,7 @@
 	"require-dev": {
 		"brickrouge/brickrouge": "^2.1.0",
 		"icybee/patron": "^1.4.0",
+		"icybee/patron-render-support": "^0.2.0",
 		"icybee/bluetihi": "^0.0.3"
 	},
 	"autoload": {
