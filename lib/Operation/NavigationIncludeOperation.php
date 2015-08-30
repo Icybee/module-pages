@@ -14,7 +14,7 @@ namespace Icybee\Modules\Pages;
 use ICanBoogie\Errors;
 use ICanBoogie\HTTP\Request;
 use ICanBoogie\Operation;
-use Icybee\Binding\PrototypedBindings;
+use Icybee\Binding\Core\PrototypedBindings;
 
 /**
  * @property Page $record

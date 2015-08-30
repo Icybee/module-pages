@@ -15,7 +15,7 @@ use Brickrouge\Form;
 use ICanBoogie\Errors;
 use ICanBoogie\Operation;
 
-use Icybee\Binding\PrototypedBindings;
+use Icybee\Binding\Core\PrototypedBindings;
 use Icybee\Modules\Files\Module;
 
 /**

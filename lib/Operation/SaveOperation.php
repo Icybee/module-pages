@@ -15,7 +15,7 @@ use ICanBoogie\ActiveRecord\Query;
 use ICanBoogie\Errors;
 use ICanBoogie\Routing\Pattern;
 
-use Icybee\Binding\PrototypedBindings;
+use Icybee\Binding\Core\PrototypedBindings;
 use Icybee\Modules\Files\Module;
 use Icybee\Modules\Pages\ContentModel;
 use Icybee\Modules\Pages\Page;

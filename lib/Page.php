@@ -13,7 +13,7 @@ namespace Icybee\Modules\Pages;
 
 use ICanBoogie\Routing\Pattern;
 
-use Icybee\Binding\PrototypedBindings;
+use Icybee\Binding\Core\PrototypedBindings;
 use Icybee\Modules\Nodes\Node;
 use Icybee\Modules\Sites\Site;
 

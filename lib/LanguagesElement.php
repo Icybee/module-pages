@@ -18,7 +18,7 @@ use Brickrouge\ElementIsEmpty;
 
 use Patron\Engine as Patron;
 
-use Icybee\Binding\PrototypedBindings;
+use Icybee\Binding\Core\PrototypedBindings;
 
 class LanguagesElement extends Element
 {

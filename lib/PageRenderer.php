@@ -19,7 +19,7 @@ use ICanBoogie\Render\TemplateResolver;
 
 use Brickrouge\Document;
 
-use Icybee\Binding\PrototypedBindings;
+use Icybee\Binding\Core\PrototypedBindings;
 use Icybee\Modules\Pages\PageRenderer\BeforeRenderEvent;
 use Icybee\Modules\Pages\PageRenderer\RenderEvent;
 
