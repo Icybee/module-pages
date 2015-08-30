@@ -28,8 +28,8 @@ class ManageBlock extends \Icybee\Modules\Nodes\Block\ManageBlock
 	{
 		parent::add_assets($document);
 
-		$document->css->add('ManageBlock.css');
-		$document->js->add('ManageBlock.js');
+		$document->css->add(__DIR__ . '/ManageBlock.css');
+		$document->js->add(__DIR__ . '/ManageBlock.js');
 	}
 
 	public function __construct(Module $module, array $attributes = [])
