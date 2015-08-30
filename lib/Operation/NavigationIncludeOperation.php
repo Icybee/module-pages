@@ -14,7 +14,7 @@ namespace Icybee\Modules\Pages;
 use ICanBoogie\Errors;
 use ICanBoogie\HTTP\Request;
 use ICanBoogie\Operation;
-use Icybee\Binding\ObjectBindings;
+use Icybee\Binding\PrototypedBindings;
 
 /**
  * @property Page $record
@@ -23,7 +23,7 @@ use Icybee\Binding\ObjectBindings;
  */
 class NavigationIncludeOperation extends Operation
 {
-	use ObjectBindings;
+	use PrototypedBindings;
 
 	protected function get_controls()
 	{

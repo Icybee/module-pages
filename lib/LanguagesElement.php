@@ -18,11 +18,11 @@ use Brickrouge\ElementIsEmpty;
 
 use Patron\Engine as Patron;
 
-use Icybee\Binding\ObjectBindings;
+use Icybee\Binding\PrototypedBindings;
 
 class LanguagesElement extends Element
 {
-	use ObjectBindings;
+	use PrototypedBindings;
 
 	static public function markup(array $args, Patron $patron, $template)
 	{

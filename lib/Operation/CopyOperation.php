@@ -14,7 +14,7 @@ namespace Icybee\Modules\Pages\Operation;
 use ICanBoogie\Errors;
 use ICanBoogie\Operation;
 
-use Icybee\Binding\ObjectBindings;
+use Icybee\Binding\PrototypedBindings;
 use Icybee\Modules\Pages\Module;
 use Icybee\Modules\Pages\Page;
 
@@ -23,7 +23,7 @@ use Icybee\Modules\Pages\Page;
  */
 class CopyOperation extends Operation
 {
-	use ObjectBindings;
+	use PrototypedBindings;
 
 	protected function get_controls()
 	{

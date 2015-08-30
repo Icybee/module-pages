@@ -15,7 +15,7 @@ use ICanBoogie\ActiveRecord\Query;
 use ICanBoogie\Errors;
 use ICanBoogie\Routing\Pattern;
 
-use Icybee\Binding\ObjectBindings;
+use Icybee\Binding\PrototypedBindings;
 use Icybee\Modules\Files\Module;
 use Icybee\Modules\Pages\ContentModel;
 use Icybee\Modules\Pages\Page;
@@ -28,7 +28,7 @@ use Icybee\Modules\Pages\Page;
  */
 class SaveOperation extends \Icybee\Modules\Nodes\Operation\SaveOperation
 {
-	use ObjectBindings;
+	use PrototypedBindings;
 
 	/**
 	 * For new records, the values for the {@link Page::SITEID} and {@link Page::LANGUAGE}

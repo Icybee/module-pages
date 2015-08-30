@@ -19,7 +19,7 @@ use ICanBoogie\Render\TemplateResolver;
 
 use Brickrouge\Document;
 
-use Icybee\Binding\ObjectBindings;
+use Icybee\Binding\PrototypedBindings;
 use Icybee\Modules\Pages\PageRenderer\BeforeRenderEvent;
 use Icybee\Modules\Pages\PageRenderer\RenderEvent;
 
@@ -34,7 +34,7 @@ use Icybee\Modules\Pages\PageRenderer\RenderEvent;
 class PageRenderer
 {
 	use AccessorTrait;
-	use ObjectBindings;
+	use PrototypedBindings;
 
 	protected function get_app()
 	{

@@ -13,7 +13,7 @@ namespace Icybee\Modules\Pages;
 
 use ICanBoogie\Routing\Pattern;
 
-use Icybee\Binding\ObjectBindings;
+use Icybee\Binding\PrototypedBindings;
 use Icybee\Modules\Nodes\Node;
 use Icybee\Modules\Sites\Site;
 
@@ -51,7 +51,7 @@ use Icybee\Modules\Sites\Site;
  */
 class Page extends Node
 {
-	use ObjectBindings;
+	use PrototypedBindings;
 
 	const MODEL_ID = 'pages';
 

@@ -13,12 +13,12 @@ namespace Icybee\Modules\Pages;
 
 use Brickrouge\Element;
 
-use ICanBoogie\Binding\ObjectBindings;
+use ICanBoogie\Binding\PrototypedBindings;
 use ICanBoogie\Render\TemplateName;
 
 class PopTemplate extends Element
 {
-	use ObjectBindings;
+	use PrototypedBindings;
 
 	public function __construct(array $attributes = [])
 	{

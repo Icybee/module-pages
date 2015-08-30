@@ -12,11 +12,11 @@
 namespace Icybee\Modules\Pages;
 
 use Brickrouge\Element;
-use Icybee\Binding\ObjectBindings;
+use Icybee\Binding\PrototypedBindings;
 
 class PopPage extends Element
 {
-	use ObjectBindings;
+	use PrototypedBindings;
 
 	public function render()
 	{
