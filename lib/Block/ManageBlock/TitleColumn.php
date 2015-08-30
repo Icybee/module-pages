@@ -9,16 +9,16 @@
  * file that was distributed with this source code.
  */
 
-namespace Icybee\Modules\Pages\ManageBlock;
+namespace Icybee\Modules\Pages\Block\ManageBlock;
 
 use Brickrouge\Element;
 use Brickrouge\Text;
 
-use Icybee\Modules\Nodes\ManageBlock\EditDecorator;
-use Icybee\Modules\Pages\ManageBlock;
+use Icybee\Modules\Nodes\Block\ManageBlock\EditDecorator;
+use Icybee\Modules\Pages\Block\ManageBlock;
 use Icybee\Modules\Pages\Page;
 
-class TitleColumn extends \Icybee\Modules\Nodes\ManageBlock\TitleColumn
+class TitleColumn extends \Icybee\Modules\Nodes\Block\ManageBlock\TitleColumn
 {
 	/**
 	 * @var ManageBlock

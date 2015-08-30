@@ -9,14 +9,14 @@
  * file that was distributed with this source code.
  */
 
-namespace Icybee\Modules\Pages\ManageBlock;
+namespace Icybee\Modules\Pages\Block\ManageBlock;
 
 use ICanBoogie\Routing\Pattern;
 
 /**
  * Representation of the `url` column.
  */
-class URLColumn extends \Icybee\Modules\Nodes\ManageBlock\URLColumn
+class URLColumn extends \Icybee\Modules\Nodes\Block\ManageBlock\URLColumn
 {
 	/**
 	 * @param \Icybee\Modules\Pages\Page $record

@@ -9,12 +9,12 @@
  * file that was distributed with this source code.
  */
 
-namespace Icybee\Modules\Pages\ManageBlock;
+namespace Icybee\Modules\Pages\Block\ManageBlock;
 
 use Brickrouge\Element;
 
-use Icybee\ManageBlock\BooleanColumn;
-use Icybee\Modules\Pages\ManageBlock;
+use Icybee\Block\ManageBlock\BooleanColumn;
+use Icybee\Modules\Pages\Block\ManageBlock;
 use Icybee\Modules\Pages\Page;
 
 /**

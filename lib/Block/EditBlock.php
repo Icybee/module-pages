@@ -9,27 +9,30 @@
  * file that was distributed with this source code.
  */
 
-namespace Icybee\Modules\Pages;
-
-use Icybee\Modules\Nodes\Node;
-use Icybee\Modules\Pages\Page;
+namespace Icybee\Modules\Pages\Block;
 
 use Brickrouge\Document;
 use Brickrouge\Element;
 use Brickrouge\Form;
 use Brickrouge\Text;
 
+use Icybee\Modules\Nodes\Node;
+use Icybee\Modules\Pages as Root;
+use Icybee\Modules\Pages\Module;
+use Icybee\Modules\Pages\Page;
+use Icybee\Modules\Pages\PopPage;
+
 /**
  * @property Module $module
  */
-class EditBlock extends \Icybee\Modules\Nodes\EditBlock
+class EditBlock extends \Icybee\Modules\Nodes\Block\EditBlock
 {
 	static protected function add_assets(Document $document)
 	{
 		parent::add_assets($document);
 
-		$document->css->add(DIR . 'public/edit.css');
-		$document->js->add(DIR . 'public/edit.js');
+		$document->css->add(Root\DIR . 'public/edit.css');
+		$document->js->add(Root\DIR . 'public/edit.js');
 	}
 
 	protected function lazy_get_attributes()

@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Icybee\Modules\Pages;
+namespace Icybee\Modules\Pages\Block;
 
 use ICanBoogie\ActiveRecord\Query;
 
@@ -17,9 +17,12 @@ use Brickrouge\Button;
 use Brickrouge\Document;
 use Brickrouge\Element;
 
-use Icybee\ManageBlock\Options;
+use Icybee\Block\ManageBlock\Options;
+use Icybee\Modules\Pages\BlueprintNode;
+use Icybee\Modules\Pages\Module;
+use Icybee\Modules\Pages\PageModel;
 
-class ManageBlock extends \Icybee\Modules\Nodes\ManageBlock
+class ManageBlock extends \Icybee\Modules\Nodes\Block\ManageBlock
 {
 	static protected function add_assets(Document $document)
 	{

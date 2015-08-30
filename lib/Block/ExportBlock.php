@@ -9,9 +9,9 @@
  * file that was distributed with this source code.
  */
 
-namespace Icybee\Modules\Pages;
+namespace Icybee\Modules\Pages\Block;
 
-class ExportBlock extends \Icybee\Modules\Nodes\ExportBlock
+class ExportBlock extends \Icybee\Modules\Nodes\Block\ExportBlock
 {
 
 }
