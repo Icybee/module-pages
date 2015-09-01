@@ -124,18 +124,20 @@ class PageModel extends NodeModel
 
 		$home = $this->where('siteid = ? AND parentid = 0 AND is_online = 1', $siteid)->ordered->one;
 
-		if ($home)
+		if (!$home)
 		{
-			$stored = $this->activerecord_cache->retrieve($home->nid);
+			throw new \LogicException("There is no home yet, or maybe all pages are offline?");
+		}
 
-			if ($stored)
-			{
-				$home = $stored;
-			}
-			else
-			{
-				$this->activerecord_cache->store($home);
-			}
+		$stored = $this->activerecord_cache->retrieve($home->nid);
+
+		if ($stored)
+		{
+			$home = $stored;
+		}
+		else
+		{
+			$this->activerecord_cache->store($home);
 		}
 
 		self::$home_by_siteid[$siteid] = $home;
