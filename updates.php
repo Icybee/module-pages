@@ -31,7 +31,7 @@ class Update20111201 extends Update
 			throw new AssertionFailed('assert_table_exists', 'site_pages');
 		}
 
-		$db("RENAME TABLE `site_pages` TO `pages`");
+		$db("RENAME TABLE `{prefix}site_pages` TO `{prefix}pages`");
 	}
 
 	public function update_table_pages__contents()
@@ -43,12 +43,12 @@ class Update20111201 extends Update
 			throw new AssertionFailed('assert_table_exists', 'site_pages_contents');
 		}
 
-		$db("RENAME TABLE `site_pages_contents` TO `pages__contents`");
+		$db("RENAME TABLE `{prefix}site_pages_contents` TO `{prefix}pages__contents`");
 	}
 
 	public function update_constructor_type()
 	{
 		$db = $this->app->db;
-		$db("UPDATE nodes SET constructor = 'pages' WHERE constructor = 'site.pages'");
+		$db("UPDATE `{prefix}nodes` SET constructor = 'pages' WHERE constructor = 'site.pages'");
 	}
 }
