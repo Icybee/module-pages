@@ -222,7 +222,7 @@ EOT;
 	{
 		$view_ids = $this->module->model('contents')
 		->select('page_id, content')
-		->where('contentid = "body" AND editor = "view"')
+		->where('content_id = "body" AND editor = "view"')
 		->pairs;
 
 		$rendered_rows = parent::render_rows($rows);

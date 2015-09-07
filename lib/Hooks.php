@@ -89,9 +89,9 @@ class Hooks
 				continue;
 			}
 
-			$model->execute('UPDATE {self} SET content = ? WHERE page_id = ? AND contentid = ?', [
+			$model->execute('UPDATE {self} SET content = ? WHERE page_id = ? AND content_id = ?', [
 
-				$content, $record->page_id, $record->contentid
+				$content, $record->page_id, $record->content_id
 
 			]);
 		}
@@ -250,9 +250,9 @@ class Hooks
 		}
 
 		$page = self::get_request_page();
-		$contentid = $args['id'];
-		$contents = array_key_exists($contentid, $page->contents)
-			? $page->contents[$contentid]
+		$content_id = $args['id'];
+		$contents = array_key_exists($content_id, $page->contents)
+			? $page->contents[$content_id]
 			: null;
 
 		if (!$contents && !empty($args['inherit']))
@@ -263,14 +263,14 @@ class Hooks
 			{
 				$node_contents = $node->contents;
 
-				if (empty($node_contents[$contentid]))
+				if (empty($node_contents[$content_id]))
 				{
 					$node = $node->parent;
 
 					continue;
 				}
 
-				$contents = $node_contents[$contentid];
+				$contents = $node_contents[$content_id];
 
 				break;
 			}
@@ -284,9 +284,9 @@ class Hooks
 			{
 				$node_contents = $page->home->contents;
 
-				if (isset($node_contents[$contentid]))
+				if (isset($node_contents[$content_id]))
 				{
-					$contents = $node_contents[$contentid];
+					$contents = $node_contents[$content_id];
 				}
 			}
 		}
@@ -311,7 +311,7 @@ class Hooks
 
 		$element = new Element('div', [
 
-			'id' => 'content-' . $contentid,
+			'id' => 'content-' . $content_id,
 			'class' => 'editor-' . \ICanBoogie\normalize($editor)
 
 		]);

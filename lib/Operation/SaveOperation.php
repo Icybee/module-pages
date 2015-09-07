@@ -163,7 +163,7 @@ class SaveOperation extends \Icybee\Modules\Nodes\Operation\SaveOperation
 				$content_model->insert([
 
 					'page_id' => $nid,
-					'contentid' => $content_id
+					'content_id' => $content_id
 
 				] + $values, [
 
@@ -183,7 +183,7 @@ class SaveOperation extends \Icybee\Modules\Nodes\Operation\SaveOperation
 
 		if ($preserve)
 		{
-			$arr->where([ '!contentid' => $preserve ]);
+			$arr->where([ '!content_id' => $preserve ]);
 		}
 
 		$arr->delete();

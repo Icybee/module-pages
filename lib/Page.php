@@ -556,7 +556,7 @@ class Page extends Node
 	/**
 	 * Returns the contents of the page as an array.
 	 *
-	 * Keys of the array are the contentid, values are the contents objects.
+	 * Keys of the array are the content_id, values are the contents objects.
 	 *
 	 * @return Content[]
 	 */
@@ -567,7 +567,7 @@ class Page extends Node
 
 		foreach ($entries as $entry)
 		{
-			$contents[$entry->contentid] = $entry;
+			$contents[$entry->content_id] = $entry;
 		}
 
 		return $contents;

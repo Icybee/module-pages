@@ -36,7 +36,7 @@ class Content extends ActiveRecord
 	 *
 	 * @var string
 	 */
-	public $contentid;
+	public $content_id;
 
 	/**
 	 * The content.

@@ -26,8 +26,8 @@ class ExportOperation extends \Icybee\Modules\Nodes\Operation\ExportOperation
 
 		foreach ($contents as $content)
 		{
-			$records[$content->page_id]->contents[$content->contentid] = $content->content;
-			$records[$content->page_id]->editors[$content->contentid] = $content->editor;
+			$records[$content->page_id]->contents[$content->content_id] = $content->content;
+			$records[$content->page_id]->editors[$content->content_id] = $content->editor;
 		}
 
 		return $records;

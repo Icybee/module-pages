@@ -87,4 +87,14 @@ class Update2015090821 extends Update
 			->assert_has_column('pageid')
 			->rename_column('pageid', 'page_id');
 	}
+
+	/**
+	 * Renames column `contentid` as `content_id`.
+	 */
+	public function update_column_content_id()
+	{
+		$this->module->models['contents']
+			->assert_has_column('contentid')
+			->rename_column('contentid', 'content_id');
+	}
 }

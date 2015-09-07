@@ -45,7 +45,7 @@ class ImportOperation extends \Icybee\Modules\Nodes\Operation\ImportOperation
 				$contents = (array) $obj->contents;
 				$editors = (array) $obj->editors;
 
-				foreach ($contents as $contentid => &$content)
+				foreach ($contents as $content_id => &$content)
 				{
 					if (($content{0} == '{' || $content{0} == '[') && $content{1} == '"')
 					{
@@ -53,14 +53,14 @@ class ImportOperation extends \Icybee\Modules\Nodes\Operation\ImportOperation
 					}
 				}
 
-				foreach ($editors as $contentid => $editor_name)
+				foreach ($editors as $content_id => $editor_name)
 				{
-					if ($editor_name != 'widgets' || empty($contents[$contentid]))
+					if ($editor_name != 'widgets' || empty($contents[$content_id]))
 					{
 						continue;
 					}
 
-					$content = &$contents[$contentid];
+					$content = &$contents[$content_id];
 					$content = array_combine($content, array_fill(0, count($content), 'on'));
 				}
 
