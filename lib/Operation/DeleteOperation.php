@@ -26,7 +26,7 @@ class DeleteOperation extends \Icybee\Modules\Nodes\Operation\DeleteOperation
 			$errors[] = $errors->format('This page has :count direct children.', [ ':count' => $count ]);
 		}
 
-		$count = $this->module->model->filter_by_locationid($nid)->count;
+		$count = $this->module->model->filter_by_location_id($nid)->count;
 
 		if ($count)
 		{

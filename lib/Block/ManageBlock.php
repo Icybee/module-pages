@@ -251,7 +251,7 @@ EOT;
 				$row->add_class('pattern');
 			}
 
-			if ($record->locationid)
+			if ($record->location_id)
 			{
 				$row->add_class('location');
 			}

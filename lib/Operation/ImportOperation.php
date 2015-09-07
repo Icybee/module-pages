@@ -16,7 +16,7 @@ use ICanBoogie\HTTP\Request;
 class ImportOperation extends \Icybee\Modules\Nodes\Operation\ImportOperation
 {
 	private $parent_id = [];
-	private $locationid = [];
+	private $location_id = [];
 
 	protected function parse_data(array $data)
 	{
@@ -29,12 +29,12 @@ class ImportOperation extends \Icybee\Modules\Nodes\Operation\ImportOperation
 
 			unset($obj->parent_id);
 
-			if ($obj->locationid)
+			if ($obj->location_id)
 			{
-				$this->locationid[$nid] = $obj->locationid;
+				$this->location_id[$nid] = $obj->location_id;
 			}
 
-			unset($obj->locationid);
+			unset($obj->location_id);
 
 			if (empty($obj->contents))
 			{
@@ -76,12 +76,12 @@ class ImportOperation extends \Icybee\Modules\Nodes\Operation\ImportOperation
 	{
 		parent::import($data, $save);
 
-		//var_dump($this->keys_translations, $this->locationid, $data);
+		//var_dump($this->keys_translations, $this->location_id, $data);
 
-		$update = $this->app->db->prepare('UPDATE {prefix}pages SET parent_id = ?, locationid = ? WHERE nid = ?');
+		$update = $this->app->db->prepare('UPDATE {prefix}pages SET parent_id = ?, location_id = ? WHERE nid = ?');
 
 		$original_nodes_with_parent_id = $this->parent_id;
-		$original_nodes_with_locationid = $this->locationid;
+		$original_nodes_with_location_id = $this->location_id;
 
 		foreach (array_keys($data) as $nid)
 		{
@@ -92,16 +92,16 @@ class ImportOperation extends \Icybee\Modules\Nodes\Operation\ImportOperation
 				$parent_id = $this->keys_translations[$original_nodes_with_parent_id[$nid]];
 			}
 
-			$locationid = 0;
+			$location_id = 0;
 
-			if (isset($original_nodes_with_locationid[$nid]))
+			if (isset($original_nodes_with_location_id[$nid]))
 			{
-				$locationid = $this->keys_translations[$original_nodes_with_locationid[$nid]];
+				$location_id = $this->keys_translations[$original_nodes_with_location_id[$nid]];
 			}
 
-			if ($parent_id || $locationid)
+			if ($parent_id || $location_id)
 			{
-				$update->execute([ $parent_id, $locationid, $this->keys_translations[$nid] ]);
+				$update->execute([ $parent_id, $location_id, $this->keys_translations[$nid] ]);
 			}
 		}
 	}

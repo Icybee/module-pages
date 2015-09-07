@@ -56,7 +56,7 @@ class Page extends Node
 	const MODEL_ID = 'pages';
 
 	const PARENT_ID = 'parent_id';
-	const LOCATIONID = 'locationid';
+	const LOCATIONID = 'location_id';
 	const PATTERN = 'pattern';
 	const WEIGHT = 'weight';
 	const TEMPLATE = 'template';
@@ -75,7 +75,7 @@ class Page extends Node
 	 *
 	 * @var int
 	 */
-	public $locationid;
+	public $location_id;
 
 	/**
 	 * The pattern used to create the URL of the nodes displayed by the page.
@@ -426,7 +426,7 @@ class Page extends Node
 	 */
 	protected function get_location()
 	{
-		return $this->locationid ? $this->model[$this->locationid] : null;
+		return $this->location_id ? $this->model[$this->location_id] : null;
 	}
 
 	/**

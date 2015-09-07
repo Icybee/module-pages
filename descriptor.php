@@ -19,7 +19,7 @@ return [
 			Model::SCHEMA => [
 
 				'parent_id' => 'foreign',
-				'locationid' => 'foreign',
+				'location_id' => 'foreign',
 				'label' => [ 'varchar', 80 ],
 				'pattern' => 'varchar',
 				'weight' => [ 'integer', 'unsigned' => true ],

@@ -67,4 +67,14 @@ class Update2015090821 extends Update
 			->assert_has_column('parentid')
 			->rename_column('parentid', 'parent_id');
 	}
+
+	/**
+	 * Renames column `locationid` as `location_id`.
+	 */
+	public function update_column_location_id()
+	{
+		$this->module->model
+			->assert_has_column('locationid')
+			->rename_column('locationid', 'location_id');
+	}
 }
