@@ -33,7 +33,7 @@ return [
 
 			Model::SCHEMA => [
 
-				'pageid' => [ 'foreign', 'primary' => true ],
+				'page_id' => [ 'foreign', 'primary' => true ],
 				'contentid' => [ 'varchar', 64, 'primary' => true ],
 				'content' => [ 'text', 'long' ],
 				'editor' => [ 'varchar', 32 ]

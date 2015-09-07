@@ -89,9 +89,9 @@ class Hooks
 				continue;
 			}
 
-			$model->execute('UPDATE {self} SET content = ? WHERE pageid = ? AND contentid = ?', [
+			$model->execute('UPDATE {self} SET content = ? WHERE page_id = ? AND contentid = ?', [
 
-				$content, $record->pageid, $record->contentid
+				$content, $record->page_id, $record->contentid
 
 			]);
 		}

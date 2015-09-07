@@ -17,7 +17,7 @@ use ICanBoogie\ActiveRecord\Query;
 /**
  * Representation of a page content.
  *
- * @method Query filter_by_pageid() filter_by_pageid(int $pageid)
+ * @method Query filter_by_page_id() filter_by_page_id(int $page_id)
  * Filter contents according to the identifier of a page.
  */
 class ContentModel extends Model

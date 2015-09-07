@@ -562,7 +562,7 @@ class Page extends Node
 	 */
 	protected function lazy_get_contents()
 	{
-		$entries = $this->model->models['pages/contents']->filter_by_pageid($this->nid);
+		$entries = $this->model->models['pages/contents']->filter_by_page_id($this->nid);
 		$contents = [];
 
 		foreach ($entries as $entry)

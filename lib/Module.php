@@ -140,7 +140,7 @@ class Module extends \Icybee\Modules\Nodes\Module
 			#
 			#
 
-			$contents = $nid ? $contents_model->where('pageid = ? AND contentid = ?', $nid, $id)->one : null;
+			$contents = $nid ? $contents_model->where('page_id = ? AND contentid = ?', $nid, $id)->one : null;
 
 			if ($contents)
 			{

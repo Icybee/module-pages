@@ -21,13 +21,13 @@ class ExportOperation extends \Icybee\Modules\Nodes\Operation\ExportOperation
 
 		$contents = $this->module
 			->model('contents')
-			->filter_by_pageid($keys)
+			->filter_by_page_id($keys)
 			->all(\PDO::FETCH_OBJ);
 
 		foreach ($contents as $content)
 		{
-			$records[$content->pageid]->contents[$content->contentid] = $content->content;
-			$records[$content->pageid]->editors[$content->contentid] = $content->editor;
+			$records[$content->page_id]->contents[$content->contentid] = $content->content;
+			$records[$content->page_id]->editors[$content->contentid] = $content->editor;
 		}
 
 		return $records;

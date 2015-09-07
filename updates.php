@@ -77,4 +77,14 @@ class Update2015090821 extends Update
 			->assert_has_column('locationid')
 			->rename_column('locationid', 'location_id');
 	}
+
+	/**
+	 * Renames column `pageid` as `page_id`.
+	 */
+	public function update_column_page_id()
+	{
+		$this->module->models['contents']
+			->assert_has_column('pageid')
+			->rename_column('pageid', 'page_id');
+	}
 }

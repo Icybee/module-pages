@@ -162,7 +162,7 @@ class SaveOperation extends \Icybee\Modules\Nodes\Operation\SaveOperation
 
 				$content_model->insert([
 
-					'pageid' => $nid,
+					'page_id' => $nid,
 					'contentid' => $content_id
 
 				] + $values, [
@@ -179,7 +179,7 @@ class SaveOperation extends \Icybee\Modules\Nodes\Operation\SaveOperation
 
 		/* @var $arr Query */
 
-		$arr = $content_model->filter_by_pageid($nid);
+		$arr = $content_model->filter_by_page_id($nid);
 
 		if ($preserve)
 		{

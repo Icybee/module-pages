@@ -61,9 +61,9 @@ class TemplateEditorsOperation extends Operation
 	{
 		$request = $this->request;
 		$template = $request['template'];
-		$pageid = $request['pageid'];
+		$page_id = $request['page_id'];
 
-		list($contents_tags, $template_info) = $this->module->get_contents_section($pageid, $template);
+		list($contents_tags, $template_info) = $this->module->get_contents_section($page_id, $template);
 
 		$this->response['template'] = $template_info;
 

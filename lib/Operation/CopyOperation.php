@@ -59,7 +59,7 @@ class CopyOperation extends Operation
 		$record->slug .= '-copy';
 
 		$contentModel = $this->module->model('contents');
-		$contents = $contentModel->where([ 'pageid' => $key ])->all;
+		$contents = $contentModel->where([ 'page_id' => $key ])->all;
 
 		$nid = $this->module->model->save((array) $record);
 
@@ -79,7 +79,7 @@ class CopyOperation extends Operation
 
 		foreach ($contents as $record)
 		{
-			$record->pageid = $nid;
+			$record->page_id = $nid;
 			$record = (array) $record;
 
 			$contentModel->insert($record, [

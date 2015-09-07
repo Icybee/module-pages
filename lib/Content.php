@@ -29,7 +29,7 @@ class Content extends ActiveRecord
 	 *
 	 * @var int
 	 */
-	public $pageid;
+	public $page_id;
 
 	/**
 	 * The identifier of the content.

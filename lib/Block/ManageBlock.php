@@ -221,7 +221,7 @@ EOT;
 	protected function render_rows(array $rows)
 	{
 		$view_ids = $this->module->model('contents')
-		->select('pageid, content')
+		->select('page_id, content')
 		->where('contentid = "body" AND editor = "view"')
 		->pairs;
 
