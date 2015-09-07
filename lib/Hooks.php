@@ -135,7 +135,7 @@ class Hooks
 	 */
 	static public function get_home(Site $site)
 	{
-		return self::app()->models['pages']->find_home($site->siteid);
+		return self::app()->models['pages']->find_home($site->site_id);
 	}
 
 	/**
@@ -474,7 +474,7 @@ class Hooks
 		$min_children = $args['min-children'];
 
 		$blueprint = $model
-		->blueprint($page->siteid)
+		->blueprint($page->site_id)
 		->subset($parentid, $depth === null ? null : $depth - 1, function(BlueprintNode $node) use($min_children) {
 
 			/* @var $node BlueprintNode|Page */

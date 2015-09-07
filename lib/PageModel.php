@@ -33,12 +33,12 @@ class PageModel extends NodeModel
 			throw new \Exception('A page cannot be its own parent.');
 		}
 
-		if (empty($properties[Page::SITEID]))
+		if (empty($properties[Page::SITE_ID]))
 		{
 			throw new \Exception('site_id is empty.');
 		}
 
-		unset(self::$blueprint_cache[$properties[Page::SITEID]]);
+		unset(self::$blueprint_cache[$properties[Page::SITE_ID]]);
 
 		return parent::save($properties, $key, $options);
 	}
@@ -51,7 +51,7 @@ class PageModel extends NodeModel
 	 */
 	public function delete($key)
 	{
-		$site_id = $this->select('siteid')->filter_by_nid($key)->rc;
+		$site_id = $this->select('site_id')->filter_by_nid($key)->rc;
 
 		if ($site_id)
 		{
@@ -93,7 +93,7 @@ class PageModel extends NodeModel
 
 		$query = $this
 		->select('nid, parentid, is_online, is_navigation_excluded, pattern')
-		->filter_by_siteid($site_id)->ordered;
+		->filter_by_site_id($site_id)->ordered;
 
 		return self::$blueprint_cache[$site_id] = Blueprint::from($query);
 	}
@@ -111,18 +111,18 @@ class PageModel extends NodeModel
 	 * The record cache is used to retrieve or store the home page. Additionally the home page
 	 * found is stored for each site.
 	 *
-	 * @param int $siteid Identifier of the site.
+	 * @param int $site_id Identifier of the site.
 	 *
 	 * @return Page
 	 */
-	public function find_home($siteid)
+	public function find_home($site_id)
 	{
-		if (isset(self::$home_by_siteid[$siteid]))
+		if (isset(self::$home_by_site_id[$site_id]))
 		{
-			return self::$home_by_siteid[$siteid];
+			return self::$home_by_site_id[$site_id];
 		}
 
-		$home = $this->where('siteid = ? AND parentid = 0 AND is_online = 1', $siteid)->ordered->one;
+		$home = $this->where('site_id = ? AND parentid = 0 AND is_online = 1', $site_id)->ordered->one;
 
 		if (!$home)
 		{
@@ -140,12 +140,12 @@ class PageModel extends NodeModel
 			$this->activerecord_cache->store($home);
 		}
 
-		self::$home_by_siteid[$siteid] = $home;
+		self::$home_by_site_id[$site_id] = $home;
 
 		return $home;
 	}
 
-	static private $home_by_siteid = [];
+	static private $home_by_site_id = [];
 
 	/**
 	 * Finds a page using its path.
@@ -177,7 +177,7 @@ class PageModel extends NodeModel
 		#
 
 		$site = $this->app->site;
-		$site_id = $site->siteid;
+		$site_id = $site->site_id;
 		$site_path = $site->path;
 
 		if ($site_path)
@@ -219,7 +219,7 @@ class PageModel extends NodeModel
 
 		$query = $this
 		->select('nid, parentid, slug, pattern')
-		->filter_by_siteid($site_id)
+		->filter_by_site_id($site_id)
 		->ordered;
 
 		$tries = Blueprint::from($query)->tree;

@@ -179,7 +179,7 @@ class PageController extends Prototyped
 	 */
 	private function assert_site_status(Site $site)
 	{
-		if (!$site->siteid)
+		if (!$site->site_id)
 		{
 			throw new NotFound("Unable to find matching website.");
 		}

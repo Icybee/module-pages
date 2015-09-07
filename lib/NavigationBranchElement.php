@@ -129,7 +129,7 @@ class NavigationBranchElement extends Element
 		$page_model = $this->app->models['pages'];
 
 		$blueprint = $page_model
-		->blueprint($this->page->siteid)
+		->blueprint($this->page->site_id)
 		->subset($start->nid, $this[self::DEPTH], function(BlueprintNode $node) use($trail) {
 
 			/* @var $node BlueprintNode|Page */

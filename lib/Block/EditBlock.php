@@ -43,7 +43,7 @@ class EditBlock extends \Icybee\Modules\Nodes\Block\EditBlock
 
 			Form::HIDDENS => [
 
-				Page::SITEID => $app->site_id,
+				Page::SITE_ID => $app->site_id,
 				Page::LANGUAGE => $app->site->language
 
 			],
@@ -66,7 +66,7 @@ class EditBlock extends \Icybee\Modules\Nodes\Block\EditBlock
 	{
 		$values = $this->values;
 		$nid = $values[Node::NID];
-		$is_alone = !$this->module->model->select('nid')->where([ 'siteid' => $this->app->site_id ])->rc;
+		$is_alone = !$this->module->model->select('nid')->where([ 'site_id' => $this->app->site_id ])->rc;
 
 		list($contents_tags) = $this->module->get_contents_section($values[Node::NID], $values[Page::TEMPLATE]);
 
@@ -127,7 +127,7 @@ class EditBlock extends \Icybee\Modules\Nodes\Block\EditBlock
 			]),
 
 			Page::PARENTID => $parentid_el,
-			Page::SITEID => null,
+			Page::SITE_ID => null,
 
 			Page::IS_NAVIGATION_EXCLUDED => new Element(Element::TYPE_CHECKBOX, [
 

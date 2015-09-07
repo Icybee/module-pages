@@ -231,7 +231,7 @@ class Page extends Node
 	protected function lazy_get_previous()
 	{
 		return $this->model
-		->where('is_online = 1 AND nid != ? AND parentid = ? AND siteid = ? AND weight <= ?', $this->nid, $this->parentid, $this->siteid, $this->weight)
+		->where('is_online = 1 AND nid != ? AND parentid = ? AND site_id = ? AND weight <= ?', $this->nid, $this->parentid, $this->site_id, $this->weight)
 		->order('weight desc, created_at desc')
 		->one;
 	}
@@ -244,7 +244,7 @@ class Page extends Node
 	protected function lazy_get_next()
 	{
 		return $this->model
-		->where('is_online = 1 AND nid != ? AND parentid = ? AND siteid = ? AND weight >= ?', $this->nid, $this->parentid, $this->siteid, $this->weight)
+		->where('is_online = 1 AND nid != ? AND parentid = ? AND site_id = ? AND weight >= ?', $this->nid, $this->parentid, $this->site_id, $this->weight)
 		->order('weight, created_at')->one;
 	}
 
@@ -436,7 +436,7 @@ class Page extends Node
 	 */
 	protected function get_home()
 	{
-		return $this->model->find_home($this->siteid);
+		return $this->model->find_home($this->site_id);
 	}
 
 	/**
@@ -458,7 +458,7 @@ class Page extends Node
 	 */
 	protected function lazy_get_children()
 	{
-		$blueprint = $this->model->blueprint($this->siteid);
+		$blueprint = $this->model->blueprint($this->site_id);
 		$pages = $blueprint['pages'];
 
 		if (!$pages[$this->nid]->children)
@@ -488,7 +488,7 @@ class Page extends Node
 	 */
 	protected function lazy_get_navigation_children()
 	{
-		$index = $this->model->blueprint($this->siteid)->index;
+		$index = $this->model->blueprint($this->site_id)->index;
 
 		if (empty($index[$this->nid]) || !$index[$this->nid]->children)
 		{
@@ -522,7 +522,7 @@ class Page extends Node
 	 */
 	protected function get_has_child()
 	{
-		return $this->model->blueprint($this->siteid)->has_children($this->nid);
+		return $this->model->blueprint($this->site_id)->has_children($this->nid);
 	}
 
 	/**
@@ -532,7 +532,7 @@ class Page extends Node
 	 */
 	protected function get_children_count()
 	{
-		return $this->model->blueprint($this->siteid)->children_count($this->nid);
+		return $this->model->blueprint($this->site_id)->children_count($this->nid);
 	}
 
 	/**
@@ -542,7 +542,7 @@ class Page extends Node
 	 */
 	protected function get_descendants_count()
 	{
-		return $this->model->blueprint($this->siteid)->index[$this->nid]->descendants_count;
+		return $this->model->blueprint($this->site_id)->index[$this->nid]->descendants_count;
 	}
 
 	/**

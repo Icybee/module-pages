@@ -31,7 +31,7 @@ class SaveOperation extends \Icybee\Modules\Nodes\Operation\SaveOperation
 	use PrototypedBindings;
 
 	/**
-	 * For new records, the values for the {@link Page::SITEID} and {@link Page::LANGUAGE}
+	 * For new records, the values for the {@link Page::SITE_ID} and {@link Page::LANGUAGE}
 	 * properties are obtained from the current site. If the weight of the page is not defined
 	 * it is computed according to the page having the same parent.
 	 */
@@ -48,8 +48,8 @@ class SaveOperation extends \Icybee\Modules\Nodes\Operation\SaveOperation
 			/* @var $site \Icybee\Modules\Sites\Site */
 
 			$site = $this->app->site;
-			$siteid = $site->siteid;
-			$properties[Page::SITEID] = $siteid;
+			$site_id = $site->site_id;
+			$properties[Page::SITE_ID] = $site_id;
 			$properties[Page::LANGUAGE] = $site->language;
 
 			if (empty($properties[Page::WEIGHT]))
@@ -59,7 +59,7 @@ class SaveOperation extends \Icybee\Modules\Nodes\Operation\SaveOperation
 				if ($model->count())
 				{
 					$weight = $model
-					->where('siteid = ? AND parentid = ?', $siteid, $properties[Page::PARENTID])
+					->where('site_id = ? AND parentid = ?', $site_id, $properties[Page::PARENTID])
 					->maximum('weight');
 
 					$properties[Page::WEIGHT] = ($weight === null) ? 0 : $weight + 1;

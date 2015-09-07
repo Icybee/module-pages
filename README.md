@@ -38,7 +38,7 @@ properties `slug` and `pattern`:
 
 $query = $app->models['pages']
 ->select('nid, parentid, slug, pattern')
-->filter_by_siteid($site_id = 1)
+->filter_by_site_id($site_id = 1)
 ->ordered;
 
 $blueprint = Blueprint::from($query);

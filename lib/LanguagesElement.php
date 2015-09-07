@@ -95,7 +95,7 @@ class LanguagesElement extends Element
 			$translations[$source->nid] = $source;
 			$translations_by_language = array_flip
 			(
-				$app->models['sites']->select('language')->where('status = 1')->order('weight, siteid')->all(\PDO::FETCH_COLUMN)
+				$app->models['sites']->select('language')->where('status = 1')->order('weight, site_id')->all(\PDO::FETCH_COLUMN)
 			);
 
 			if ($source instanceof Page)

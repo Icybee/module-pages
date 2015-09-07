@@ -302,7 +302,7 @@ class Module extends \Icybee\Modules\Nodes\Module
 	protected function resolve_template($nid, $request_template = null)
 	{
 		$inherited = false;
-		$is_alone = !$this->model->select('nid')->filter_by_siteid($this->app->site_id)->rc;
+		$is_alone = !$this->model->select('nid')->filter_by_site_id($this->app->site_id)->rc;
 		$template = null;
 
 		if ($is_alone)
