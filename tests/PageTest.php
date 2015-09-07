@@ -92,7 +92,7 @@ class PageTest extends \PHPUnit_Framework_TestCase
 			[ 'is_home', [], false ],
 			[ 'is_home', [ 'is_online' => true ], true ],
 			[ 'is_home', [ 'is_online' => true, 'weight' => 1 ], false ],
-			[ 'is_home', [ 'is_online' => true, 'weight' => 0, 'parentid' => 1 ], false ],
+			[ 'is_home', [ 'is_online' => true, 'weight' => 0, 'parent_id' => 1 ], false ],
 
 			[ 'extension', [], '.html' ],
 			[ 'extension', [ 'template' => 'example.xml' ], '.xml' ]

@@ -50,7 +50,7 @@ class Blueprint implements \IteratorAggregate
 			$row->children = [];
 
 			$nid = $row->nid;
-			$parent_id = $row->parentid;
+			$parent_id = $row->parent_id;
 			$index[$nid] = $row;
 			$relation[$nid] = $parent_id;
 			$children[$parent_id][$nid] = $nid;
@@ -60,14 +60,14 @@ class Blueprint implements \IteratorAggregate
 
 		foreach ($index as $nid => $page)
 		{
-			if (!$page->parentid || empty($index[$page->parentid]))
+			if (!$page->parent_id || empty($index[$page->parent_id]))
 			{
 				$tree[$nid] = $page;
 
 				continue;
 			}
 
-			$page->parent = $index[$page->parentid];
+			$page->parent = $index[$page->parent_id];
 			$page->parent->children[$nid] = $page;
 		}
 
@@ -322,7 +322,7 @@ class Blueprint implements \IteratorAggregate
 					continue;
 				}
 
-				$parent_id = $node->parentid;
+				$parent_id = $node->parent_id;
 
 				$relation[$nid] = $parent_id;
 				$children[$parent_id][] = $nid;

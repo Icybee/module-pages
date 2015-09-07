@@ -444,30 +444,30 @@ class Hooks
 				$node = $node->parent;
 			}
 
-			$parentid = $node->nid;
+			$parent_id = $node->nid;
 		}
 		else
 		{
-			$parentid = $args['parent'];
+			$parent_id = $args['parent'];
 
-			if ($parentid instanceof Page)
+			if ($parent_id instanceof Page)
 			{
-				$parentid = $parentid->nid;
+				$parent_id = $parent_id->nid;
 			}
-			else if ($parentid && !is_numeric($parentid))
+			else if ($parent_id && !is_numeric($parent_id))
 			{
-				$parent = $model->find_by_path($parentid);
+				$parent = $model->find_by_path($parent_id);
 
 				if (!$parent)
 				{
 					throw new \Exception(\ICanBoogie\format("Unable to locate parent with path %path", [
 
-						'path' => $parentid
+						'path' => $parent_id
 
 					]));
 				}
 
-				$parentid = $parent->nid;
+				$parent_id = $parent->nid;
 			}
 		}
 
@@ -475,7 +475,7 @@ class Hooks
 
 		$blueprint = $model
 		->blueprint($page->site_id)
-		->subset($parentid, $depth === null ? null : $depth - 1, function(BlueprintNode $node) use($min_children) {
+		->subset($parent_id, $depth === null ? null : $depth - 1, function(BlueprintNode $node) use($min_children) {
 
 			/* @var $node BlueprintNode|Page */
 

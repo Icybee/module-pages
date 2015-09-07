@@ -55,7 +55,7 @@ class Page extends Node
 
 	const MODEL_ID = 'pages';
 
-	const PARENTID = 'parentid';
+	const PARENT_ID = 'parent_id';
 	const LOCATIONID = 'locationid';
 	const PATTERN = 'pattern';
 	const WEIGHT = 'weight';
@@ -68,7 +68,7 @@ class Page extends Node
 	 *
 	 * @var int
 	 */
-	public $parentid;
+	public $parent_id;
 
 	/**
 	 * The identifier of the page the page is redirected to.
@@ -231,7 +231,7 @@ class Page extends Node
 	protected function lazy_get_previous()
 	{
 		return $this->model
-		->where('is_online = 1 AND nid != ? AND parentid = ? AND site_id = ? AND weight <= ?', $this->nid, $this->parentid, $this->site_id, $this->weight)
+		->where('is_online = 1 AND nid != ? AND parent_id = ? AND site_id = ? AND weight <= ?', $this->nid, $this->parent_id, $this->site_id, $this->weight)
 		->order('weight desc, created_at desc')
 		->one;
 	}
@@ -244,7 +244,7 @@ class Page extends Node
 	protected function lazy_get_next()
 	{
 		return $this->model
-		->where('is_online = 1 AND nid != ? AND parentid = ? AND site_id = ? AND weight >= ?', $this->nid, $this->parentid, $this->site_id, $this->weight)
+		->where('is_online = 1 AND nid != ? AND parent_id = ? AND site_id = ? AND weight >= ?', $this->nid, $this->parent_id, $this->site_id, $this->weight)
 		->order('weight, created_at')->one;
 	}
 
@@ -378,7 +378,7 @@ class Page extends Node
 	 */
 	protected function get_is_home()
 	{
-		return (!$this->parentid && !$this->weight && $this->is_online);
+		return (!$this->parent_id && !$this->weight && $this->is_online);
 	}
 
 	/**
@@ -446,7 +446,7 @@ class Page extends Node
 	 */
 	protected function lazy_get_parent()
 	{
-		return $this->parentid ? $this->model[$this->parentid] : null;
+		return $this->parent_id ? $this->model[$this->parent_id] : null;
 	}
 
 	/**

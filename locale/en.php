@@ -43,7 +43,7 @@ return [
 
 		'location' => 'Redirect from this page to another page.',
 
-		'parentid' => "Organize pages hierarchically to form a tree.",
+		'parent_id' => "Organize pages hierarchically to form a tree.",
 
 		'pattern' => "The pattern is used to distribute the URL parameters to create a semantic
 		URL.",
@@ -58,7 +58,7 @@ return [
 		'is_navigation_excluded' => 'Exclude the page form the main navigation',
 		'label' => 'Label of the page',
 		'location' => 'Redirect',
-		'parentid' => 'Parent page',
+		'parent_id' => 'Parent page',
 		'pattern' => 'Pattern',
 		'template' => 'Template'
 

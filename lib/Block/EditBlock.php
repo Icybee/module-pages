@@ -71,18 +71,18 @@ class EditBlock extends \Icybee\Modules\Nodes\Block\EditBlock
 		list($contents_tags) = $this->module->get_contents_section($values[Node::NID], $values[Page::TEMPLATE]);
 
 		#
-		# parentid
+		# parent_id
 		#
 
-		$parentid_el = null;
+		$parent_id_el = null;
 
 		if (!$is_alone)
 		{
-			$parentid_el = new PopPage('select', [
+			$parent_id_el = new PopPage('select', [
 
-				Form::LABEL => 'parentid',
+				Form::LABEL => 'parent_id',
 				Element::OPTIONS_DISABLED => $nid ? [ $nid => true ] : null,
-				Element::DESCRIPTION => 'parentid'
+				Element::DESCRIPTION => 'parent_id'
 
 			]);
 		}
@@ -126,7 +126,7 @@ class EditBlock extends \Icybee\Modules\Nodes\Block\EditBlock
 
 			]),
 
-			Page::PARENTID => $parentid_el,
+			Page::PARENT_ID => $parent_id_el,
 			Page::SITE_ID => null,
 
 			Page::IS_NAVIGATION_EXCLUDED => new Element(Element::TYPE_CHECKBOX, [

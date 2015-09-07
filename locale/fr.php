@@ -58,7 +58,7 @@ return [
 
 		'location' => 'Redirection depuis cette page vers une autre page.',
 
-		'parentid' => "Organisez les pages hiérarchiquement pour former une arborescence.",
+		'parent_id' => "Organisez les pages hiérarchiquement pour former une arborescence.",
 
 		'pattern' => "Le motif permet de distribuer les paramètres d'une URL pour créer une URL
 		sémantique.",
@@ -73,7 +73,7 @@ return [
 		'is_navigation_excluded' => 'Exclure la page de la navigation principale',
 		'label' => 'Étiquette de la page',
 		'location' => 'Redirection',
-		'parentid' => 'Page parente',
+		'parent_id' => 'Page parente',
 		'pattern' => 'Motif',
 		'template' => 'Gabarit'
 

@@ -139,7 +139,7 @@ class NavigationBranchElement extends Element
 				return true;
 			}
 
-			if (empty($trail[$node->nid]) && empty($trail[$node->parentid]))
+			if (empty($trail[$node->nid]) && empty($trail[$node->parent_id]))
 			{
 				return true;
 			}

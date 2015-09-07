@@ -19,7 +19,7 @@ class DeleteOperation extends \Icybee\Modules\Nodes\Operation\DeleteOperation
 	{
 		$nid = $this->key;
 
-		$count = $this->module->model->filter_by_parentid($nid)->count;
+		$count = $this->module->model->filter_by_parent_id($nid)->count;
 
 		if ($count)
 		{

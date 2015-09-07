@@ -190,7 +190,7 @@ class ManageBlock extends \Icybee\Modules\Nodes\Block\ManageBlock
 
 		return $model->blueprint($this->app->site_id)->subset(null, null, function(BlueprintNode $node) use($expanded) {
 
-			return !(!$node->parentid || isset($expanded[$node->parentid]));
+			return !(!$node->parent_id || isset($expanded[$node->parent_id]));
 
 		})->ordered_records;
 	}
@@ -236,7 +236,7 @@ EOT;
 			$record = $records[$i];
 			$nid = $record->nid;
 
-			if ($this->expand_highlight && $record->parentid == $this->expand_highlight)
+			if ($this->expand_highlight && $record->parent_id == $this->expand_highlight)
 			{
 				$row->add_class('volatile-highlight');
 			}

@@ -18,7 +18,7 @@ return [
 			Model::EXTENDING => 'nodes',
 			Model::SCHEMA => [
 
-				'parentid' => 'foreign',
+				'parent_id' => 'foreign',
 				'locationid' => 'foreign',
 				'label' => [ 'varchar', 80 ],
 				'pattern' => 'varchar',

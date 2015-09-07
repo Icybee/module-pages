@@ -39,7 +39,7 @@ class SaveOperation extends \Icybee\Modules\Nodes\Operation\SaveOperation
 	{
 		$properties = parent::lazy_get_properties() + [
 
-			Page::PARENTID => 0
+			Page::PARENT_ID => 0
 
 		];
 
@@ -59,7 +59,7 @@ class SaveOperation extends \Icybee\Modules\Nodes\Operation\SaveOperation
 				if ($model->count())
 				{
 					$weight = $model
-					->where('site_id = ? AND parentid = ?', $site_id, $properties[Page::PARENTID])
+					->where('site_id = ? AND parent_id = ?', $site_id, $properties[Page::PARENT_ID])
 					->maximum('weight');
 
 					$properties[Page::WEIGHT] = ($weight === null) ? 0 : $weight + 1;

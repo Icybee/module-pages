@@ -29,7 +29,7 @@ The following properties are available:
 ### Obtaining a blueprint from a query
 
 The following example demonstrates how a blueprint can be obtained from a [Query][] instance. Only
-the `nid` and `parentid` properties are required to build the bulueprint, but you might want
+the `nid` and `parent_id` properties are required to build the bulueprint, but you might want
 more than that to be useful. In the example, the blueprint is created with the additional
 properties `slug` and `pattern`:
 
@@ -37,7 +37,7 @@ properties `slug` and `pattern`:
 <?php
 
 $query = $app->models['pages']
-->select('nid, parentid, slug, pattern')
+->select('nid, parent_id, slug, pattern')
 ->filter_by_site_id($site_id = 1)
 ->ordered;
 

@@ -15,19 +15,19 @@ use ICanBoogie\HTTP\Request;
 
 class ImportOperation extends \Icybee\Modules\Nodes\Operation\ImportOperation
 {
-	private $parentid = [];
+	private $parent_id = [];
 	private $locationid = [];
 
 	protected function parse_data(array $data)
 	{
 		foreach ($data as $nid => $obj)
 		{
-			if ($obj->parentid)
+			if ($obj->parent_id)
 			{
-				$this->parentid[$nid] = $obj->parentid;
+				$this->parent_id[$nid] = $obj->parent_id;
 			}
 
-			unset($obj->parentid);
+			unset($obj->parent_id);
 
 			if ($obj->locationid)
 			{
@@ -78,18 +78,18 @@ class ImportOperation extends \Icybee\Modules\Nodes\Operation\ImportOperation
 
 		//var_dump($this->keys_translations, $this->locationid, $data);
 
-		$update = $this->app->db->prepare('UPDATE {prefix}pages SET parentid = ?, locationid = ? WHERE nid = ?');
+		$update = $this->app->db->prepare('UPDATE {prefix}pages SET parent_id = ?, locationid = ? WHERE nid = ?');
 
-		$original_nodes_with_parentid = $this->parentid;
+		$original_nodes_with_parent_id = $this->parent_id;
 		$original_nodes_with_locationid = $this->locationid;
 
 		foreach (array_keys($data) as $nid)
 		{
-			$parentid = 0;
+			$parent_id = 0;
 
-			if (isset($original_nodes_with_parentid[$nid]))
+			if (isset($original_nodes_with_parent_id[$nid]))
 			{
-				$parentid = $this->keys_translations[$original_nodes_with_parentid[$nid]];
+				$parent_id = $this->keys_translations[$original_nodes_with_parent_id[$nid]];
 			}
 
 			$locationid = 0;
@@ -99,9 +99,9 @@ class ImportOperation extends \Icybee\Modules\Nodes\Operation\ImportOperation
 				$locationid = $this->keys_translations[$original_nodes_with_locationid[$nid]];
 			}
 
-			if ($parentid || $locationid)
+			if ($parent_id || $locationid)
 			{
-				$update->execute([ $parentid, $locationid, $this->keys_translations[$nid] ]);
+				$update->execute([ $parent_id, $locationid, $this->keys_translations[$nid] ]);
 			}
 		}
 	}

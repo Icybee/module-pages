@@ -59,7 +59,7 @@ class TitleColumn extends \Icybee\Modules\Nodes\Block\ManageBlock\TitleColumn
 					Element::LABEL => 'p',
 					Element::LABEL_POSITION => 'before',
 					'name' => 'parents[' . $record->nid . ']',
-					'value' => $record->parentid,
+					'value' => $record->parent_id,
 					'size' => 3,
 					'style' => 'border: none; background: transparent; color: green'
 
@@ -71,7 +71,7 @@ class TitleColumn extends \Icybee\Modules\Nodes\Block\ManageBlock\TitleColumn
 
 					'name' => 'parents[' . $record->nid . ']',
 					'type' => 'hidden',
-					'value' => $record->parentid
+					'value' => $record->parent_id
 
 				]);
 			}

@@ -28,7 +28,7 @@ class PageModel extends NodeModel
 	 */
 	public function save(array $properties, $key = null, array $options = [])
 	{
-		if ($key && isset($properties[Page::PARENTID]) && $key == $properties[Page::PARENTID])
+		if ($key && isset($properties[Page::PARENT_ID]) && $key == $properties[Page::PARENT_ID])
 		{
 			throw new \Exception('A page cannot be its own parent.');
 		}
@@ -92,7 +92,7 @@ class PageModel extends NodeModel
 		}
 
 		$query = $this
-		->select('nid, parentid, is_online, is_navigation_excluded, pattern')
+		->select('nid, parent_id, is_online, is_navigation_excluded, pattern')
 		->filter_by_site_id($site_id)->ordered;
 
 		return self::$blueprint_cache[$site_id] = Blueprint::from($query);
@@ -122,7 +122,7 @@ class PageModel extends NodeModel
 			return self::$home_by_site_id[$site_id];
 		}
 
-		$home = $this->where('site_id = ? AND parentid = 0 AND is_online = 1', $site_id)->ordered->one;
+		$home = $this->where('site_id = ? AND parent_id = 0 AND is_online = 1', $site_id)->ordered->one;
 
 		if (!$home)
 		{
@@ -218,7 +218,7 @@ class PageModel extends NodeModel
 		$parts_n = count($parts);
 
 		$query = $this
-		->select('nid, parentid, slug, pattern')
+		->select('nid, parent_id, slug, pattern')
 		->filter_by_site_id($site_id)
 		->ordered;
 

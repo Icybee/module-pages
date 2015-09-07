@@ -45,7 +45,7 @@ class BlueprintNode
 	 *
 	 * @var int
 	 */
-	public $parentid;
+	public $parent_id;
 
 	/**
 	 * Blueprint node of the parent of the page.

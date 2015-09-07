@@ -52,3 +52,19 @@ class Update20111201 extends Update
 		$db("UPDATE `{prefix}nodes` SET constructor = 'pages' WHERE constructor = 'site.pages'");
 	}
 }
+
+/**
+ * @module pages
+ */
+class Update2015090821 extends Update
+{
+	/**
+	 * Renames column `parentid` as `parent_id`.
+	 */
+	public function update_column_parent_id()
+	{
+		$this->module->model
+			->assert_has_column('parentid')
+			->rename_column('parentid', 'parent_id');
+	}
+}

@@ -62,7 +62,7 @@ class UpdateTreeOperation extends Operation
 
 	protected function process()
 	{
-		$update = $this->module->model->prepare("UPDATE {self} SET `parentid` = ?, `weight` = ? WHERE `{primary}` = ? LIMIT 1");
+		$update = $this->module->model->prepare("UPDATE {self} SET `parent_id` = ?, `weight` = ? WHERE `{primary}` = ? LIMIT 1");
 
 		$order = $this->request['order'];
 		$relation = $this->request['relation'];
