@@ -27,4 +27,4 @@ $app = new Core(array_merge_recursive(get_autoconfig(), [
 
 $app->boot();
 $app->document = \Brickrouge\get_document();
-$app->template_resolver->add_path(__DIR__ . '/sandbox/gtemplates');
+$app->template_resolver->add_path(__DIR__ . '/sandbox/templates');
