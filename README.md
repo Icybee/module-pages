@@ -540,7 +540,7 @@ The template is published with a [NavigationBranchElement][] instance as _thisAr
 
 ## Requirement
 
-The package requires PHP 5.4 or later.
+The package requires PHP 5.5 or later.
 
 
 
@@ -551,7 +551,7 @@ The package requires PHP 5.4 or later.
 The recommended way to install this package is through [Composer](http://getcomposer.org/):
 
 ```
-$ composer require icybee/module-pages:~2.0
+$ composer require icybee/module-pages
 ```
 
 
