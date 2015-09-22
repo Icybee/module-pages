@@ -36,11 +36,11 @@ class NavigationIncludeOperation extends Operation
 		] + parent::get_controls();
 	}
 
-	public function __invoke(Request $request)
+	public function action(Request $request)
 	{
 		$this->module = $this->app->modules['pages'];
 
-		return parent::__invoke($request);
+		return parent::action($request);
 	}
 
 	protected function validate(Errors $errors)
