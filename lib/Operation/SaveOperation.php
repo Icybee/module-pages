@@ -11,7 +11,7 @@
 
 namespace Icybee\Modules\Pages\Operation;
 
-use ICanBoogie\ActiveRecord\Query;
+use ICanBoogie\Binding\Routing\ForwardUndefinedPropertiesToApplication;
 use ICanBoogie\Errors;
 use ICanBoogie\Routing\Pattern;
 
@@ -19,6 +19,8 @@ use Icybee\Binding\Core\PrototypedBindings;
 use Icybee\Modules\Files\Module;
 use Icybee\Modules\Pages\ContentModel;
 use Icybee\Modules\Pages\Page;
+use Icybee\Modules\Sites\Binding\CoreBindings as SiteBindings;
+use Icybee\Modules\Editor\Binding\CoreBindings as EditorBindings;
 
 /**
  * @property Module $module
@@ -28,7 +30,8 @@ use Icybee\Modules\Pages\Page;
  */
 class SaveOperation extends \Icybee\Modules\Nodes\Operation\SaveOperation
 {
-	use PrototypedBindings;
+	use ForwardUndefinedPropertiesToApplication;
+	use PrototypedBindings, SiteBindings, EditorBindings;
 
 	/**
 	 * For new records, the values for the {@link Page::SITE_ID} and {@link Page::LANGUAGE}
@@ -45,9 +48,7 @@ class SaveOperation extends \Icybee\Modules\Nodes\Operation\SaveOperation
 
 		if (!$this->key)
 		{
-			/* @var $site \Icybee\Modules\Sites\Site */
-
-			$site = $this->app->site;
+			$site = $this->site;
 			$site_id = $site->site_id;
 			$properties[Page::SITE_ID] = $site_id;
 			$properties[Page::LANGUAGE] = $site->language;
@@ -70,8 +71,20 @@ class SaveOperation extends \Icybee\Modules\Nodes\Operation\SaveOperation
 				}
 			}
 		}
+		else
+		{
+			unset($properties[Page::UUID]);
+			unset($properties[Page::CONSTRUCTOR]);
+			unset($properties[Page::CREATED_AT]);
+			unset($properties[Page::WEIGHT]);
+		}
 
 		return $properties;
+	}
+
+	protected function control_form()
+	{
+		return true;
 	}
 
 	/**
@@ -105,7 +118,7 @@ class SaveOperation extends \Icybee\Modules\Nodes\Operation\SaveOperation
 	protected function process()
 	{
 		$record = null;
-		$oldurl = null;
+		$url_old = null;
 
 		if ($this->record)
 		{
@@ -114,7 +127,7 @@ class SaveOperation extends \Icybee\Modules\Nodes\Operation\SaveOperation
 
 			if (!Pattern::is_pattern($pattern))
 			{
-				$oldurl = $pattern;
+				$url_old = $pattern;
 			}
 		}
 
@@ -131,6 +144,7 @@ class SaveOperation extends \Icybee\Modules\Nodes\Operation\SaveOperation
 		$content_model = $this->module->model('contents');
 
 		$contents = $this->request['contents'];
+		$editors = $this->editors;
 		$editor_ids = $this->request['editors'];
 
 		if ($contents && $editor_ids)
@@ -143,7 +157,7 @@ class SaveOperation extends \Icybee\Modules\Nodes\Operation\SaveOperation
 				}
 
 				$editor_id = $editor_ids[$content_id];
-				$editor = $this->app->editors[$editor_id];
+				$editor = $editors[$editor_id];
 				$content = $editor->serialize($unserialized_content);
 
 				if (!$content)
@@ -177,25 +191,25 @@ class SaveOperation extends \Icybee\Modules\Nodes\Operation\SaveOperation
 		# we delete possible remaining content for the page
 		#
 
-		/* @var $arr Query */
-
-		$arr = $content_model->filter_by_page_id($nid);
+		$query = $content_model->filter_by_page_id($nid);
 
 		if ($preserve)
 		{
-			$arr->where([ '!content_id' => $preserve ]);
+			$query->where([ '!content_id' => $preserve ]);
 		}
 
-		$arr->delete();
+		$query->delete();
 
-		if ($record && $oldurl)
+		if ($record && $url_old)
 		{
-			$record = $this->module->model[$nid];
-			$newurl = $record->url;
+			/* @var $record Page */
 
-			if ($newurl && $newurl != $oldurl)
+			$record = $this->module->model[$nid];
+			$url_new = $record->url;
+
+			if ($url_new && $url_new != $url_old)
 			{
-				new Page\MoveEvent($record, $oldurl, $newurl);
+				new Page\MoveEvent($record, $url_old, $url_new);
 			}
 		}
 

@@ -68,14 +68,14 @@ class Page extends Node
 	 *
 	 * @var int
 	 */
-	public $parent_id;
+	public $parent_id = 0;
 
 	/**
 	 * The identifier of the page the page is redirected to.
 	 *
 	 * @var int
 	 */
-	public $location_id;
+	public $location_id = 0;
 
 	/**
 	 * The pattern used to create the URL of the nodes displayed by the page.
@@ -89,7 +89,7 @@ class Page extends Node
 	 *
 	 * @var int
 	 */
-	public $weight;
+	public $weight = 0;
 
 	/**
 	 * Template used to render the page.
@@ -141,7 +141,7 @@ class Page extends Node
 	 *
 	 * @var string
 	 */
-	public $label;
+	public $label = '';
 
 	/**
 	 * Returns the label for the page.

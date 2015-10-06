@@ -21,7 +21,7 @@ use Brickrouge\Element;
 
 use Patron\Engine as Patron;
 
-use Icybee\Document;
+use Icybee\Element\Document;
 use Icybee\Modules\Files\File;
 use Icybee\Modules\Sites\Site;
 

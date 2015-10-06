@@ -34,7 +34,7 @@ return [
 ] + Make::admin('pages', Routing\PagesAdminController::class, [
 
 	'id_name' => 'nid',
-	'only' => [ 'index', 'create', 'edit', 'confirm-delete', 'export' ],
+	'only' => [ Make::ACTION_INDEX, Make::ACTION_NEW, Make::ACTION_EDIT, Make::ACTION_CONFIRM_DELETE, 'export' ],
 	'actions' => [
 
 		'export' => [ '/{name}/export', Request::METHOD_ANY ]

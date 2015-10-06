@@ -18,6 +18,7 @@ use Brickrouge\Element;
 use Brickrouge\Form;
 
 use ICanBoogie\Render\TemplateNotFound;
+use Icybee\Element\Section;
 use Icybee\Modules\Editor\EditorElement;
 use Icybee\Modules\Editor\MultiEditorElement;
 
@@ -201,7 +202,7 @@ class Module extends \Icybee\Modules\Nodes\Module
 								)
 							),
 
-							\Brickrouge\Section::T_PANEL_CLASS => 'inherit-toggle'
+							Section::T_PANEL_CLASS => 'inherit-toggle'
 
 						]);
 					}
