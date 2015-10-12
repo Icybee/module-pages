@@ -25,7 +25,7 @@ return [
 
 			'found' => [
 
-				'none' => 'Aucun résulat trouvé dans les pages.',
+				'none' => 'Aucun résultat trouvé dans les pages.',
 				'one' => 'Un résultat trouvé dans les pages.',
 				'other' => ':count résultats trouvés dans les pages.'
 
