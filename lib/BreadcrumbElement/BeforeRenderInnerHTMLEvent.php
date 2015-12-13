@@ -12,6 +12,8 @@ use Icybee\Modules\Pages\Page;
  */
 class BeforeRenderInnerHTMLEvent extends Event
 {
+	const TYPE = 'render_inner_html:before';
+
 	/**
 	 * Reference to the slices array.
 	 *
@@ -41,6 +43,6 @@ class BeforeRenderInnerHTMLEvent extends Event
 	 */
 	public function __construct(BreadcrumbElement $target, array $payload)
 	{
-		parent::__construct($target, 'render_inner_html:before', $payload);
+		parent::__construct($target, self::TYPE, $payload);
 	}
 }
