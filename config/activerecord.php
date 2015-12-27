@@ -2,7 +2,7 @@
 
 namespace Icybee\Modules\Pages;
 
-use ICanBoogie\Facets\BooleanCriterion;
+use ICanBoogie\Facets\Criterion\BooleanCriterion;
 
 return [
 
