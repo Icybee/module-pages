@@ -232,7 +232,7 @@ class Module extends \Icybee\Modules\Nodes\Module
 
 							Form::LABEL => $title,
 							Element::GROUP => $does_inherit ? 'contents.inherit' : 'contents',
-							Alert::CONTEXT => Alert::CONTEXT_ERROR
+							Alert::CONTEXT => Alert::CONTEXT_DANGER
 
 						]
 					);

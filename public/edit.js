@@ -1,17 +1,17 @@
 window.addEvent('domready', function() {
 
-	$$('.group--contents-inherit > .control-group a[href="#edit"]').each(function(el) {
+	$$('.group--contents-inherit > .form-group a[href="#edit"]').each(function(el) {
 
 		el.addEvent('click', function(ev) {
 
 			ev.stop()
-			el.getParent('.control-group').toggleClass('editing')
+			el.getParent('.form-group').toggleClass('editing')
 
 		})
 	})
 })
 
-window.addEvent('brickrouge.update', function() {
+Brickrouge.observe('update', function() {
 
 	var selector = $(document.body).getElement('[name="template"]')
 	, form
@@ -37,60 +37,51 @@ window.addEvent('brickrouge.update', function() {
 
 			previous_hiddens.destroy()
 
-			el.getChildren('input[type="hidden"]').each
-			(
-				function(input)
-				{
-					form.adopt(input);
-				}
-			)
+			el.getChildren('input[type="hidden"]').each(function (input) {
 
-			container.getChildren('.control-group').each
-			(
-				function(group)
-				{
-					if (group.hasClass('control-group--template')) return
+				form.adopt(input);
 
-					group.destroy()
-				}
-			)
+			})
+
+			container.getChildren('.form-group').each(function (group) {
+
+				if (group.hasClass('form-group--template')) return
+
+				group.destroy()
+
+			})
 
 			if (inheritContainer)
 			{
 				inheritContainer.destroy()
 			}
 
-			el.getElements('.group--contents .control-group').each
-			(
-				function(group)
-				{
-					console.log('group:', group);
+			el.getElements('.group--contents .form-group').each(function(group) {
 
-					if (group.hasClass('control-group--template')) return
+				console.log('group:', group);
 
-					container.adopt(group);
-				}
-			)
+				if (group.hasClass('form-group--template')) return
 
-			inheritContainer = el.getElement('.group--contents-inherit')
+				container.adopt(group);
+
+			})
+
+			inheritContainer = el.getElement('.form-group--contents-inherit')
 
 			if (inheritContainer)
 			{
 				inheritContainer.inject(container, 'after')
 			}
 
-			Brickrouge.updateDocument(form)
 			document.fireEvent('editors')
 		}
 	})
 
-	selector.addEvent
-	(
-		'change', function(ev)
-		{
-			var pageId = form.elements[ICanBoogie.Operation.KEY] ? form.elements[ICanBoogie.Operation.KEY].value : null
+	selector.addEvent('change', function(ev) {
 
-			req.get({ page_id: pageId, template: selector.get('value') })
-		}
-	)
+		var pageId = form.elements[ICanBoogie.Operation.KEY] ? form.elements[ICanBoogie.Operation.KEY].value : null
+
+		req.get({ page_id: pageId, template: selector.get('value') })
+
+	})
 })

@@ -67,7 +67,7 @@ class TemplateEditorsOperation extends Operation
 
 		$this->response['template'] = $template_info;
 
-		$form = (string) new Form([ Form::RENDERER => 'Group' ] + $contents_tags);
+		$form = (string) new Form([ Form::RENDERER => Form\GroupRenderer::class ] + $contents_tags);
 
 		$this->response['assets'] = $this->app->document->assets;
 
