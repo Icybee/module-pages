@@ -11,7 +11,7 @@
 
 namespace Icybee\Modules\Pages\Operation;
 
-use ICanBoogie\Errors;
+use ICanBoogie\ErrorCollection;
 use ICanBoogie\Operation;
 use Icybee\Modules\Files\Module;
 
@@ -29,7 +29,10 @@ class UpdateTreeOperation extends Operation
 		] + parent::get_controls();
 	}
 
-	protected function validate(Errors $errors)
+	/**
+	 * @inheritdoc
+	 */
+	protected function validate(ErrorCollection $errors)
 	{
 		$order = $this->request['order'];
 		$relation = $this->request['relation'];
@@ -40,7 +43,7 @@ class UpdateTreeOperation extends Operation
 			{
 				if (!isset($relation[$nid]))
 				{
-					$errors['relation'] = $errors->format("Missing relation for nid %nid.", [ 'nid' => $nid ]);
+					$errors->add('relation', "Missing relation for nid %nid.", [ 'nid' => $nid ]);
 				}
 			}
 		}
@@ -48,16 +51,16 @@ class UpdateTreeOperation extends Operation
 		{
 			if (!$order)
 			{
-				$errors['order'] = $errors->format("The %param param is required", [ 'param' => 'order' ]);
+				$errors->add('order', "The %param param is required", [ 'param' => 'order' ]);
 			}
 
 			if (!$relation)
 			{
-				$errors['relation'] = $errors->format("The %param param is required", [ 'param' => 'relation' ]);
+				$errors->add('relation', "The %param param is required", [ 'param' => 'relation' ]);
 			}
 		}
 
-		return !$errors->count();
+		return $errors;
 	}
 
 	protected function process()

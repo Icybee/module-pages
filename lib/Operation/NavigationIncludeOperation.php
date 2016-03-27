@@ -11,7 +11,7 @@
 
 namespace Icybee\Modules\Pages;
 
-use ICanBoogie\Errors;
+use ICanBoogie\ErrorCollection;
 use ICanBoogie\HTTP\Request;
 use ICanBoogie\Operation;
 use Icybee\Binding\Core\PrototypedBindings;
@@ -43,9 +43,12 @@ class NavigationIncludeOperation extends Operation
 		return parent::action($request);
 	}
 
-	protected function validate(Errors $errors)
+	/**
+	 * @inheritdoc
+	 */
+	protected function validate(ErrorCollection $errors)
 	{
-		return true;
+		return $errors;
 	}
 
 	protected function process()

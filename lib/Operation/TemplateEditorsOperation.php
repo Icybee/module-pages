@@ -12,7 +12,7 @@
 namespace Icybee\Modules\Pages\Operation;
 
 use Brickrouge\Form;
-use ICanBoogie\Errors;
+use ICanBoogie\ErrorCollection;
 use ICanBoogie\Operation;
 
 use Icybee\Binding\Core\PrototypedBindings;
@@ -34,9 +34,12 @@ class TemplateEditorsOperation extends Operation
 		] + parent::get_controls();
 	}
 
-	protected function validate(Errors $errors)
+	/**
+	 * @inheritdoc
+	 */
+	protected function validate(ErrorCollection $errors)
 	{
-		return true;
+		return $errors;
 	}
 
 	/**

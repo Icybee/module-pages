@@ -12,7 +12,7 @@
 namespace Icybee\Modules\Pages\Operation;
 
 use ICanBoogie\Binding\Routing\ForwardUndefinedPropertiesToApplication;
-use ICanBoogie\Errors;
+use ICanBoogie\ErrorCollection;
 use ICanBoogie\Routing\Pattern;
 
 use Icybee\Binding\Core\PrototypedBindings;
@@ -92,7 +92,7 @@ class SaveOperation extends \Icybee\Modules\Nodes\Operation\SaveOperation
 	 *
 	 * @inheritdoc
 	 */
-	protected function validate(Errors $errors)
+	protected function validate(ErrorCollection $errors)
 	{
 		$contents = $this->request['contents'];
 		$editors = $this->request['editors'];
@@ -103,7 +103,7 @@ class SaveOperation extends \Icybee\Modules\Nodes\Operation\SaveOperation
 			{
 				if (!array_key_exists($name, $editors))
 				{
-					$errors['content'][] = $errors->format('The editor is missing for the content %name.', [
+					$errors->add('content', "The editor is missing for the content %name.", [
 
 						'name' => $name
 

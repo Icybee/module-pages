@@ -11,11 +11,14 @@
 
 namespace Icybee\Modules\Pages\Operation;
 
-use ICanBoogie\Errors;
+use ICanBoogie\ErrorCollection;
 
 class DeleteOperation extends \Icybee\Modules\Nodes\Operation\DeleteOperation
 {
-	protected function validate(Errors $errors)
+	/**
+	 * @inheritdoc
+	 */
+	protected function validate(ErrorCollection $errors)
 	{
 		$nid = $this->key;
 
@@ -23,14 +26,14 @@ class DeleteOperation extends \Icybee\Modules\Nodes\Operation\DeleteOperation
 
 		if ($count)
 		{
-			$errors[] = $errors->format('This page has :count direct children.', [ ':count' => $count ]);
+			$errors->add_generic('This page has :count direct children.', [ ':count' => $count ]);
 		}
 
 		$count = $this->module->model->filter_by_location_id($nid)->count;
 
 		if ($count)
 		{
-			$errors[] = $errors->format('This page is used in :count redirections.', [ ':count' => $count ]);
+			$errors->add_generic('This page is used in :count redirections.', [ ':count' => $count ]);
 		}
 
 		return parent::validate($errors);

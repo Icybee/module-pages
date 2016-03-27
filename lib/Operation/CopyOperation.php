@@ -11,7 +11,7 @@
 
 namespace Icybee\Modules\Pages\Operation;
 
-use ICanBoogie\Errors;
+use ICanBoogie\ErrorCollection;
 use ICanBoogie\Operation;
 
 use Icybee\Binding\Core\PrototypedBindings;
@@ -38,9 +38,9 @@ class CopyOperation extends Operation
 	/**
 	 * @inheritdoc
 	 */
-	protected function validate(Errors $errors)
+	protected function validate(ErrorCollection $errors)
 	{
-		return true;
+		return $errors;
 	}
 
 	protected function process()
