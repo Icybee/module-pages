@@ -11,7 +11,7 @@ window.addEvent('domready', function() {
 	})
 })
 
-Brickrouge.observe('update', function() {
+Brickrouge.observe(Brickrouge.EVENT_UPDATE, function() {
 
 	var selector = $(document.body).getElement('[name="template"]')
 	, form
