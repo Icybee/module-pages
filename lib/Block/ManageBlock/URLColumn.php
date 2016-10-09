@@ -37,8 +37,7 @@ class URLColumn extends \Icybee\Modules\Nodes\Block\ManageBlock\URLColumn
 			}
 
 			$url = $record->url;
-
-			// DIRTY-20100507
+			$display_url = \ICanBoogie\shorten($url, 64, .5);
 
 			if ($record->location)
 			{
@@ -53,13 +52,13 @@ class URLColumn extends \Icybee\Modules\Nodes\Block\ManageBlock\URLColumn
 				return <<<EOT
 <span class="small">
 <i class="icon-mail-forward" title="$title"></i>
-<a href="$url">$url</a>
+<a href="$url">$display_url</a>
 </span>
 EOT;
 			}
 
 			return <<<EOT
-<span class="small"><a href="$url">$url</a></span>
+<span class="small"><a href="$url">$display_url</a></span>
 EOT;
 		}
 
