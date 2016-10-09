@@ -5,7 +5,7 @@ namespace Brickrouge;
 /**
  * @var $this \Icybee\Modules\Pages\Page
  * @var $page \Icybee\Modules\Pages\Page
- * @var $document \Icybee\Document
+ * @var $document \Brickrouge\Document
  * @var $tried_templates array
  */
 
@@ -22,13 +22,13 @@ $current_template = array_pop($tried_templates);
 <body>
 
 <div class="container">
-	<p>THIS IS A SAMPLE TEMPLATE</p>
+	<h1>This is a sample template</h1>
 
 	<p>This view was rendered using the following template:</p>
 
 	<p><code><?= $current_template ?></code></p>
 
-	<p>You may override this by creating one of the following template:</p>
+	<p>You may override it by creating one of the following templates:</p>
 
 	<ul>
 		<?php foreach($tried_templates as $template): ?>
