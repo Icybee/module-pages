@@ -13,7 +13,7 @@
 >
 	<testsuites>
 		<testsuite name="icybee/module-pages">
-			<directory>./tests</directory>
+			<directory>./tests/lib</directory>
 		</testsuite>
 	</testsuites>
 

@@ -11,10 +11,10 @@
 
 namespace Icybee\Modules\Pages;
 
+use ICanBoogie\Binding\PrototypedBindings;
 use ICanBoogie\ErrorCollection;
 use ICanBoogie\HTTP\Request;
 use ICanBoogie\Operation;
-use Icybee\Binding\Core\PrototypedBindings;
 
 /**
  * @property Page $record

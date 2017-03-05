@@ -26,7 +26,7 @@ use Patron\HTMLParser;
 use Patron\Engine as Patron;
 
 /**
- * @property-read \ICanBoogie\Core|\Icybee\Binding\CoreBindings $app
+ * @property-read \ICanBoogie\Application
  * @property-read PageModel $model
  */
 class Module extends \Icybee\Modules\Nodes\Module

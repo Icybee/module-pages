@@ -16,9 +16,8 @@ use ICanBoogie\ActiveRecord;
 use Brickrouge\Element;
 use Brickrouge\ElementIsEmpty;
 
+use ICanBoogie\Binding\PrototypedBindings;
 use Patron\Engine as Patron;
-
-use Icybee\Binding\Core\PrototypedBindings;
 
 class LanguagesElement extends Element
 {

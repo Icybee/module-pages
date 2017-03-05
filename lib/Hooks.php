@@ -11,11 +11,9 @@
 
 namespace Icybee\Modules\Pages;
 
-use ICanBoogie\ActiveRecord;
-use ICanBoogie\Core;
+use ICanBoogie\Application;
 use ICanBoogie\FileCache;
 use ICanBoogie\HTTP\RequestDispatcher;
-use ICanBoogie\HTTP\Request;
 
 use Brickrouge\Element;
 
@@ -117,11 +115,11 @@ class Hooks
 	 *
 	 * This getter is a shortcut for the `request->context->page` property.
 	 *
-	 * @param Core $app
+	 * @param Application $app
 	 *
 	 * @return Page
 	 */
-	static public function get_page(Core $app)
+	static public function get_page(Application $app)
 	{
 		return $app->request->context->page;
 	}
@@ -504,7 +502,7 @@ class Hooks
 	 */
 
 	/**
-	 * @return \ICanBoogie\Core|\Icybee\Binding\CoreBindings
+	 * @return \ICanBoogie\Application
 	 */
 	static private function app()
 	{

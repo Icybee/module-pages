@@ -11,16 +11,14 @@
 
 namespace Icybee\Modules\Pages\Operation;
 
+use ICanBoogie\Binding\PrototypedBindings;
 use ICanBoogie\Binding\Routing\ForwardUndefinedPropertiesToApplication;
 use ICanBoogie\ErrorCollection;
 use ICanBoogie\Routing\Pattern;
 
-use Icybee\Binding\Core\PrototypedBindings;
 use Icybee\Modules\Files\Module;
 use Icybee\Modules\Pages\ContentModel;
 use Icybee\Modules\Pages\Page;
-use Icybee\Modules\Sites\Binding\CoreBindings as SiteBindings;
-use Icybee\Modules\Editor\Binding\CoreBindings as EditorBindings;
 
 /**
  * @property Module $module
@@ -31,7 +29,7 @@ use Icybee\Modules\Editor\Binding\CoreBindings as EditorBindings;
 class SaveOperation extends \Icybee\Modules\Nodes\Operation\SaveOperation
 {
 	use ForwardUndefinedPropertiesToApplication;
-	use PrototypedBindings, SiteBindings, EditorBindings;
+	use PrototypedBindings;
 
 	/**
 	 * For new records, the values for the {@link Page::SITE_ID} and {@link Page::LANGUAGE}

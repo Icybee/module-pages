@@ -11,9 +11,9 @@
 
 namespace Icybee\Modules\Pages;
 
+use ICanBoogie\Binding\PrototypedBindings;
 use ICanBoogie\Routing\Pattern;
 
-use Icybee\Binding\Core\PrototypedBindings;
 use Icybee\Modules\Nodes\Node;
 use Icybee\Modules\Sites\Site;
 

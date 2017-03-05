@@ -98,7 +98,7 @@ class PopTemplate extends Element
 
 	private function get_extensions()
 	{
-		/* @var \ICanBoogie\Binding\Render\CoreBindings $app */
+		/* @var \ICanBoogie\Application $app */
 
 		$app = $this->app;
 

@@ -11,20 +11,10 @@
 
 namespace ICanBoogie;
 
+chdir(__DIR__);
+
 require __DIR__ . '/../vendor/autoload.php';
 
-/* @var \ICanBoogie\Core|\Icybee\Binding\Core\CoreBindings|\ICanBoogie\Binding\Render\CoreBindings $app */
-
-$app = new Core(array_merge_recursive(get_autoconfig(), [
-
-	'module-path' => [
-
-		realpath(__DIR__ . '/../')
-
-	]
-
-]));
-
-$app->boot();
+$app = boot();
 $app->document = \Brickrouge\get_document();
-$app->template_resolver->add_path(__DIR__ . '/sandbox/templates');
+$app->template_resolver->add_path(__DIR__ . '/templates');

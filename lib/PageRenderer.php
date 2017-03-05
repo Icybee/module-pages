@@ -12,14 +12,13 @@
 namespace Icybee\Modules\Pages;
 
 use ICanBoogie\Accessor\AccessorTrait;
-use ICanBoogie\HTTP\Request;
+use ICanBoogie\Binding\PrototypedBindings;
 use ICanBoogie\Render\EngineCollection;
 use ICanBoogie\Render\TemplateNotFound;
 use ICanBoogie\Render\TemplateResolver;
 
 use Brickrouge\Document;
 
-use Icybee\Binding\Core\PrototypedBindings;
 use Icybee\Modules\Pages\PageRenderer\BeforeRenderEvent;
 use Icybee\Modules\Pages\PageRenderer\RenderEvent;
 
@@ -102,7 +101,7 @@ class PageRenderer
 
 		# template
 
-		$html = $engine->render($template_pathname, $page, $context);
+		$html = $engine($template_pathname, $page, $context);
 
 		new RenderEvent($this, $html, $page, $document);
 

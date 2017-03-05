@@ -12,10 +12,10 @@
 namespace Icybee\Modules\Pages\Operation;
 
 use Brickrouge\Form;
+use ICanBoogie\Binding\PrototypedBindings;
 use ICanBoogie\ErrorCollection;
 use ICanBoogie\Operation;
 
-use Icybee\Binding\Core\PrototypedBindings;
 use Icybee\Modules\Files\Module;
 
 /**

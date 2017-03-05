@@ -430,10 +430,10 @@ echo "Home page URL: " . $app->site->home->url;
 
 
 
-### `ICanBoogie\Core::get_page`
+### `ICanBoogie\Application::get_page`
 
-The `page` getter is added to instances of `ICanBoogie\Core`. It returns the page currently being
-displayed. The getter is a shortcut to `$app->request->context->page`.
+The `page` getter is added to instances of `ICanBoogie\Application`. It returns the page currently
+being displayed. The getter is a shortcut to `$app->request->context->page`.
 
 
 

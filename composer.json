@@ -23,21 +23,25 @@
 	"prefer-stable": true,
 	"prefer-dist": true,
 	"require": {
-		"php": ">=5.5",
+		"php": ">=5.6",
 		"icanboogie/module-installer": "^1.2",
-		"icanboogie/bind-render": "^0.5",
-		"icybee/module-nodes": "^3.0"
+		"icanboogie/bind-render": "^0.6",
+		"icybee/module-nodes": "^4.0"
 	},
 	"require-dev": {
 		"brickrouge/brickrouge": "^3.0",
-		"icybee/patron": "^1.4",
-		"icybee/patron-render-support": "^0.2",
-		"icybee/bluetihi": "^0.0.3"
+		"icybee/patron": "^2.0",
+		"icybee/patron-render-support": "^0.3"
 	},
 	"autoload": {
 		"psr-4": {
 			"Icybee\\Modules\\Pages\\": "lib"
 		}
+	},
+	"autoload-dev": {
+		"classmap": [
+			"tests/Application.php"
+		]
 	},
 	"scripts": {
 		"post-autoload-dump": "ICanBoogie\\Autoconfig\\Hooks::on_autoload_dump"

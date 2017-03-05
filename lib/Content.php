@@ -12,8 +12,7 @@
 namespace Icybee\Modules\Pages;
 
 use ICanBoogie\ActiveRecord;
-
-use Icybee\Binding\Core\PrototypedBindings;
+use ICanBoogie\Binding\PrototypedBindings;
 
 /**
  * A content of a page.
