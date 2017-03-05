@@ -1,4 +1,11 @@
-# Pages [![Build Status](https://travis-ci.org/Icybee/module-pages.svg?branch=2.0)](https://travis-ci.org/Icybee/module-pages)
+# Pages
+
+[![Packagist](https://img.shields.io/packagist/v/icybee/module-pages.svg)](https://packagist.org/packages/icybee/module-pages)
+[![Build Status](https://img.shields.io/travis/Icybee/module-pages.svg)](http://travis-ci.org/Icybee/module-pages)
+[![HHVM](https://img.shields.io/hhvm/Icybee/module-pages.svg)](http://hhvm.h4cc.de/package/Icybee/module-pages)
+[![Code Quality](https://img.shields.io/scrutinizer/g/Icybee/module-pages.svg)](https://scrutinizer-ci.com/g/Icybee/module-pages)
+[![Code Coverage](https://img.shields.io/coveralls/Icybee/module-pages.svg)](https://coveralls.io/r/Icybee/module-pages)
+[![Downloads](https://img.shields.io/packagist/dt/icybee/module-pages.svg)](https://packagist.org/packages/icybee/module-pages/stats)
 
 The Pages module (`pages`) introduces the "Page" content type to the CMS
 [Icybee](http://icybee.org). Pages are used to created the website tree, display contents and
@@ -577,7 +584,8 @@ directory can later be cleaned with the `make clean` command.
 
 The package is continuously tested by [Travis CI](http://about.travis-ci.org/).
 
-[![Build Status](https://travis-ci.org/Icybee/module-pages.svg?branch=2.0)](https://travis-ci.org/Icybee/module-pages)
+[![Build Status](https://img.shields.io/travis/Icybee/module-pages.svg)](http://travis-ci.org/Icybee/module-pages)
+[![Code Coverage](https://img.shields.io/coveralls/Icybee/module-pages.svg)](https://coveralls.io/r/Icybee/module-pages)
 
 
 
