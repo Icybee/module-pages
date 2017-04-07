@@ -11,6 +11,7 @@
 
 namespace Icybee\Modules\Pages;
 
+use function ICanBoogie\app;
 use Brickrouge\Element;
 
 /**
@@ -82,7 +83,7 @@ class BreadcrumbElement extends Element
 	{
 		return new static([
 
-			self::PAGE => \ICanBoogie\app()->request->context->page
+			self::PAGE => app()->request->context->page
 
 		]);
 	}

@@ -11,6 +11,7 @@
 
 namespace Icybee\Modules\Pages;
 
+use function ICanBoogie\app;
 use ICanBoogie\Application;
 use ICanBoogie\FileCache;
 use ICanBoogie\HTTP\RequestDispatcher;
@@ -45,7 +46,7 @@ class Hooks
 	 */
 	static public function on_file_move(File\MoveEvent $event, File $target)
 	{
-		self::app()->models['pages/contents']->execute
+		app()->models['pages/contents']->execute
 		(
 			'UPDATE {self} SET content = REPLACE(content, ?, ?)', [ $event->from, $event->to ]
 		);
@@ -65,7 +66,7 @@ class Hooks
 	{
 		try
 		{
-			$model = self::app()->models['pages/contents'];
+			$model = app()->models['pages/contents'];
 		}
 		catch (\Exception $e) { return; }
 
@@ -103,7 +104,7 @@ class Hooks
 	{
 		$cache = new FileCache([
 
-			FileCache::T_REPOSITORY => self::app()->config['repository.cache'] . '/pages'
+			FileCache::T_REPOSITORY => app()->config['repository.cache'] . '/pages'
 
 		]);
 
@@ -133,7 +134,7 @@ class Hooks
 	 */
 	static public function get_home(Site $site)
 	{
-		return self::app()->models['pages']->find_home($site->site_id);
+		return app()->models['pages']->find_home($site->site_id);
 	}
 
 	/**
@@ -417,7 +418,7 @@ class Hooks
 	{
 		/* @var $model PageModel */
 
-		$app = self::app();
+		$app = app();
 		$page = self::get_request_page();
 		$model = $app->models['pages'];
 		$depth = $args['depth'];
@@ -502,18 +503,10 @@ class Hooks
 	 */
 
 	/**
-	 * @return \ICanBoogie\Application
-	 */
-	static private function app()
-	{
-		return \ICanBoogie\app();
-	}
-
-	/**
 	 * @return Page
 	 */
 	static private function get_request_page()
 	{
-		return self::app()->request->context->page;
+		return app()->request->context->page;
 	}
 }

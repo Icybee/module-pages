@@ -11,6 +11,7 @@
 
 namespace Icybee\Modules\Pages\Block\ManageBlock;
 
+use function ICanBoogie\app;
 use ICanBoogie\Routing\Pattern;
 
 /**
@@ -76,7 +77,7 @@ EOT;
 		}
 		else if (!Pattern::is_pattern($pattern))
 		{
-			$url = (\ICanBoogie\app()->site_id == $record->site_id) ? $record->url : $record->absolute_url;
+			$url = (app()->site_id == $record->site_id) ? $record->url : $record->absolute_url;
 
 			$title = $t('Go to the page: !url', [ '!url' => $url ]);
 

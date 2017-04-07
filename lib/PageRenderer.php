@@ -11,6 +11,7 @@
 
 namespace Icybee\Modules\Pages;
 
+use function ICanBoogie\app;
 use ICanBoogie\Accessor\AccessorTrait;
 use ICanBoogie\Binding\PrototypedBindings;
 use ICanBoogie\Render\EngineCollection;
@@ -37,7 +38,7 @@ class PageRenderer
 
 	protected function get_app()
 	{
-		return \ICanBoogie\app();
+		return app();
 	}
 
 	protected function get_document()
