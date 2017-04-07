@@ -2,7 +2,7 @@
 
 namespace ICanBoogie;
 
-class Application extends Core
+class Application extends ApplicationAbstract
 {
 
 }
