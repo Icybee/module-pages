@@ -16,5 +16,6 @@ chdir(__DIR__);
 require __DIR__ . '/../vendor/autoload.php';
 
 $app = boot();
+$app->modules->install();
 $app->document = \Brickrouge\get_document();
 $app->template_resolver->add_path(__DIR__ . '/templates');
