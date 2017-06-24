@@ -12,6 +12,7 @@
 namespace Icybee\Modules\Pages;
 
 use function ICanBoogie\app;
+use ICanBoogie\AppConfig;
 use ICanBoogie\Application;
 use ICanBoogie\FileCache;
 use ICanBoogie\HTTP\RequestDispatcher;
@@ -104,7 +105,7 @@ class Hooks
 	{
 		$cache = new FileCache([
 
-			FileCache::T_REPOSITORY => app()->config['repository.cache'] . '/pages'
+			FileCache::T_REPOSITORY => app()->config[AppConfig::REPOSITORY_CACHE] . '/pages'
 
 		]);
 
