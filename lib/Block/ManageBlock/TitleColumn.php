@@ -100,7 +100,7 @@ class TitleColumn extends \Icybee\Modules\Nodes\Block\ManageBlock\TitleColumn
 
 		if ($now - $updated_at < 7200)
 		{
-			$rc .= ' <sup style="vertical-align: text-top; color: red;">Récemment modifié</sup>';
+			$rc .= ' <sup style="color: red;">Rencently modified</sup>';
 		}
 
 		return $rc;
