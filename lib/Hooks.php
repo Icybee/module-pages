@@ -407,6 +407,9 @@ class Hooks
 	 * be used to specify the parent of the navigation, which can be specified as a {@link Page}
 	 * instance, an identifier, or a path.
 	 *
+	 * Note: By default a NavigationElement is returned, unless the element as a template, in which
+	 * case ordered nodes from the blueprint are returned.
+	 *
 	 * @param array $args
 	 * @param Patron $engine
 	 * @param mixed $template
@@ -490,13 +493,16 @@ class Hooks
 
 		$blueprint->populate();
 
-		$element = new NavigationElement($blueprint, 'ol', [
+		if ($template)
+		{
+			return $engine($template, $blueprint->ordered_nodes);
+		}
+
+		return new NavigationElement($blueprint, 'ol', [
 
 			NavigationElement::CSS_CLASS_NAMES => $args['css-class-names']
 
 		]);
-
-		return $template ? $engine($template, $element) : $element;
 	}
 
 	/*
